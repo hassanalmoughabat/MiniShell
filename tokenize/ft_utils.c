@@ -3,15 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 15:26:30 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/18 15:57:57 by njoudieh         ###   ########.fr       */
+/*   Updated: 2024/12/24 21:58:04 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "../includes/token.h"
 
+//quotes = 0 has nothing to do with quotes
+//quotes = -1 opened and not closed
+//quotes = 2 opened and closed
 t_token	*create_token(char *value, t_type_token operator)
 {
 	t_token	*new_token;

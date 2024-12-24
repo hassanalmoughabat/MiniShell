@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_error_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:58:47 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/19 14:32:05 by njoudieh         ###   ########.fr       */
+/*   Updated: 2024/12/24 21:57:55 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "../includes/token.h"
 
 void	ft_free_token_list(t_token **list)
 {

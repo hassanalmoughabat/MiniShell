@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_space_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:09:56 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/17 15:06:10 by njoudieh         ###   ########.fr       */
+/*   Updated: 2024/12/24 21:57:42 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "../includes/token.h"
 
 int	ft_check_space(char c)
 {
