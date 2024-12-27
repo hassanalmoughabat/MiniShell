@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:09:56 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/24 21:57:42 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2024/12/27 20:29:28 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,5 @@ int	ft_check_space(char c)
 void	ft_skip_added_spaces(char **str)
 {
 	while (**str && ft_check_space(**str))
-		*str ++;
+		(*str)++;
 }

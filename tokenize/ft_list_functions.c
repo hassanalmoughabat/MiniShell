@@ -1,25 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_utils.c                                         :+:      :+:    :+:   */
+/*   ft_list_functions.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 15:26:30 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/24 21:58:04 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2024/12/27 21:41:38 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/token.h"
 
-//quotes = 0 has nothing to do with quotes
-//quotes = -1 opened and not closed
-//quotes = 2 opened and closed
-t_token	*create_token(char *value, t_type_token operator)
+t_token	*create_token(char *value, t_token_type operator)
 {
 	t_token	*new_token;
 
-	new_token = ft_calloc(1, sizeof(new_token));
+	new_token = (t_token *)ft_calloc(1, sizeof(t_token));
 	if (!new_token)
 		return (0);
 	new_token->type = operator;

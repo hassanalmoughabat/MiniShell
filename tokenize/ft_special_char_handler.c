@@ -6,13 +6,13 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:43:38 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/24 21:57:39 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2024/12/27 21:54:01 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/token.h"
 
-int	ft_append_operator(t_token **list, t_type_token operator, char **input)
+int	ft_append_operator(t_token **list, t_token_type operator, char **input)
 {
 	t_token	*new_token;
 
@@ -21,12 +21,11 @@ int	ft_append_operator(t_token **list, t_type_token operator, char **input)
 		return (0);
 	ft_add_token_last(list, new_token);
 	(*input)++;
-	if (operator == '>' || operator == '>')
+	if (operator == '>' || operator == '<')
 		(*input)++;
 	return (1);
 }
 
-//check if there is a special char 
 int	ft_check_special_char(char *str)
 {
 	if (!ft_strncmp(str, "<", 1) || !ft_strncmp(str, ">", 1)
@@ -35,16 +34,17 @@ int	ft_check_special_char(char *str)
 	return (0);
 }
 
-int	ft_handle_operators(char *input, t_token **list)
+int	ft_handle_operators(char **input, t_token **list)
 {
-	if (!ft_strncmp(input, "<", 1))
+	if (!ft_strncmp(*input, "<", 1))
 		return (ft_append_operator(list, T_LESS, input));
-	else if (!ft_strncmp(input, ">", 1))
+	else if (!ft_strncmp(*input, ">", 1))
 		return (ft_append_operator(list, T_GREAT, input));
-	else if (!ft_strncmp(input, "<<", 1))
+	else if (!ft_strncmp(*input, "<<", 2))
 		return (ft_append_operator(list, T_DLESS, input));
-	else if (!ft_strncmp(input, ">>", 1))
+	else if (!ft_strncmp(*input, ">>", 2))
 		return (ft_append_operator(list, T_DGREAT, input));
-	else if (!ft_strncmp(input, "|", 1))
+	else if (!ft_strncmp(*input, "|", 1))
 		return (ft_append_operator(list, T_PIPE, input));
+	return (0);
 }

@@ -1,30 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_quotes_helper.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/11 13:52:56 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/24 22:05:40 by njoudieh42       ###   ########.fr       */
+/*   Created: 2024/12/27 03:33:31 by njoudieh42        #+#    #+#             */
+/*   Updated: 2024/12/27 20:27:09 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "../includes/token.h"
 
-//when i exit if!input i should clear the minishell
-int	main(int argc, char ** argv,char **envp)
+int	ft_check_quotes(char c)
 {
-	((void)argv);
-	((void)argc);
-	
-	char	*input;
+	if (c == '\'' || c == '\"')
+		return (1);
+	return (0);
+}
 
-		input = readline("minishell>");
-		if (!input)
-			exit(0);
-		if(input[0])
-			add_history(input);
-		ft_tokenize(input);
-	
+int	ft_delimeter(char *str)
+{
+	if (*str == ' ' || *str == '\t' || !ft_strncmp(str, ">", 1)
+		|| !ft_strncmp(str, "<", 1) || !ft_strncmp(str, "|", 1))
+		return (1);
+	return (0);
 }

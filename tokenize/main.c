@@ -1,39 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_error_handler.c                                 :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/19 11:58:47 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/27 20:33:07 by njoudieh42       ###   ########.fr       */
+/*   Created: 2024/12/11 13:55:58 by njoudieh          #+#    #+#             */
+/*   Updated: 2024/12/27 21:52:03 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/token.h"
 
-void	ft_free_token_list(t_token **list)
+void	display_list(t_token *list)
 {
 	t_token	*current;
-	t_token	*next;
 
-	current = *list;
-	if (!current)
-		return ;
+	current = list;
 	while (current)
 	{
-		next = current->next;
-		free(current->cmd);
-		free (current);
-		current = next;
+		printf("type: %d\n", current->type);
+		printf("cmd: %s\n", current->cmd);
+		current = current->next;
 	}
-	*list = NULL;
 }
 
-void	ft_quote_error(char c)
+int	main(void)
 {
-	ft_putstr_fd("Error unclosed quotes, close your ", 2);
-	ft_putchar_fd(c, 2);
-	ft_putstr_fd("\n", 2);
-	exit(-1);
+	char	*input;
+	t_token	*t_list;
+
+	input = "echo \"he'\\\"llo\\\" 'world' | grep '\" 'hard\\|case' >>file.txt && echo 'done |\"nested' >< \"new|file\" && cat <<EOF | awk '{print $2}' | tr -d '\n' EOF";
+	t_list = ft_tokenize(input);
+	display_list(t_list);
+	ft_free_token_list(&t_list);
+	return (0);
 }

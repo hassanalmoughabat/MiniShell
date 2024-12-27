@@ -5,47 +5,39 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/11 13:55:58 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/24 22:07:20 by njoudieh42       ###   ########.fr       */
+/*   Created: 2024/12/12 11:58:43 by njoudieh          #+#    #+#             */
+/*   Updated: 2024/12/27 20:28:49 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/token.h"
 
-void	display_list(t_token *list)
+t_token	*ft_check_string(char *input)
 {
-	t_token	*current;
+	t_token	*token_list;
+	int		error_flag;
 
-	current = list;
-	while (current)
+	token_list = NULL;
+	error_flag = 0;
+	while (*input)
 	{
-		printf("type: %d\n", current->type);
-		printf("cmd: %s\n", current->cmd);
-		current = current->next;
+		if (error_flag)
+			return (ft_free_token_list(&token_list), NULL);
+		if (ft_check_space(*input))
+			ft_skip_added_spaces(&input);
+		else if (ft_check_special_char(input))
+			error_flag = (!ft_handle_operators(&input, &token_list));
+		else
+			error_flag = (!ft_handle_quotes(&input, &token_list));
 	}
+	return (token_list);
 }
 
-t_token	ft_tokenize(char *input)
+t_token	*ft_tokenize(char *input)
 {
 	t_token	*head_list;
 
-	head_list = NULL;
-	ft_check_string(input, head_list);
-	display_list(head_list);
-}
-
-int	main(int argc, char ** argv,char **envp)
-{
-	((void)argv);
-	((void)argc);
-	
-	char	*input;
-
-		input = readline("minishell>");
-		if (!input)
-			exit(0);
-		if(input[0])
-			add_history(input);
-		ft_tokenize(input);
-	
+	head_list = ft_check_string(input);
+	input = NULL;
+	return (head_list);
 }
