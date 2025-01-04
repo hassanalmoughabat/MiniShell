@@ -1,58 +1,151 @@
 #include "includes/minishell.h"
 #include "includes/ft_printf/ft_printf.h"
 
-char	*my_getenv(char *name, char **env)
-{
-	int		i;
-	int		j;
-	char	*sub;
 
-	i = 0;
-	while (env[i])
-	{
-		j = 0;
-		while (env[i][j] && env[i][j] != '=')
-			j++;
-		sub = ft_substr(env[i], 0, j);
-		if (ft_strcmp(sub, name) == 0)
-		{
-			free(sub);
-			return (env[i] + j + 1);
-		}
-		free(sub);
-		i++;
-	}
-	return (NULL);
+
+
+
+// int is_builtin(char *cmd)
+// {
+//     if (!cmd)
+//         return 0;
+//     if (strcmp(cmd, "cd") == 0)
+//         return 1;
+//     return 0;
+// }
+
+// int handle_builtin(char **args, char **envp)
+// {
+// 	char *home;
+
+//     (void)envp; 
+//     if (!args || !args[0])
+//         return 0;
+
+//     if (strcmp(args[0], "cd") == 0)
+//     {
+//         if (!args[1])
+//         {
+//             home = my_getenv("HOME", envp);
+//             if (home && chdir(home) != 0)
+//                 perror("cd");
+//         }
+//         else if (chdir(args[1]) != 0)
+//         {
+//             perror("cd");
+//         }
+//         return 1;
+//     }
+//     return 0;
+// }
+
+
+
+char *path_extract(char *str, int count)
+{
+    int i = count;
+    while(str[i])
+        i++;
+    int word_len = i - count;
+    char *path;
+    path = malloc(sizeof(char) * (word_len + 1));
+    if (!path)
+        return (0);
+    int j = 0;
+    while (str[count])
+    {
+        path[j] = str[count];
+        j++;
+        count++;
+    }
+    path[j] = '\0';
+    return path;
 }
 
-char	*get_path(char *cmd, char *envp[])
+char *get_my_path(t_env *env)
 {
-	int		i;
-	char	*exec;
-	char	**allpath;
-	char	*path_part;
-	char	**s_cmd;
+    t_env *current;
+    char *path;
 
-	i = 0;
-	allpath = ft_split(my_getenv("PATH", envp), ':');
-	s_cmd = ft_split(cmd, ' ');
-	while (allpath[i])
-	{
-		path_part = ft_strjoin(allpath[i], "/");
-		exec = ft_strjoin(path_part, s_cmd[0]);
-		free(path_part);
-		if (access(exec, F_OK | X_OK) == 0)
-		{
-			ft_free_tab(s_cmd);
-			return (exec);
-		}
-		free(exec);
-		i++;
-	}
-	ft_free_tab(allpath);
-	ft_free_tab(s_cmd);
-	return (cmd);
+    if (!env)
+    {
+        ft_printf("DEBUG: env is NULL\n");
+        return NULL;
+    }
+
+    current = env;
+    while (current)
+    {
+        ft_printf("DEBUG: Checking env line: %s\n", current->line);
+        if (ft_strncmp(current->line, "PATH=", 5) == 0)
+        {
+            path = path_extract(current->line, 5);
+            return (path);
+        }
+        current = current->next;
+    }
+    ft_printf("DEBUG: PATH not found in environment\n");
+    return (NULL);
 }
+// Return copy of original command if not found
+
+
+// void exec(char *cmd, char *envp[])
+// {
+//     char **s_cmd;
+//     char *path;
+//     pid_t pid;
+//     int status;
+
+//     if (!cmd || !envp)
+//         return;
+
+//     s_cmd = ft_split(cmd, ' ');
+//     if (!s_cmd || !s_cmd[0])
+//     {
+//         ft_putstr_fd("minishell: command not found: ", 2);
+//         ft_putendl_fd(cmd, 2);
+//         ft_free_tab(s_cmd);
+//         return;
+//     }
+
+//     // Uncomment and implement builtin handling if needed
+//     /*
+//     if (is_builtin(s_cmd[0]))
+//     {
+//         handle_builtin(s_cmd, envp);
+//         ft_free_tab(s_cmd);
+//         return;
+//     }
+//     */
+
+//     pid = fork();
+//     if (pid == -1)
+//     {
+//         perror("fork");
+//         ft_free_tab(s_cmd);
+//         return;
+//     }
+//     else if (pid == 0)
+//     {
+//         path = get_path(s_cmd[0], envp);
+//         if (!path || execve(path, s_cmd, envp) == -1)
+//         {
+//             ft_putstr_fd("minishell: command not found: ", 2);
+//             ft_putendl_fd(s_cmd[0], 2);
+//             if (path)
+//                 free(path);
+//             ft_free_tab(s_cmd);
+//             exit(EXIT_FAILURE);
+//         }
+//     }
+//     else
+//     {
+//         waitpid(pid, &status, 0);
+//         ft_free_tab(s_cmd);
+//     }
+// }
+
 
 // int ft_is_builtin(char *cmd)
 // {
@@ -61,45 +154,6 @@ char	*get_path(char *cmd, char *envp[])
 //             !strcmp(cmd, "unset") || !strcmp(cmd, "env") ||
 //             !strcmp(cmd, "exit"));
 // }
-
-void	exec(char *cmd, char *envp[])
-{
-	char	**s_cmd;
-	char *path;
-	pid_t pid;
-	int status;
-
-	s_cmd = ft_split(cmd, ' ');
-	if (!s_cmd || !s_cmd[0])
-		error_print_free("command not found", 1, s_cmd);
-	// if (ft_is_builtin)
-	// {
-	// 	handle_builtin(s_cmd, envp);
-	// 	ft_free_tab(s_cmd);
-	// }
-	pid = fork();
-	if (pid == -1)
-		error_print_free("fork", 1, s_cmd);
-	else if (pid == 0)
-	{
-		path = get_path(s_cmd[0], envp);
-		if (!path || execve(path, s_cmd, envp) == -1)
-		{
-			ft_printf("command not found: %s", s_cmd[0]);
-			if (path)
-				free(path);
-			ft_free_tab(s_cmd);
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		waitpid(pid, &status, 0);
-		ft_free_tab(s_cmd);
-	}
-}
-
-
 
 
 

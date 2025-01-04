@@ -19,8 +19,6 @@ void	free_my_env(t_env *env)
 		env = env->next;
 		if (tmp->line)
 			free(tmp->line);
-		if (tmp->type)
-			free(tmp->type);
 		if (tmp)
 			free(tmp);
 	}
@@ -42,14 +40,7 @@ t_env *create_env_node(char *envp)
             free(new_node);
             return (NULL);
         }
-		if(ft_strchr(new_node->line, '='))
-			new_node->equal = true;
-		if (new_node->equal)
-		{
-			char **split_result = ft_split(new_node->line, '=');
-			new_node->type = split_result[0];
-			ft_free_tab(split_result);
-		}			
+					
         new_node->next = NULL;
 	return new_node;
 }
