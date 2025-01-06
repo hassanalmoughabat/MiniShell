@@ -29,29 +29,29 @@ static void init_shell(t_shell *shell, char **envp)
         ft_printf("failed\n");
 }
 
-// void	ft_read(char	*input)
-// {
-// 	t_shell shell;
+void	ft_read(char	*input, char **ftenv)
+{
+	t_shell shell;
 
-// 	input = NULL;
-// 	while (1)
-// 	{
-// 		input = readline("minishell> ");
-// 		if (!input)
-// 		{
-// 			ft_printf("\n");
-// 			break;
-// 		}
-// 		if (input)
-// 		{
-// 			add_history(input);
-// 			ft_printf("\nbefore exec\n");
-// 			exec(input, (char **)shell.env);
-// 		}
-// 		free(input);
-// 	}
+	input = NULL;
+	while (1)
+	{
+		input = readline("minishell> ");
+		if (!input)
+		{
+			ft_printf("\n");
+			break;
+		}
+		if (input)
+		{
+			add_history(input);
+			ft_printf("\nbefore exec\n");
+			exec(input, ftenv);
+		}
+		free(input);
+	}
 
-// }
+}
 
 
 void print_envp(char **envp) {
@@ -73,7 +73,12 @@ int main(int argc, char **argv, char **envp)
     ft_printf("Initializing shell...\n");
     init_shell(&shell, envp);
 
-    // Debug: Print environment contents
+    ft_printf("envp as a **pointer\n");
+    char **ft_transform;
+    ft_transform = transform(shell.env);
+     print_envp(ft_transform); 
+     ft_printf("\n");
+    //  Debug: Print environment contents
     ft_printf("\nDEBUG: Environment contents:\n");
     t_env *current = shell.env;
     while (current)
@@ -92,6 +97,6 @@ int main(int argc, char **argv, char **envp)
         ft_printf("Path is: %s\n", path);
         shell.path = path;  // Store the path in shell structure
     }
-
+    ft_read(input, ft_transform);
     return (0);
 }

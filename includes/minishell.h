@@ -47,8 +47,8 @@ void	error_print(char *str, int error_nb);
 void	error_print_free(char *str, int error_nb, char **cmd);
 void	ft_free_tab(char **tab);
 
-
-
+//transform envp from struct to **
+char    **transform(t_env *env);
 
 
 
@@ -56,14 +56,14 @@ void	ft_free_tab(char **tab);
 void	display_list(t_token *list);
 
 //main utils
-void	ft_read(char	*input);
+void	ft_read(char	*input, char **ftenv);
 int ft_strcmp(char *s1, char *s2);
 
 
 
 //command
 int ft_is_builtin(char *cmd);
-void	exec(char *cmd, char *envp[]);
+void exec(char *cmd, char *envp[]);
 char	*my_getenv(char *name, char **env);
 char	*get_path(char *cmd, char *envp[]);
 
