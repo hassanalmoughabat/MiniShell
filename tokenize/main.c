@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:55:58 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/27 21:52:03 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/01/07 15:25:03 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	main(void)
 	char	*input;
 	t_token	*t_list;
 
-	input = "echo \"he'\\\"llo\\\" 'world' | grep '\" 'hard\\|case' >>file.txt && echo 'done |\"nested' >< \"new|file\" && cat <<EOF | awk '{print $2}' | tr -d '\n' EOF";
+	input = "echo \"\" hi \"\"\"he'\\\"llo\\\" 'world' | grep '\" 'hard\\|case' >>file.txt && echo 'done |\"nested' >< \"new|file\" && cat <<EOF | awk '{print $2}' | tr -d '\n' EOF";
 	t_list = ft_tokenize(input);
 	display_list(t_list);
 	ft_free_token_list(&t_list);
