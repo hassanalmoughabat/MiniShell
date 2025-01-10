@@ -1,38 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putaddr.c                                       :+:      :+:    :+:   */
+/*   ft_space_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/30 16:07:09 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/01/09 13:52:14 by njoudieh         ###   ########.fr       */
+/*   Created: 2024/12/17 13:09:56 by njoudieh          #+#    #+#             */
+/*   Updated: 2025/01/09 14:56:11 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "token.h"
 
-size_t	ft_strlen(char const *str)
+int	ft_check_space(char c)
 {
-	int	len;
-
-	len = 0;
-	while (str[len] != '\0')
-		len++;
-	return (len);
+	if (c == '\n' || c == ' ' || c == '\t' || c == '\v'
+		|| c == '\r' || c == '\f')
+		return (1);
+	return (0);
 }
 
-int	ft_putaddr(size_t addr)
+void	ft_skip_added_spaces(char **str)
 {
-	int	len;
-
-	if (!addr)
-	{
-		ft_putstr("(nil)");
-		return (ft_strlen("(nil)"));
-	}
-	len = 0;
-	len += ft_putstr("0x");
-	len += ft_puthex(addr, 'x');
-	return (len);
+	while (**str && ft_check_space(**str))
+		(*str)++;
 }

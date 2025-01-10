@@ -1,38 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putaddr.c                                       :+:      :+:    :+:   */
+/*   ft_error_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/30 16:07:09 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/01/09 13:52:14 by njoudieh         ###   ########.fr       */
+/*   Created: 2024/12/19 11:58:47 by njoudieh          #+#    #+#             */
+/*   Updated: 2025/01/09 14:58:36 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "token.h"
 
-size_t	ft_strlen(char const *str)
+void	ft_free_token_list(t_token **list)
 {
-	int	len;
+	t_token	*current;
+	t_token	*next;
 
-	len = 0;
-	while (str[len] != '\0')
-		len++;
-	return (len);
+	current = *list;
+	if (!current)
+		return ;
+	while (current)
+	{
+		next = current->next;
+		free(current->cmd);
+		free (current);
+		current = next;
+	}
+	*list = NULL;
 }
 
-int	ft_putaddr(size_t addr)
+void	ft_quote_error(char c)
 {
-	int	len;
-
-	if (!addr)
-	{
-		ft_putstr("(nil)");
-		return (ft_strlen("(nil)"));
-	}
-	len = 0;
-	len += ft_putstr("0x");
-	len += ft_puthex(addr, 'x');
-	return (len);
+	ft_putstr_fd("Error unclosed quotes, close your ", 2);
+	ft_putchar_fd(c, 2);
+	ft_putstr_fd("\n", 2);
+	exit(-1);
 }
