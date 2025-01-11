@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:43:38 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/27 21:54:01 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/01/11 17:07:18 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ int	ft_check_special_char(char *str)
 
 int	ft_handle_operators(char **input, t_token **list)
 {
-	if (!ft_strncmp(*input, "<", 1))
-		return (ft_append_operator(list, T_LESS, input));
-	else if (!ft_strncmp(*input, ">", 1))
+	if (**input == '>' && (*input)[1] != '>')
 		return (ft_append_operator(list, T_GREAT, input));
-	else if (!ft_strncmp(*input, "<<", 2))
-		return (ft_append_operator(list, T_DLESS, input));
-	else if (!ft_strncmp(*input, ">>", 2))
+	else if (**input == '<' && (*input)[1] != '<')
+		return (ft_append_operator(list, T_LESS, input));
+	else if (**input == '>' && (*input)[1] == '>')
 		return (ft_append_operator(list, T_DGREAT, input));
+	else if (**input == '<' && (*input)[1] == '<')
+		return (ft_append_operator(list, T_DLESS, input));
 	else if (!ft_strncmp(*input, "|", 1))
 		return (ft_append_operator(list, T_PIPE, input));
 	return (0);
