@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_quotes_helper.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 03:33:31 by njoudieh42        #+#    #+#             */
-/*   Updated: 2024/12/27 20:27:09 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/01/09 14:56:16 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/token.h"
+#include "token.h"
 
 int	ft_check_quotes(char c)
 {

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_quotes_handler.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 01:26:28 by njoudieh42        #+#    #+#             */
-/*   Updated: 2024/12/27 20:31:51 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/01/16 11:59:24 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/token.h"
+#include "token.h"
 
 int	ft_find_next_quote(char *line, size_t *i)
 {
@@ -54,5 +54,5 @@ int	ft_handle_quotes(char **input, t_token **token_list)
 	if (!new_token)
 		return (free(cmd), 0);
 	*input += i;
-	return (ft_add_token_last(token_list, new_token), 1);
+	return ((ft_add_token_last(token_list, new_token), 1));
 }

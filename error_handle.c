@@ -1,39 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_error_handler.c                                 :+:      :+:    :+:   */
+/*   error_handle.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/19 11:58:47 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/01/09 14:58:36 by njoudieh         ###   ########.fr       */
+/*   Created: 2025/01/07 12:24:55 by hal-moug          #+#    #+#             */
+/*   Updated: 2025/01/16 11:31:14 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "includes/minihell.h"
 
-void	ft_free_token_list(t_token **list)
+void	ft_free_tab(char **tab)
 {
-	t_token	*current;
-	t_token	*next;
+	size_t	i;
 
-	current = *list;
-	if (!current)
+	i = 0;
+	if (tab == NULL)
 		return ;
-	while (current)
+	while (tab[i])
 	{
-		next = current->next;
-		free(current->cmd);
-		free (current);
-		current = next;
+		free(tab[i]);
+		i++;
 	}
-	*list = NULL;
+	free(tab);
 }
 
-void	ft_quote_error(char c)
+void	error_print(char *str, int error_nb)
 {
-	ft_putstr_fd("Error unclosed quotes, close your ", 2);
-	ft_putchar_fd(c, 2);
-	ft_putstr_fd("\n", 2);
-	exit(-1);
+	ft_printf("%s \n", str);
+	ft_printf("exit code : %d\n", error_nb);
+}
+
+void	error_print_free(char *str, int error_nb, char **cmd)
+{
+	ft_printf("%s \n", str);
+	ft_printf("exit code : %d\n", error_nb);
+	ft_free_tab(cmd);
+	exit(1);
 }

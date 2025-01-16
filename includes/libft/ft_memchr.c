@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_space_handler.c                                 :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 13:09:56 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/01/09 14:56:11 by njoudieh         ###   ########.fr       */
+/*   Created: 2024/12/19 22:11:42 by njoudieh42        #+#    #+#             */
+/*   Updated: 2024/12/19 22:11:43 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "libft.h"
 
-int	ft_check_space(char c)
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	if (c == '\n' || c == ' ' || c == '\t' || c == '\v'
-		|| c == '\r' || c == '\f')
-		return (1);
-	return (0);
-}
+	size_t			i;
 
-void	ft_skip_added_spaces(char **str)
-{
-	while (**str && ft_check_space(**str))
-		(*str)++;
+	i = 0;
+	while (i < n)
+	{
+		if (*(unsigned char *)s == (unsigned char )c)
+			return ((void *)(unsigned char *)s);
+		i++;
+		s++;
+	}
+	return (NULL);
 }

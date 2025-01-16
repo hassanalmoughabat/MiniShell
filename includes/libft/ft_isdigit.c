@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_space_handler.c                                 :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 13:09:56 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/01/09 14:56:11 by njoudieh         ###   ########.fr       */
+/*   Created: 2024/12/19 22:10:21 by njoudieh42        #+#    #+#             */
+/*   Updated: 2024/12/19 22:10:22 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "libft.h"
 
-int	ft_check_space(char c)
+int	ft_isdigit(char c)
 {
-	if (c == '\n' || c == ' ' || c == '\t' || c == '\v'
-		|| c == '\r' || c == '\f')
+	if (c >= '0' && c <= '9')
 		return (1);
 	return (0);
-}
-
-void	ft_skip_added_spaces(char **str)
-{
-	while (**str && ft_check_space(**str))
-		(*str)++;
 }

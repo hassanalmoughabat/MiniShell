@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_space_handler.c                                 :+:      :+:    :+:   */
+/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 13:09:56 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/01/09 14:56:11 by njoudieh         ###   ########.fr       */
+/*   Created: 2024/12/19 22:12:22 by njoudieh42        #+#    #+#             */
+/*   Updated: 2024/12/19 22:12:23 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "libft.h"
 
-int	ft_check_space(char c)
+void	ft_putendl_fd(char *s, int fd)
 {
-	if (c == '\n' || c == ' ' || c == '\t' || c == '\v'
-		|| c == '\r' || c == '\f')
-		return (1);
-	return (0);
-}
+	int	i;
 
-void	ft_skip_added_spaces(char **str)
-{
-	while (**str && ft_check_space(**str))
-		(*str)++;
+	i = 0;
+	while (s[i] != '\0')
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
+	write(fd, "\n", 1);
 }

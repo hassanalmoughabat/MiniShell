@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_special_char_handler.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:43:38 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/01/11 17:07:18 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/01/16 11:55:32 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/token.h"
+#include "token.h"
 
 int	ft_append_operator(t_token **list, t_token_type operator, char **input)
 {
@@ -21,7 +21,7 @@ int	ft_append_operator(t_token **list, t_token_type operator, char **input)
 		return (0);
 	ft_add_token_last(list, new_token);
 	(*input)++;
-	if (operator == '>' || operator == '<')
+	if (operator == T_DLESS || operator == T_DGREAT)
 		(*input)++;
 	return (1);
 }

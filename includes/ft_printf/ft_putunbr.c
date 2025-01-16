@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_space_handler.c                                 :+:      :+:    :+:   */
+/*   ft_putunbr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 13:09:56 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/01/09 14:56:11 by njoudieh         ###   ########.fr       */
+/*   Created: 2024/06/30 16:06:24 by hal-moug          #+#    #+#             */
+/*   Updated: 2024/06/30 16:06:27 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "ft_printf.h"
 
-int	ft_check_space(char c)
+int	ft_putunbr(unsigned int nbr)
 {
-	if (c == '\n' || c == ' ' || c == '\t' || c == '\v'
-		|| c == '\r' || c == '\f')
-		return (1);
-	return (0);
-}
+	int	len;
 
-void	ft_skip_added_spaces(char **str)
-{
-	while (**str && ft_check_space(**str))
-		(*str)++;
+	len = 0;
+	if (nbr > 9)
+		len += ft_putunbr(nbr / 10);
+	len += ft_putchar(nbr % 10 + '0');
+	return (len);
 }

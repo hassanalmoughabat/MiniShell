@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tokenize.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 11:58:43 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/27 20:28:49 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/01/16 11:02:54 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/token.h"
+#include "token.h"
 
 t_token	*ft_check_string(char *input)
 {

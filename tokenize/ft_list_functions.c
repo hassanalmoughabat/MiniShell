@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_list_functions.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 15:26:30 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/27 21:41:38 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/01/09 14:58:26 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/token.h"
+#include "token.h"
 
 t_token	*create_token(char *value, t_token_type operator)
 {

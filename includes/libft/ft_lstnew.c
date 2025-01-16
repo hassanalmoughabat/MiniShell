@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_space_handler.c                                 :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 13:09:56 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/01/09 14:56:11 by njoudieh         ###   ########.fr       */
+/*   Created: 2024/12/19 22:11:31 by njoudieh42        #+#    #+#             */
+/*   Updated: 2024/12/19 22:11:32 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "token.h"
+#include "libft.h"
 
-int	ft_check_space(char c)
+t_list	*ft_lstnew(void *content)
 {
-	if (c == '\n' || c == ' ' || c == '\t' || c == '\v'
-		|| c == '\r' || c == '\f')
-		return (1);
-	return (0);
-}
+	t_list	*new_list;
 
-void	ft_skip_added_spaces(char **str)
-{
-	while (**str && ft_check_space(**str))
-		(*str)++;
+	new_list = (t_list *)malloc(sizeof(t_list));
+	if (!new_list)
+		return (NULL);
+	new_list->content = content;
+	new_list->next = NULL;
+	return (new_list);
 }

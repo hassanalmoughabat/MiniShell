@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:48:25 by njoudieh          #+#    #+#             */
-/*   Updated: 2024/12/27 21:51:14 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/01/09 15:32:12 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKEN_H
 # define TOKEN_H
+
 # include <stdlib.h>
 # include <stdio.h>
 # include <sys/wait.h>
-# include "../ft_libft/libft.h"
+# include "../includes/libft/libft.h"
 
 typedef enum s_token_type
 {
@@ -42,7 +43,6 @@ t_token	*ft_tokenize(char *input);
 void	ft_add_token_last(t_token **t_list, t_token *new_token);
 void	ft_skip_added_spaces(char **str);
 void	ft_free_token_list(t_token **list);
-void	display_list(t_token *list);
 void	ft_quote_error(char c);
 
 int		ft_append_operator(t_token **list, t_token_type operator, char **input);
