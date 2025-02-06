@@ -11,14 +11,11 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	ar rcs $(NAME) $(OBJS)
 
-$(OBJS): %.o:%.c
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-bonus: $(BONUS_OBJS) $(OBJS)
-	ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
-
-$(BONUS_OBJS): %.o:%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+bonus: $(NAME) $(BONUS_OBJS)
+	ar rcs $(NAME) $(BONUS_OBJS)
 
 clean:
 	rm -f $(OBJS) $(BONUS_OBJS)
@@ -28,4 +25,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus

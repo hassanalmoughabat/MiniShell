@@ -1,28 +1,38 @@
-NAME       = minishell  # Executable name, not a library
+NAME       = minishell
 
-SRCS       = env_utils.c env.c error_handle.c minihell.c
-OBJS       = ${SRCS:%.c=%.o}
+SRCS       = env_utils.c env.c error_handle.c minihell.c builtins.c
+OBJS       = $(SRCS:.c=.o)
 
-CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror  -Iincludes 
-LIBS		= includes/libft/libft.a includes/ft_printf/libftprintf.a
-HEADER		= includes/minihell.h
-READLINE	= -lreadline
+CC         = gcc
+CFLAGS     = -Wall -Wextra  -Iincludes
+
+LIBFT      = includes/libft/libft.a
+PRINTF     = includes/ft_printf/libftprintf.a
+TOKENIZE   = tokenize/tokenization.a
+LIBS       = $(TOKENIZE) $(LIBFT) $(PRINTF)
+READLINE   = -lreadline
 
 all: $(NAME)
 
-# Create the executable
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(READLINE) -o $(NAME)  # Link object files to create the executable
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(READLINE) -o $(NAME)
 
-# Rule to create object files from source files
-%.o: %.c $(HEADER)
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJS)
+	rm -f $(OBJS)
 
 fclean: clean
-	rm -rf $(NAME)  # Remove the executable
+	rm -f $(NAME)
 
 re: fclean all
+
+$(LIBFT):
+	make -C includes/libft
+
+$(PRINTF):
+	make -C includes/ft_printf
+
+$(TOKENIZE):
+	make -C tokenize

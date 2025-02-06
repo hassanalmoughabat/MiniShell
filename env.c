@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:50:02 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/01/07 14:21:08 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/01/16 11:28:54 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void	exec(char *cmd, char *envp[])
 
 	s_cmd = ft_split(cmd, ' ');
 	if (!s_cmd || !s_cmd[0])
-		error_print_free("minihell: command not found:", 1, s_cmd);
+		error_print_free("minishell: command not found", 1, s_cmd);
 	pid = fork();
 	if (pid == -1)
 		error_print_free("fork", 1, s_cmd);
@@ -131,7 +131,7 @@ void	exec(char *cmd, char *envp[])
 	{
 		path = get_path(s_cmd[0], envp);
 		if (!path || execve(path, s_cmd, envp) == -1)
-			error_print_free("minihell: command not found:", 1, s_cmd);
+			error_print_free("minishell: command not found", 1, s_cmd);
 	}
 	else
 	{

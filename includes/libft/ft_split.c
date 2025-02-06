@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/21 08:43:13 by hal-moug          #+#    #+#             */
-/*   Updated: 2024/06/21 08:43:14 by hal-moug         ###   ########.fr       */
+/*   Created: 2024/12/19 22:12:43 by njoudieh42        #+#    #+#             */
+/*   Updated: 2024/12/19 22:16:26 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ void	ft_free(char **arr)
 		{
 			free(arr[i]);
 			i++;
-		}		
+		}
 		free(arr);
 	}
 }
 
-static int	ft_count(char const *s, char c)
+int	ft_count(char const *s, char c)
 {
 	int	count;
 	int	i;
@@ -59,7 +59,7 @@ int	word_len(char const *s, char c)
 	return (i);
 }
 
-static char	**split(char **s_split, char const *s, char c, int count)
+char	**split(char **s_split, char const *s, char c, int count)
 {
 	int	i;
 	int	j;
@@ -98,24 +98,3 @@ char	**ft_split(char const *s, char c)
 	s_split = split(s_split, s, c, count);
 	return (s_split);
 }
-// int main() {
-//     // Example string and delimiter
-//     char const *s = "This is a sample string to split";
-//     char delimiter = ' ';
-//     // Call ft_split
-//     char **s_split = ft_split(s, delimiter);
-//     if (s_split) {
-//         // If splitting was successful, print the individual substrings
-//         printf("Splitting successful!\n");
-//         for (int i = 0; s_split[i] != NULL; i++) {
-//             printf("Substring %d: '%s'\n", i, s_split[i]);
-//         }
-//         // Free the dynamically allocated memory
-//         ft_free(s_split);
-//         printf("Memory freed successfully!\n");
-//     } else {
-//         // If ft_split returns NULL, memory allocation failed
-//         printf("Memory allocation failed.\n");
-//     }
-//     return 0;
-// }

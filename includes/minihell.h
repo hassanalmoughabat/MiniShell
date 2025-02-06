@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/01/07 13:23:40 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/02/06 13:33:30 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "libft/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "../tokenize/token.h"
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
@@ -55,7 +56,7 @@ void	ft_free_tab(char **tab);
 char	**transform(t_env *env);
 
 //main utils
-void	ft_read(char	*input, char **ftenv);
+void	ft_read(char	*input, char **ftenv, t_env *env);
 int		ft_strcmp(char *s1, char *s2);
 
 //command
@@ -72,5 +73,14 @@ t_env	*initialize_env_list(char **envp);
 //path
 char	*get_my_path(t_env *env);
 char	*path_extract(char *str, int count);
+
+
+//builtins
+int	ft_pwd(t_env *env);
+
+
+//parsing 
+void	after_parsing(t_token *tk, char **ft_env);
+
 
 #endif

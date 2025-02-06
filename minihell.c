@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/01/07 14:21:03 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/02/06 13:23:16 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,32 +23,59 @@ static	void	init_shell(t_shell *shell, char **envp)
 		ft_printf("failed\n");
 }
 
-#include <stdio.h>
-
-void print_welcome_message()
+void	print_welcome_message(void)
 {
-    // ANSI Color Codes
-    const char *RESET;
-    const char *RED;
-    const char *YELLOW;
-    const char *CYAN;
+	const char	*reset;
+	const char	*red;
+	const char	*yellow;
+	const char	*cyan;
 
-	RESET= "\033[0m";
-	RED = "\033[31m";
-	YELLOW = "\033[33m";
-	CYAN = "\033[36m";
-    ft_printf("\n");
-    ft_printf("%s######################################################%s\n", RED, RESET);
-    ft_printf("%s#%s            %sWelcome to minihell!%s             %s#%s\n", YELLOW, RESET, CYAN, RESET, YELLOW, RESET);
-    ft_printf("%s#%s       %sA small copy of Hell is with you!%s      %s#%s\n", YELLOW, RESET, CYAN, RESET, YELLOW, RESET);
-    ft_printf("%s######################################################%s\n", RED, RESET);
-    ft_printf("\n");
+	reset = "\033[0m";
+	red = "\033[31m";
+	yellow = "\033[33m";
+	cyan = "\033[36m";
+	ft_printf("\n");
+	ft_printf("%s######################################################%s\n",
+		red, reset);
+	ft_printf("%s#%s            %sWelcome to minihell!%s             %s#%s\n",
+		yellow, reset, cyan, reset, yellow, reset);
+	ft_printf("%s#%s       %sA small copy of Hell is with you!%s      %s#%s\n",
+		yellow, reset, cyan, reset, yellow, reset);
+	ft_printf("%s######################################################%s\n",
+		red, reset);
+	ft_printf("\n");
 }
 
-
-void	ft_read(char	*input, char **ftenv)
+int	t_token_size(t_token *head)
 {
-		print_welcome_message();
+	t_token *len;
+	int	i = 0;
+	len = head;
+	while (len)
+	{
+		len = len->next;
+		i++;
+	}
+	return i;
+}
+void display_token_list(int size, t_token *head)
+{
+	t_token *inp;
+	inp = head;
+	int i = 1;
+	while (inp && i <= size)
+	{
+		ft_printf("\n%s at array of size %d\n", inp->cmd, i);
+		inp = inp->next;
+		i++;
+	}
+}
+
+void	ft_read(char	*input, char **ftenv, t_env *env)
+{
+		t_token *inp;
+		int len;
+	print_welcome_message();
 	while (1)
 	{
 		input = readline("minishell>");
@@ -59,9 +86,17 @@ void	ft_read(char	*input, char **ftenv)
 		}
 		if (input)
 		{
+			ft_tokenize(input);
+			inp = ft_tokenize(input);
+			after_parsing(inp, ftenv);
 			add_history(input);
 			exec(input, ftenv);
 		}
+		len = t_token_size(inp);
+		 ft_printf("\nsize is %d\n", len);
+		 display_token_list(len, inp);
+		// ft_pwd(env);
+		free(inp);
 		free(input);
 	}
 }
@@ -88,6 +123,6 @@ int	main(int argc, char **argv, char **envp)
 		shell.path = path;
 	}
 	input = NULL;
-	ft_read(input, ft_transform);
+	ft_read(input, ft_transform, shell.env);
 	return (0);
 }
