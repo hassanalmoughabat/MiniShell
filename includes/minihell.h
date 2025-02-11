@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/02/11 11:56:10 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/02/11 12:52:32 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	ft_pwd(t_env *env);
 
 
 //parsing 
-void	after_parsing(t_token *tk, char **ft_env);
+void	after_parsing(t_token *tk, char **ft_env, t_env *env);
 
 
 #endif
