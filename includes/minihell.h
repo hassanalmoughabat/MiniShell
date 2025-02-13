@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/02/11 12:52:32 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/02/12 10:20:06 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,12 @@ char	*path_extract(char *str, int count);
 
 //builtins
 int	ft_pwd(t_env *env);
-
+void handle_builtin(t_token *tk, char **ft_env, t_env * env);
+void	ft_print_env(t_env *env);
 
 //parsing 
 void	after_parsing(t_token *tk, char **ft_env, t_env *env);
+
 
 
 #endif
