@@ -1,49 +1,16 @@
 #include "../includes/minihell.h"
 
-static int	ft_find_pwd(char *str)
+int	ft_pwd(void)
 {
-	int	i;
-
-	i = 0;
-	while (str[i] && str[i + 1] && str[i + 2])
+	char	cwd[PATH_MAX];
+	
+	if (getcwd(cwd, PATH_MAX))
 	{
-		if (str[i] == 'P' && str[i + 1] == 'W' && str[i + 2] == 'D')
-		{
-				ft_printf("\ncurent->line is %s\n", str);
-				return (1);
-		}
-		i++;
-	} 
-	return (0);
-}
-
-static void	ft_print_pwd(char *str)
-{
-	int i = 3;
-
-	while (str[++i])
-		ft_printf("%c", str[i]);
-
-}
-
-
-int	ft_pwd(t_env *env)
-{
-	t_env *current;
-
-	current = env;
-	while (current)
-	{
-		if (ft_find_pwd(current->line) == 1)
-		{	
-			ft_print_pwd(current->line);
-			return (1);
-		}
-		else 
-			current = current->next;
+		ft_putendl_fd(cwd, 1);
+		return(1);
 	}
-
-	return (0);
+	else
+		return (0);
 }
 
 void	ft_print_env(t_env *env)
@@ -73,7 +40,7 @@ void handle_builtin(t_token *tk, char **ft_env, t_env *env)
 		if (ft_strcmp(curr->cmd, "env") == 0)
 			ft_print_env(env);
 		else if (ft_strcmp(curr->cmd, "pwd") == 0)
-			ft_pwd(env);
+			ft_pwd();
 		// else if (ft_strcmp(curr->cmd, "cd") == 0)
 		// 	ft_cd(tk, env, ft_env);
 		// else if (ft_strcmp(curr->cmd, "exit") == 0)
