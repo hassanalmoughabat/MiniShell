@@ -25,10 +25,7 @@ void	ft_print_env(t_env *env)
 	}
 }
 
-void	ft_cd(t_token *tk, t_env *env)
-{
 
-}
 
 void handle_builtin(t_token *tk, char **ft_env, t_env *env)
 {
@@ -41,8 +38,8 @@ void handle_builtin(t_token *tk, char **ft_env, t_env *env)
 			ft_print_env(env);
 		else if (ft_strcmp(curr->cmd, "pwd") == 0)
 			ft_pwd();
-		// else if (ft_strcmp(curr->cmd, "cd") == 0)
-		// 	ft_cd(tk, env, ft_env);
+		else if (ft_strcmp(curr->cmd, "cd") == 0)
+			ft_cd(tk, env, ft_env);
 		// else if (ft_strcmp(curr->cmd, "exit") == 0)
 		// 	ft_exit();
 		// else if (ft_strcmp(curr->cmd, "export") == 0)

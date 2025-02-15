@@ -62,7 +62,37 @@ int is_pipe()
 	
 }
 
-void	after_parsing(t_token *tk, char **ft_env, t_env *env)
+int ft_is_is_builtin(char *cmd)
+{
+	 char **builtins = 
+	 {
+		"cd",
+		"env",
+		"echo",
+		"export",
+		"unset",
+		"env",
+		"exit",
+		NULL,
+	 };
+	 int	i;
+
+	 i = 0;
+	 while (builtins[i])
+	 {
+		if (ft_strcmp(cmd, builtins) == 0)
+			return (1);
+		i++;
+	 }
+	 return (0);
+}
+
+void handle_path_command(char **ft_env, char *input)
+{
+
+}
+
+void	after_parsing(t_token *tk, char **ft_env, t_env *env, char *input)
 {
 	ft_printf("in after parsing\n");
 	t_token *curr;
@@ -78,7 +108,7 @@ void	after_parsing(t_token *tk, char **ft_env, t_env *env)
 		else if (ft_is_builtin(curr->cmd))
 			handle_builtin(tk, ft_env, env);
 		else if (is_a_path_command(curr->cmd, ft_env) == 1)
-			handle_path_command(tk, ft_env, env);
+			handle_path_command(ft_env, input);
 		curr = curr->next;
 	}
 }

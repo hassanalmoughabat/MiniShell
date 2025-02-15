@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/02/13 13:12:55 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/02/15 13:31:16 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	ft_find_old_pwd(char *str)
 	i = 0;
 	while (str[i + 5])
 	{
-		if (ft_strncmp(str, "OLDPWD", 6) == 0)
+		if (ft_strncmp(str, "OLDPWD=", 7) == 0)
 		{
 				ft_printf("\ncurent->line is %s\n", str);
 				return (1);
@@ -69,7 +69,6 @@ char	*ft_get_old_pwd(t_env *env)
 		else 
 			current = current->next;
 	}
-
 	return (0);
 }
 
@@ -87,12 +86,23 @@ char	*find_dir_in_list(t_token *tk)
 	return (NULL);
 }
 
-void update_pwd(t_env *env, char *oldvalue, char *newvalue, char *be_updated)
+void	update_env_value(t_env *head, const char *target, const char *new_value)
 {
-	t_env *curr;
-
-	curr = env;
-	if (ft_strncmp(oldvalue, be_updated))
+	while(head)
+	{
+		if (ft_strncmp(target, new_value, ft_strlen(target)) == 0)
+		{
+			free(head->line);
+			head->line = ft_strdup(new_value);
+			if (!head->line)
+			{
+				error_print("failed to allocate memory", 1);
+				exit(EXIT_FAILURE);
+			}
+			return ;
+		}
+		head = head->next;
+	}
 }
 
 
@@ -105,8 +115,11 @@ void	ft_cd(t_token *tk, t_env *env, char **ft_env)
 	dir = find_dir_in_list(tk);
 	pwd = ft_get_pwd();
 	oldpwd = ft_get_old_pwd(env);
+	if (!oldpwd)
+		update_env_value(tk, "PWD", pwd);
 	if (!chdir(dir))
 		error_print("directory not found", 1);
-	update_pwd(env, oldpwd, pwd, "pwd=");
-	update_pwd(env, pwd, dir);
+	update_env_value(tk, "OLDPWD=", pwd);
+	update_env_value(tk, "PWD=", dir);
+	
 }
