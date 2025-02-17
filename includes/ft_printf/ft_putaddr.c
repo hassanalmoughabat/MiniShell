@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putaddr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 16:07:09 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/01/09 13:52:14 by njoudieh         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:55:32 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-size_t	ft_strlen(char const *str)
+static size_t	ft_strlen(char const *str)
 {
 	int	len;
 

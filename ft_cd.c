@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/02/15 13:31:16 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:40:59 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	ft_find_pwd(char *str)
 	return (0);
 }
 
-char	*ft_get_pwd(void)
+static char	*ft_get_pwd(void)
 {
 	char	cwd[PATH_MAX];
 	
@@ -38,7 +38,7 @@ char	*ft_get_pwd(void)
 		return cwd;
 }
 
-static int	ft_find_old_pwd(char *str)
+int	ft_find_old_pwd(char *str)
 {
 	int	i;
 
@@ -72,7 +72,7 @@ char	*ft_get_old_pwd(t_env *env)
 	return (0);
 }
 
-char	*find_dir_in_list(t_token *tk)
+static char	*find_dir_in_list(t_token *tk)
 {
 	t_token *curr;
 	

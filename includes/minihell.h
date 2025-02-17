@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/02/12 10:20:06 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/17 14:03:31 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ typedef struct s_shell
 
 }	t_shell;
 
-typedef struct s_command
-{
-	char				**args;
-	char				*infile;
-	char				*outfile;
-	int					append;
-	struct s_command	*next;
-}	t_command;
+// typedef struct s_command
+// {
+// 	char				**args;
+// 	char				*infile;
+// 	char				*outfile;
+// 	int					append;
+// 	struct s_command	*next;
+// }	t_command;
 
 // error handling
 void	error_print(char *str, int error_nb);
@@ -76,13 +76,34 @@ char	*path_extract(char *str, int count);
 
 
 //builtins
-int	ft_pwd(t_env *env);
+
+int	ft_pwd(void);
+int ft_is_is_builtin(char *cmd);
+int	ft_find_old_pwd(char *str);
+
+char	*ft_get_old_pwd(t_env *env);
+
+void	update_env_value(t_env *head, const char *target, const char *new_value);
 void handle_builtin(t_token *tk, char **ft_env, t_env * env);
+void handle_path_command(char **ft_env, char *input);
 void	ft_print_env(t_env *env);
+void	ft_cd(t_token *tk, t_env *env, char **ft_env);
+
+//builtings checking
+int	is_pipe(char *ft_value);
+int is_redirection(char *value);
+
+
+
+//piping functions && redirection
+void	handle_pipe(t_token *lst, char **ft_env, t_env * env);
+void handle_redirection(t_token *tk, char **ft_env, t_env *env);
+
+
 
 //parsing 
-void	after_parsing(t_token *tk, char **ft_env, t_env *env);
-
+void	after_parsing(t_token *tk, char **ft_env, t_env *env, char *input);
+int	is_a_path_command(char *cmd, char **ft_env);
 
 
 #endif

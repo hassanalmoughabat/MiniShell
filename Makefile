@@ -1,10 +1,10 @@
 NAME       = minishell
 
-SRCS       = env_utils.c env.c error_handle.c minihell.c builtins.c parsing.c
+SRCS       = env_utils.c env.c error_handle.c minihell.c builtins.c parsing.c ft_cd.c
 OBJS       = $(SRCS:.c=.o)
 
-CC         = gcc
-CFLAGS     = -Wall -Wextra  -Iincludes
+CC         = cc
+CFLAGS     = -Wall -Wextra  -Iincludes 
 
 LIBFT      = includes/libft/libft.a
 PRINTF     = includes/ft_printf/libftprintf.a

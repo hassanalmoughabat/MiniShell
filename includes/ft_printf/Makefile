@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+         #
+#    By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/13 05:19:17 by hal-moug          #+#    #+#              #
-#    Updated: 2025/01/09 15:19:48 by njoudieh         ###   ########.fr        #
+#    Updated: 2025/02/17 12:56:11 by hal-moug         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ HEADER	= ft_printf.h
 all: $(NAME) 
 
 $(NAME): $(OBJS)
-	gcc $(FLAGS) -c $(SRCS) -I ./
+	cc $(FLAGS) -c $(SRCS) -I ./
 	ar rc $(NAME) $(OBJS)
 
 %.o: %.c $(HEADER)

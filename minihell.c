@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/02/15 13:34:14 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/02/17 14:04:05 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,16 @@ void display_token_list(int size, t_token *head)
 	}
 }
 
+void 			print_env(char **ftenv)
+{
+	int i = 0;
+	while (ftenv[i])
+	{
+		ft_printf("envp is %s\n", ftenv[i]);
+		i++;
+	}
+}
+
 void	ft_read(char	*input, char **ftenv, t_env *env)
 {
 		t_token *inp;
@@ -90,7 +100,8 @@ void	ft_read(char	*input, char **ftenv, t_env *env)
 			inp = ft_tokenize(input);
 			after_parsing(inp, ftenv, env, input);
 			add_history(input);
-			exec(input, ftenv);
+			// print_env(ftenv);
+			// exec(input, ftenv);
 		}
 		len = t_token_size(inp);
 		 ft_printf("\nsize is %d\n", len);
