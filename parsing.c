@@ -22,63 +22,49 @@ void handle_redirection(t_token *tk, char **ft_env, t_env *env)
 }
 
 
-
-
-
-
-int	is_pipe(char *ft_value)
+static int ft_exist(char *str, char c)
 {
 	int i = 0;
 
-	while (ft_value)
+	while (str[i])
 	{
-		if (ft_value[i] == '|')
+		if (str[i] == c)
 			return (1);
 		i++;
 	}
 	return (0);
 }
 
-int is_redirection(char *value)
+
+
+
+
+
+
+int ft_is_builtin(t_token *tk)
 {
-	int i = 0;
+		t_token *curr;
+		curr = tk;
 
-	while (value[i])
-	{
-		if (value[i] == '<' || value[i] == '>')
-			return (1);
-		else if((value[i] && value[i + 1]) && value[i] == '<' && value[i + 1] == '<')
-			return (1);
-		else if ((value[i] && value[i + 1]) && value[i] == '>' && value[i + 1] == '>')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-int ft_is_builtin(char *cmd)
-{
-	 char **builtins = 
-	 {
-		"cd",
-		"env",
-		"echo",
-		"export",
-		"unset",
-		"env",
-		"exit",
-		NULL,
-	 };
-	 int	i;
-
-	 i = 0;
-	 while (*builtins[i])
-	 {
-		if (ft_strcmp(cmd, builtins[i]) == 0)
-			return (1);
-		i++;
-	 }
-	 return (0);
+		while (curr)
+		{
+			if ((ft_strcmp(curr->cmd, "cd") == 0)
+			 ||	(ft_strcmp(curr->cmd, "env") == 0))
+				return (1);
+			else if ((ft_strcmp(curr->cmd, "env") == 0)
+			 || (ft_strcmp(curr->cmd, "echo") == 0))
+				return (1);
+			else if (ft_strcmp(curr->cmd, "export") == 0)
+				return (1);
+			else if (ft_strcmp(curr->cmd, "unset") == 0)
+				return (1);
+			else if (ft_strcmp(curr->cmd, "exit") == 0)
+				return (1);
+			else if (ft_strcmp(curr->cmd, "pwd") == 0)
+				return (1);	
+				curr = curr->next;
+		}
+		return (0);
 }
 
 int	is_a_path_command(char *cmd, char **ft_env)
@@ -187,26 +173,23 @@ void handle_path_command(char *envp[], char *cmd)
 
 void	after_parsing(t_token *tk, char **ft_env, t_env *env, char *input)
 {
-	ft_printf("in after parsing\n");
 	t_token *curr;
 	int command = 0;
 
 	curr = tk;
-	// while (curr)
-	// {
-	// 	if (is_pipe(curr->cmd))
-	// 		handle_pipe(tk, ft_env, env);
-	// 	else if (is_redirection(curr->cmd))
-	// 		handle_redirection(tk, ft_env, env);
-	// 	else if (ft_is_builtin(curr->cmd))
-	// 		handle_builtin(tk, ft_env, env);
-	// 	else 
-	// 	{
-	// 		ft_printf("before is a path command\n");
-	// 			handle_path_command(ft_env, input);
-	// 	}
-	// 	curr = curr->next;
-	// }
-	ft_printf("before is a path command\n");
+		if (curr->type == T_PIPE)
+			handle_pipe(tk, ft_env, env);
+		else if ((curr->type == T_DGREAT || curr->type == T_DLESS
+					|| curr->type == T_GREAT || curr->type == T_LESS))
+			handle_redirection(tk, ft_env, env);
+		else if (ft_is_builtin(curr))
+		{
+			printf("HERER IS BUILTIN\n");
+				handle_builtin(tk, ft_env, env);
+		}
+		else 
+		{
+			ft_printf("before is a path command\n");
 				handle_path_command(ft_env, input);
+		}
 }

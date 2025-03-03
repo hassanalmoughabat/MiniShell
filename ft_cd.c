@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/02/17 12:40:59 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/03 11:06:03 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	ft_find_old_pwd(char *str)
 	{
 		if (ft_strncmp(str, "OLDPWD=", 7) == 0)
 		{
-				ft_printf("\ncurent->line is %s\n", str);
 				return (1);
 		}
 		i++;
@@ -117,9 +116,13 @@ void	ft_cd(t_token *tk, t_env *env, char **ft_env)
 	oldpwd = ft_get_old_pwd(env);
 	if (!oldpwd)
 		update_env_value(tk, "PWD", pwd);
-	if (!chdir(dir))
-		error_print("directory not found", 1);
-	update_env_value(tk, "OLDPWD=", pwd);
-	update_env_value(tk, "PWD=", dir);
-	
+	if (chdir(dir) != 0)
+	{
+			error_print("directory not found\n", 1);
+	}
+	else
+	{
+		update_env_value(tk, "OLDPWD=", pwd);
+		update_env_value(tk, "PWD=", dir);
+	}
 }
