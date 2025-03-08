@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/03 10:28:32 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/08 10:49:46 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,20 @@ void 			print_env(char **ftenv)
 	}
 }
 
-void	ft_read(char	*input, char **ftenv, t_env *env)
+void	display_list(t_token *tk)
+{
+	t_token *curr;
+
+	curr = tk;
+	while (curr)
+	{
+		printf("line is %s\n", curr->cmd);
+		printf("line is %d\n", curr->type);
+		curr = curr->next;
+	}
+}
+
+int	ft_read(char	*input, char **ftenv, t_env *env)
 {
 		t_token *inp;
 		int len;
@@ -91,25 +104,22 @@ void	ft_read(char	*input, char **ftenv, t_env *env)
 		input = readline("minishell>");
 		if (!input)
 		{
-			ft_printf("\n");
-			break ;
+			break;
 		}
-		if (input)
+		else
 		{
-			ft_tokenize(input);
 			inp = ft_tokenize(input);
+			display_list(inp);
 			after_parsing(inp, ftenv, env, input);
 			add_history(input);
 			// print_env(ftenv);
 		
 		}
-		// len = t_token_size(inp);
-		//  ft_printf("\nsize is %d\n", len);
-		//  display_token_list(len, inp);
-		// ft_pwd(env);
 		free(inp);
 		free(input);
 	}
+	free (input);
+	return (0);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -135,5 +145,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	input = NULL;
 	ft_read(input, ft_transform, shell.env);
+	printf("end\n");
 	return (0);
 }

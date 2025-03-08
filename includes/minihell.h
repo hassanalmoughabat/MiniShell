@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/03 10:27:24 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/08 10:24:24 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	ft_free_tab(char **tab);
 char	**transform(t_env *env);
 
 //main utils
-void	ft_read(char	*input, char **ftenv, t_env *env);
+int	ft_read(char	*input, char **ftenv, t_env *env);
 int		ft_strcmp(char *s1, char *s2);
 
 //command
@@ -78,10 +78,11 @@ char	*path_extract(char *str, int count);
 int ft_is_builtin(t_token *tk);
 int	ft_pwd(void);
 int	ft_find_old_pwd(char *str);
+char	*ft_get_pwd(void);
 
 char	*ft_get_old_pwd(t_env *env);
 
-void	update_env_value(t_env *head, const char *target, const char *new_value);
+void update_env_value(t_env *head, const char *target, const char *new_value);
 void handle_builtin(t_token *tk, char **ft_env, t_env * env);
 void handle_path_command(char **ft_env, char *input);
 void	ft_print_env(t_env *env);

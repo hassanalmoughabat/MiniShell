@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/03 11:06:03 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/08 11:03:08 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	ft_find_pwd(char *str)
 	return (0);
 }
 
-static char	*ft_get_pwd(void)
+ char	*ft_get_pwd(void)
 {
 	char	cwd[PATH_MAX];
 	
@@ -85,25 +85,43 @@ static char	*find_dir_in_list(t_token *tk)
 	return (NULL);
 }
 
-void	update_env_value(t_env *head, const char *target, const char *new_value)
-{
-	while(head)
-	{
-		if (ft_strncmp(target, new_value, ft_strlen(target)) == 0)
-		{
-			free(head->line);
-			head->line = ft_strdup(new_value);
-			if (!head->line)
-			{
-				error_print("failed to allocate memory", 1);
-				exit(EXIT_FAILURE);
-			}
-			return ;
-		}
-		head = head->next;
-	}
+void update_env_value(t_env *head, const char *target, const char *new_value) {
+    if (!head || !target || !new_value)
+        return;
+    
+    while (head) {
+        if (head->line && ft_strncmp(head->line, target, ft_strlen(target)) == 0) {
+            char *updated_value = NULL;
+            
+            // Allocate memory for "target + new_value"
+            updated_value = malloc(ft_strlen(target) + ft_strlen(new_value) + 1);
+            if (!updated_value)
+                return;
+            
+            // Construct the new string with format "target + new_value"
+            strcpy(updated_value, target);
+            strcat(updated_value, new_value);
+            
+            // Free old line and assign new one
+            free(head->line);
+            head->line = updated_value;
+            
+            return;
+        }
+        head = head->next;
+    }
+    return;
 }
 
+
+char static	*ft_get_cd_pwd(void)
+{
+	char	cwd[PATH_MAX];
+	char *pwd;
+
+	pwd = getcwd(cwd, PATH_MAX);
+	return pwd;
+}
 
 void	ft_cd(t_token *tk, t_env *env, char **ft_env)
 {
@@ -112,17 +130,16 @@ void	ft_cd(t_token *tk, t_env *env, char **ft_env)
 	char *oldpwd;
 	
 	dir = find_dir_in_list(tk);
-	pwd = ft_get_pwd();
-	oldpwd = ft_get_old_pwd(env);
+	pwd = ft_get_cd_pwd();
+	oldpwd = ft_strdup(pwd);
 	if (!oldpwd)
-		update_env_value(tk, "PWD", pwd);
+		update_env_value(env, "PWD", pwd);
 	if (chdir(dir) != 0)
-	{
 			error_print("directory not found\n", 1);
-	}
 	else
 	{
-		update_env_value(tk, "OLDPWD=", pwd);
-		update_env_value(tk, "PWD=", dir);
+		dir = ft_get_cd_pwd();
+		update_env_value(env, "OLDPWD=", oldpwd);
+		update_env_value(env, "PWD=", dir);
 	}
 }

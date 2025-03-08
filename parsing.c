@@ -171,25 +171,23 @@ void handle_path_command(char *envp[], char *cmd)
 	}
 }
 
+
+
 void	after_parsing(t_token *tk, char **ft_env, t_env *env, char *input)
 {
 	t_token *curr;
 	int command = 0;
 
 	curr = tk;
+	ft_printf("here before pipe check\n");
 		if (curr->type == T_PIPE)
 			handle_pipe(tk, ft_env, env);
 		else if ((curr->type == T_DGREAT || curr->type == T_DLESS
 					|| curr->type == T_GREAT || curr->type == T_LESS))
-			handle_redirection(tk, ft_env, env);
+				handle_redirection(tk, ft_env, env);
 		else if (ft_is_builtin(curr))
-		{
-			printf("HERER IS BUILTIN\n");
 				handle_builtin(tk, ft_env, env);
-		}
 		else 
-		{
-			ft_printf("before is a path command\n");
 				handle_path_command(ft_env, input);
-		}
+		return ;
 }
