@@ -1,6 +1,6 @@
 NAME       = minishell
 
-SRCS       = env_utils.c env.c error_handle.c minihell.c builtins.c parsing.c ft_cd.c
+SRCS       = env_utils.c env.c error_handle.c minihell.c builtins.c parsing.c ft_cd.c leak.c builtins2.c
 OBJS       = $(SRCS:.c=.o)
 
 CC         = cc

@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/08 10:24:24 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/09 12:53:10 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ char	**transform(t_env *env);
 int	ft_read(char	*input, char **ftenv, t_env *env);
 int		ft_strcmp(char *s1, char *s2);
 
+// free functions
+void free_token_list(t_token *head);
+void free_env_list(t_env *head);
+void free_array(char **arr);
+
+
 //command
 void	exec(char *cmd, char *envp[]);
 char	*my_getenv(char *name, char **env);
@@ -83,7 +89,7 @@ char	*ft_get_pwd(void);
 char	*ft_get_old_pwd(t_env *env);
 
 void update_env_value(t_env *head, const char *target, const char *new_value);
-void handle_builtin(t_token *tk, char **ft_env, t_env * env);
+void handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input);
 void handle_path_command(char **ft_env, char *input);
 void	ft_print_env(t_env *env);
 void	ft_cd(t_token *tk, t_env *env, char **ft_env);

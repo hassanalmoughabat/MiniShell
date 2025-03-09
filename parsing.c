@@ -186,7 +186,7 @@ void	after_parsing(t_token *tk, char **ft_env, t_env *env, char *input)
 					|| curr->type == T_GREAT || curr->type == T_LESS))
 				handle_redirection(tk, ft_env, env);
 		else if (ft_is_builtin(curr))
-				handle_builtin(tk, ft_env, env);
+				handle_builtin(tk, ft_env, env, input);
 		else 
 				handle_path_command(ft_env, input);
 		return ;

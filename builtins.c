@@ -25,9 +25,27 @@ void	ft_print_env(t_env *env)
 	}
 }
 
+void ft_exit(t_token *tk, char **ft_env, t_env *env, char *input)
+{
+    int exit_code = 0;
+    t_token *curr = tk->next;
+    
+    ft_printf("exit\n");
+    
+    if (curr && curr->cmd)
+        exit_code = ft_atoi(curr->cmd);
+    
+    // Free resources
+    free_token_list(tk);
+    free_env_list(env);
+    free_array(ft_env);
+    free(input);
+    
+    exit(exit_code % 256);
+}
 
 
-void handle_builtin(t_token *tk, char **ft_env, t_env *env)
+void handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 {
 	t_token *curr;
 
@@ -40,10 +58,10 @@ void handle_builtin(t_token *tk, char **ft_env, t_env *env)
 			ft_pwd();
 		else if (ft_strcmp(curr->cmd, "cd") == 0)
 			ft_cd(tk, env, ft_env);
-		// else if (ft_strcmp(curr->cmd, "exit") == 0)
-		// 	ft_exit();
-		// else if (ft_strcmp(curr->cmd, "export") == 0)
-		// 	ft_export(tk, env, ft_env);
+		else if (ft_strcmp(curr->cmd, "exit") == 0)
+			ft_exit(tk, ft_env, env, input);
+		else if (ft_strcmp(curr->cmd, "export") == 0)
+			ft_export(input, env, ft_env);
 		// else if (ft_strcmp(curr->cmd, "unset") == 0)
 		// 	ft_unset(tk, env, ft_env);
 		// else if (ft_strcmp(curr->cmd, "echo") == 0)
