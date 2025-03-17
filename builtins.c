@@ -44,6 +44,49 @@ void ft_exit(t_token *tk, char **ft_env, t_env *env, char *input)
     exit(exit_code % 256);
 }
 
+static void ft_echo(t_token *tk, t_env *env, char *input)
+{
+	t_token *curr;
+	int flag = 0;
+	curr = tk;
+	while (curr)
+	{
+		if (ft_strcmp(curr->cmd, "echo") == 0)
+		{
+			curr = curr->next;
+			continue;
+		}
+
+		if (ft_strcmp(curr->cmd, "-n") == 0)
+		{
+			flag = 1;
+			curr = curr->next;
+			continue;
+		}
+
+		if (curr->cmd && curr->cmd[0] == '$')
+		{
+			printf("here in $ check\n");
+			char *env_value = my_getenv(curr->cmd + 1, transform(env));
+			if (env_value && curr->cmd)
+			{
+				ft_printf("%s", env_value);
+			}
+			else
+			{
+				ft_printf("Variable not found\n");
+			}
+		}
+		else if (curr->cmd)
+		{
+			ft_printf("%s", curr->cmd);
+		}
+
+		curr = curr->next;
+	}
+	if (!flag)
+		ft_printf("\n");
+}
 
 void handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 {
@@ -64,8 +107,8 @@ void handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 			ft_export(input, env, ft_env);
 		// else if (ft_strcmp(curr->cmd, "unset") == 0)
 		// 	ft_unset(tk, env, ft_env);
-		// else if (ft_strcmp(curr->cmd, "echo") == 0)
-		// 	ft_echo(tk, env, ft_env);
+		else if (ft_strcmp(curr->cmd, "echo") == 0)
+			ft_echo(tk, env, input);
 		curr = curr->next;
 	}	
 }

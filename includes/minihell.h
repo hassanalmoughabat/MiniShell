@@ -12,6 +12,7 @@
 
 #ifndef MINIHELL_H
 # define MINIHELL_H
+#define BUFFER_SIZE 1024
 
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"

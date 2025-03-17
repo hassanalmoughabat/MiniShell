@@ -134,6 +134,8 @@ void	ft_cd(t_token *tk, t_env *env, char **ft_env)
 	oldpwd = ft_strdup(pwd);
 	if (!oldpwd)
 		update_env_value(env, "PWD", pwd);
+	if (!dir)
+		dir = my_getenv("HOME", ft_env);	
 	if (chdir(dir) != 0)
 			error_print("directory not found\n", 1);
 	else

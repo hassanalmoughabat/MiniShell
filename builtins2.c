@@ -14,7 +14,5 @@
 
 void	ft_export(char *input, t_env *env)
 {
-	if (strcmp(input, "export") == 0)
-		print_export_v(env);
 	
 }

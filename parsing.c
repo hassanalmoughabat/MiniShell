@@ -179,7 +179,6 @@ void	after_parsing(t_token *tk, char **ft_env, t_env *env, char *input)
 	int command = 0;
 
 	curr = tk;
-	ft_printf("here before pipe check\n");
 		if (curr->type == T_PIPE)
 			handle_pipe(tk, ft_env, env);
 		else if ((curr->type == T_DGREAT || curr->type == T_DLESS

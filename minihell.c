@@ -109,7 +109,7 @@ int	ft_read(char	*input, char **ftenv, t_env *env)
 		else
 		{
 			inp = ft_tokenize(input);
-			display_list(inp);
+			// display_list(inp);
 			after_parsing(inp, ftenv, env, input);
 			add_history(input);
 			// print_env(ftenv);
