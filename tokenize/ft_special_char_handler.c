@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_special_char_handler.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:43:38 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/02/11 12:38:08 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/16 19:44:50 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "token.h"
 
-int	ft_append_operator(t_token **list, t_token_type operator, char **input, char *value)
+int	ft_append_operator(t_token **list, t_token_type operator,
+	char **input, char *value)
 {
 	t_token	*new_token;
 

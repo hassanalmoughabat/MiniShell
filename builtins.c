@@ -1,13 +1,25 @@
-#include "../includes/minihell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
+/*   Updated: 2025/03/18 21:56:36 by njoudieh42       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "includes/minihell.h"
 
 int	ft_pwd(void)
 {
 	char	cwd[PATH_MAX];
-	
+
 	if (getcwd(cwd, PATH_MAX))
 	{
 		ft_putendl_fd(cwd, 1);
-		return(1);
+		return (1);
 	}
 	else
 		return (0);
@@ -15,7 +27,7 @@ int	ft_pwd(void)
 
 void	ft_print_env(t_env *env)
 {
-	t_env *ev;
+	t_env	*ev;
 
 	ev = env;
 	while (ev)
@@ -25,72 +37,26 @@ void	ft_print_env(t_env *env)
 	}
 }
 
-void ft_exit(t_token *tk, char **ft_env, t_env *env, char *input)
+void	ft_exit(t_token *tk, char **ft_env, t_env *env, char *input)
 {
-    int exit_code = 0;
-    t_token *curr = tk->next;
-    
-    ft_printf("exit\n");
-    
-    if (curr && curr->cmd)
-        exit_code = ft_atoi(curr->cmd);
-    
-    // Free resources
-    free_token_list(tk);
-    free_env_list(env);
-    free_array(ft_env);
-    free(input);
-    
-    exit(exit_code % 256);
+	int		exit_code;
+	t_token	*curr;
+
+	curr = tk->next;
+	exit_code = 0;
+	ft_printf("exit\n");
+	if (curr && curr->cmd)
+		exit_code = ft_atoi(curr->cmd);
+	free_token_list(tk);
+	free_env_list(env);
+	free_array(ft_env);
+	free(input);
+	exit(exit_code % 256);
 }
 
-static void ft_echo(t_token *tk, t_env *env, char *input)
+void	handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 {
-	t_token *curr;
-	int flag = 0;
-	curr = tk;
-	while (curr)
-	{
-		if (ft_strcmp(curr->cmd, "echo") == 0)
-		{
-			curr = curr->next;
-			continue;
-		}
-
-		if (ft_strcmp(curr->cmd, "-n") == 0)
-		{
-			flag = 1;
-			curr = curr->next;
-			continue;
-		}
-
-		if (curr->cmd && curr->cmd[0] == '$')
-		{
-			printf("here in $ check\n");
-			char *env_value = my_getenv(curr->cmd + 1, transform(env));
-			if (env_value && curr->cmd)
-			{
-				ft_printf("%s", env_value);
-			}
-			else
-			{
-				ft_printf("Variable not found\n");
-			}
-		}
-		else if (curr->cmd)
-		{
-			ft_printf("%s", curr->cmd);
-		}
-
-		curr = curr->next;
-	}
-	if (!flag)
-		ft_printf("\n");
-}
-
-void handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
-{
-	t_token *curr;
+	t_token	*curr;
 
 	curr = tk;
 	while (curr)
@@ -104,11 +70,11 @@ void handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 		else if (ft_strcmp(curr->cmd, "exit") == 0)
 			ft_exit(tk, ft_env, env, input);
 		else if (ft_strcmp(curr->cmd, "export") == 0)
-			ft_export(input, env, ft_env);
-		// else if (ft_strcmp(curr->cmd, "unset") == 0)
-		// 	ft_unset(tk, env, ft_env);
-		else if (ft_strcmp(curr->cmd, "echo") == 0)
-			ft_echo(tk, env, input);
+			ft_export(tk, &env);
+		else if (ft_strcmp(curr->cmd, "unset") == 0)
+			ft_unset(tk, &env);
+		// else if (ft_strcmp(curr->cmd, "echo") == 0)
+		// 	ft_echo(tk, env, ft_env);
 		curr = curr->next;
-	}	
+	}
 }

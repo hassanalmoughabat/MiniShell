@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/09 13:39:31 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/17 02:59:59 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,74 +46,22 @@ void	print_welcome_message(void)
 	ft_printf("\n");
 }
 
-int	t_token_size(t_token *head)
+int	ft_read(char *input, char **ftenv, t_env *env)
 {
-	t_token *len;
-	int	i = 0;
-	len = head;
-	while (len)
-	{
-		len = len->next;
-		i++;
-	}
-	return i;
-}
-void display_token_list(int size, t_token *head)
-{
-	t_token *inp;
-	inp = head;
-	int i = 1;
-	while (inp && i <= size)
-	{
-		ft_printf("\n%s at array of size %d\n", inp->cmd, i);
-		inp = inp->next;
-		i++;
-	}
-}
+	t_token	*inp;
 
-void 			print_env(char **ftenv)
-{
-	int i = 0;
-	while (ftenv[i])
-	{
-		ft_printf("envp is %s\n", ftenv[i]);
-		i++;
-	}
-}
-
-void	display_list(t_token *tk)
-{
-	t_token *curr;
-
-	curr = tk;
-	while (curr)
-	{
-		printf("line is %s\n", curr->cmd);
-		printf("line is %d\n", curr->type);
-		curr = curr->next;
-	}
-}
-
-int	ft_read(char	*input, char **ftenv, t_env *env)
-{
-		t_token *inp;
-		int len;
 	print_welcome_message();
 	while (1)
 	{
 		input = readline("minishell>");
 		if (!input)
-		{
-			break;
-		}
+			break ;
 		else
 		{
 			inp = ft_tokenize(input);
-			// display_list(inp);
-			after_parsing(inp, ftenv, env, input);
+			display_list(inp);
+			after_parsing(inp, ftenv, &env, input);
 			add_history(input);
-			// print_env(ftenv);
-		
 		}
 		free(inp);
 		free(input);

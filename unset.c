@@ -1,18 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins2.c                                        :+:      :+:    :+:   */
+/*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/09 12:55:29 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/09 14:56:13 by hal-moug         ###   ########.fr       */
+/*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
+/*   Updated: 2025/03/18 21:58:02 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minihell.h"
+#include "includes/minihell.h"
 
-void	ft_export(char *input, t_env *env)
+void	ft_unset(t_token *token, t_env **env)
 {
-	
+	t_token	*curr;
+
+	curr = token;
+	while (curr)
+	{
+		
+	}
 }

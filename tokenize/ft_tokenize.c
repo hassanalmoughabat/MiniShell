@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tokenize.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 11:58:43 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/03/08 10:27:10 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/16 19:44:28 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_token	*ft_check_string(char *input)
 
 t_token	*ft_tokenize(char *input)
 {
-	t_token	*	head_list;
+	t_token	*head_list;
 
 	head_list = ft_check_string(input);
 	input = NULL;

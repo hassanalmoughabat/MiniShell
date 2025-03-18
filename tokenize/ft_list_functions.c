@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_list_functions.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 15:26:30 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/01/09 14:58:26 by njoudieh         ###   ########.fr       */
+/*   Updated: 2025/03/18 02:33:14 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	ft_add_token_last(t_token **list, t_token *new_token)
 {
 	t_token	*current;
 
+	if (!list || !new_token)
+		return ;
 	current = *list;
 	if (!(*list))
 	{
