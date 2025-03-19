@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 19:38:56 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/18 19:52:25 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/19 13:23:05 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,9 @@ char	*get_value(char *input)
 
 int	check_valid_key(char *key)
 {
-	char	*temp;
 	int		i;
 
 	i = 0;
-	temp = key;
 	if (!key || !key[0])
 		return (0);
 	if (key[0] == '#')
@@ -61,27 +59,27 @@ int	check_valid_key(char *key)
 		return (0);
 	while (key[i])
 	{
-		if (!ft_isalnum(key[i]) && key[i] != '_' && !ft_check_quotes(key[i]))
+		if (!ft_isalnum(key[i]) && key[i] != '_' && !ft_check_quotes(key[i]) )
 			return (0);
 		i ++;
 	}
-	if (remove_added_quotes(&temp, 1) == -1)
-		return (0);
+	// if (remove_added_quotes(&temp, 1) == -1)
+	// 	return (0);
 	return (1);
 }
-int	available_quotes(char *input)
-{
-	int	i;
+// int	available_quotes(char *input)
+// {
+// 	int	i;
 
-	i = 0;
-	while (input[i])
-	{
-		if (ft_check_quotes(input[i]))
-			return (1);
-		i ++;
-	}
-	return (0);
-}
+// 	i = 0;
+// 	while (input[i])
+// 	{
+// 		if (ft_check_quotes(input[i]))
+// 			return (1);
+// 		i ++;
+// 	}
+// 	return (0);
+// }
 
 int	set_key_value(char *input, char **key, char **value, t_env *env)
 {
@@ -90,13 +88,12 @@ int	set_key_value(char *input, char **key, char **value, t_env *env)
 	i = 0;
 	if (has_equal(input))
 	{
-		if (available_quotes(input))
 		i = equal_handler_export(input, key, value, 1);
 		return (i);
 	}
 	*key = ft_strdup(input);
-	i = check_valid_key(*key);
-	if (!i)
+	i = equal_handler_export(input, key, NULL, 3);
+	if (i == -1)
 	{
 		error_message_export(input, key, value);
 		return (0);
@@ -107,8 +104,11 @@ int	set_key_value(char *input, char **key, char **value, t_env *env)
 		return (2);
 	}
 	if (*key && check_if_var_exist(&env, *key))
+	{
+		// ft_printf("i am heerreee\n");
 		ft_update_env(*key, get_value_from_env(*key, env), &env);
-	remove_added_quotes(key, 1);
+	}
+		
 	return (1);
 }
 
@@ -122,7 +122,6 @@ void	ft_add_key_to_env(t_env **env, char *key)
 	new_node = (t_env *)malloc(sizeof(t_env));
 	if (!new_node)
 		return ;
-	new_line = "declare -x ";
-	new_line = ft_strjoin(new_line, key);
+	new_line = key;
 	ft_push_to_env(env, new_node, new_line);
 }

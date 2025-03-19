@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/18 21:56:36 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/19 02:51:50 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 		else if (ft_strcmp(curr->cmd, "exit") == 0)
 			ft_exit(tk, ft_env, env, input);
 		else if (ft_strcmp(curr->cmd, "export") == 0)
-			ft_export(tk, &env);
+			ft_export(tk, env);
 		else if (ft_strcmp(curr->cmd, "unset") == 0)
 			ft_unset(tk, &env);
 		// else if (ft_strcmp(curr->cmd, "echo") == 0)

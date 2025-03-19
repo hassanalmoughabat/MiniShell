@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/17 02:59:59 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/19 03:38:05 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,13 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 		else
 		{
 			inp = ft_tokenize(input);
-			display_list(inp);
-			after_parsing(inp, ftenv, &env, input);
-			add_history(input);
+			if (inp)
+			{
+				display_list(inp);
+				after_parsing(inp, ftenv, &env, input);
+				add_history(input);
+			}
+		
 		}
 		free(inp);
 		free(input);

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:29 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/18 16:13:00 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/19 03:55:51 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ char	*get_value_from_env(char *key, t_env *env)
 	value = NULL;
 	while (current)
 	{
-		if (current->line
-			&& !ft_strncmp(current->line + 11, key, ft_strlen(key))
-			&& !ft_strncmp(current->line, "declare -x ", 11))
+		if (current->line && extract_key_env(current->line) == ft_strlen(key)
+			&& !ft_strncmp(current->line, key, ft_strlen(key))
+			)
 		{
 			value = get_value(current->line);
 			remove_added_quotes(&value, 0);
@@ -50,6 +50,7 @@ int	handle_export_quotes(char *temp, char *result, size_t *i, size_t *j, int fla
 	{
 		if (flag && quote_helper(quote, temp[*i]))
 		{
+			ft_printf("no worries\n");
 			free(result);
 			return (-1);
 		}
@@ -63,7 +64,17 @@ int	handle_export_quotes(char *temp, char *result, size_t *i, size_t *j, int fla
 		ft_error_message_quotes(quote);
 		return (-1);
 	}
+	result[(*j)]= '\0';
 	return (0);
+}
+size_t	extract_key_env(char *line)
+{
+	size_t	len;
+
+	len = 0;
+	while (line[len] && line[len] != '=')
+		len ++;
+	return  (len);
 }
 
 int	ft_update_env(char *key, char *value, t_env **env)
@@ -75,11 +86,10 @@ int	ft_update_env(char *key, char *value, t_env **env)
 	current = *env;
 	while (current)
 	{
-		if (!ft_strncmp(current->line + 11, key, ft_strlen(key))
-			&& !ft_strncmp(current->line, "declare -x ", 11))
+		if (extract_key_env(current->line) == ft_strlen(key) && !ft_strncmp(current->line, key, ft_strlen(key)))
 		{
+			temp = key;
 			free(current->line);
-			temp = ft_strjoin("declare -x ", key);
 			if (value)
 			{
 				val = ft_strjoin(temp, "=\"");
@@ -111,7 +121,7 @@ void	ft_add_env(char *key, char *value, t_env **env)
 	new_node = (t_env *)malloc(sizeof(t_env));
 	if (!new_node)
 		return ;
-	new_line = ft_strjoin("declare -x ", key);
+	new_line = key;
 	if (value)
 	{
 		temp = ft_strjoin(new_line, "=\"");

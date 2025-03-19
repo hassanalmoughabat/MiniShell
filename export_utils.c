@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/18 15:55:11 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/19 04:20:03 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@ int	check_if_var_exist(t_env **env, char *key)
 	current = *env;
 	while (current)
 	{
-		if ((current->line) && ft_strlen(current->line) >= 11
-			&& !ft_strncmp(current->line + 11, key, ft_strlen(key))
-			&& !ft_strncmp(current->line, "declare -x ", 11))
+		
+		if (current->line
+			&& extract_key_env(current->line) == ft_strlen(key)
+			&& !ft_strncmp(current->line, key, ft_strlen(key)))
 			return (1);
 		current = current->next;
 	}
@@ -37,6 +38,8 @@ int	remove_added_quotes(char **value, int flag)
 	size_t	i;
 	size_t	j;
 
+	if (!*value || !value)
+		return (0);
 	temp = *value;
 	result = malloc(ft_strlen(temp) + 1);
 	i = 0;
@@ -47,6 +50,7 @@ int	remove_added_quotes(char **value, int flag)
 	{
 		if (ft_check_quotes(temp[i]))
 		{
+			ft_printf("Inside my handle export quotes\n");
 			if (handle_export_quotes(temp, result, &i, &j, flag) == -1)
 				return (-1);	
 		}
