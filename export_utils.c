@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/21 03:04:51 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 17:08:23 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	ft_push_to_env(t_env **env, t_env *node)
 
 	if (!env || !node)
 		return ;
+	ft_printf("%s\n",node->line);
 	if (!*env)
 	{
 		*env = node;

@@ -6,13 +6,42 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:29 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/21 03:04:11 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 20:12:25 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minihell.h"
 
-char	*get_value_from_env(char *key, t_env *env)
+int expansion_helper(char key ,t_env *env)
+{
+	t_env	*current;
+
+	current = env;
+	while (current)
+	{
+		if (current->line && extract_key_env(current->line) == 1
+			&& current->line[0] == key)
+			return(1);
+		current = current->next;
+	}
+	return (0);
+}
+bool	get_va_expander(char *key ,t_env *env)
+{
+	t_env	*current;
+
+	current = env;
+	while (current)
+	{
+		if (current->line && extract_key_env(current->line) == ft_strlen(key)
+			&& !ft_strncmp(current->line, key, ft_strlen(key)))
+			return (true);
+		current = current->next;
+	}
+	return (false);
+}
+
+char	*get_value_from_env(char *key ,t_env *env)
 {
 	char	*value;
 	t_env	*current;
@@ -24,7 +53,7 @@ char	*get_value_from_env(char *key, t_env *env)
 		if (current->line && extract_key_env(current->line) == ft_strlen(key)
 			&& !ft_strncmp(current->line, key, ft_strlen(key)))
 		{
-			value = get_value(current->line,env);
+			value = get_value(current->line,key, env);
 			remove_added_quotes(&value, 0);
 			return (value);
 		}

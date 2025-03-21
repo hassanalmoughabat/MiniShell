@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 19:38:56 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/21 16:02:13 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 20:47:02 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,44 +61,63 @@ char	*ft_strjoin_char(char *str, char c)
 	}
 	new_str[i] = c;   // Append the new character
 	new_str[i + 1] = '\0'; // Null-terminate
-
-	if (str)
-		free(str); // Free old string to prevent memory leaks
-
 	return (new_str);
 }
 
-
-char	*has_dollar(char *input, t_env *env)
+char	*dollar_handler(char *value, t_env *env, int *index)
 {
-	int		i;
-	char	*temp;
 	char	*result;
-	char	*env_value;
+	char	*temp = ft_strdup("");  // Initialize temp
+	int		i;
 
-	i = 0;
-	temp = NULL;
-	while (input[i])
-	{
-		if (input[i] == '$' && !escape(input, i)) // Detect $
+	i = *index;
+	while (value[i])
+	{	
+		result = ft_strjoin_char(temp, value[i]);
+		free(temp);
+		temp = result;
+		if (ft_strlen(result) == 1)
 		{
-			int j = i + 1;
-			while (input[j] && (ft_isalnum(input[j]) || input[j] == '_')) // Extract key
-				j++;
-			char *key = ft_substr(input, i + 1, j - i - 1);
-			env_value = my_getenv(key, transform(env)); // Get value from env
-			free(key);
-			if (!env_value)
-				env_value = ""; // If variable doesn't exist, use empty string
-			temp = ft_strjoin(result, env_value); // Append variable value
-			free(result);
-			result = temp;
-			i = j;
+			if (expansion_helper(value[i], env))
+				return (get_value_from_env(result, env));
 		}
 		else
 		{
-			temp = ft_strjoin_char(result, input[i]); // Append character
+			if (get_va_expander(result, env))
+				return (get_value_from_env(result, env));
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+
+char	*replace_dollars(char *value,t_env *env)
+{
+	int		i;
+	char	*result;
+	char	*temp;
+	char	*env_value;
+
+	result =NULL;
+	i = 0;
+	while (value[i])
+	{
+		if (value[i] == '$' && !escape(value, i))
+		{
+			i++;
+			env_value = dollar_handler(value, env, &i);
+			if (!env_value)
+				return (result);
+			temp = ft_strjoin(result, env_value);
 			free(result);
+			result = temp;
+			i++;
+		}
+		else
+		{
+			temp = ft_strjoin_char(result, value[i]);
+			// free(result);
 			result = temp;
 			i++;
 		}
@@ -106,10 +125,10 @@ char	*has_dollar(char *input, t_env *env)
 	return (result);
 }
 
-char	*get_value(char *input,t_env *env)
+char	*get_value(char *input, char *key, t_env *env)
 {
 	int		i;
-	char	*test;
+	// char	*test;
 	char	*value;
 	size_t	len;
 
@@ -122,16 +141,14 @@ char	*get_value(char *input,t_env *env)
 		return (ft_strdup(""));
 	len = ft_strlen(input) - i -1;
 	value = ft_substr(input, i + 1, len);
-	ft_printf("%s\n",value);
-	test = has_dollar(value, env);
-	if (test)
-	{
-		free(value);
-		value = ft_strdup(test);
-	}
-	return (value);
+	ft_printf("%s %s %s\n",value, key,input);
+	remove_added_quotes(&value,0);
+	char *expanded_value = replace_dollars(value,env);
+	ft_printf("HEREE\n");
+	ft_printf("%s\n",expanded_value);
+	free(value);
+	return (expanded_value);
 }
-
 int	ft_backslash(char *key, int index)
 {
 	if ( key[index] == '\\')
@@ -198,7 +215,7 @@ int	set_key_value(char *input, char **key, char **value,t_env *env)
 	return (1);
 }
 
-void	ft_add_key_to_env(t_env **env, t_env **copy, char *key)
+void	ft_add_key_to_env(t_env **copy, char *key)
 {
 	t_env	*new_node;
 
@@ -208,6 +225,5 @@ void	ft_add_key_to_env(t_env **env, t_env **copy, char *key)
 	if (!new_node)
 		return ;
 	new_node->line = key;
-	ft_push_to_env(env, new_node);
 	ft_push_to_env(copy, new_node);
 }

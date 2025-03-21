@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/21 14:32:46 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 21:29:22 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,32 +64,99 @@ void	handle_dollar(char *str, t_env *env)
 		ft_printf("Variable not found\n");
 }
 
-// char *trim_outer_quotes( char *str) {
-//     int i = 0, j = 0;
-// 	char *new;
-//     int len = ft_strlen(str);
+size_t my_strnlen(const char *s, size_t maxlen) {
+    size_t len = 0;
 
-//     if (len < 2 || !ft_check_quotes(str[0]) || str[0] != str[len - 1])
-//         return strdup(str);
-//     new = malloc(len - 1);
-//     if (!new)
-//         return NULL;
-//    while (str[i])
-//         new[j++] = str[i];
-//     new[j] = '\0';
-//     return new;
-// }
+    while (len < maxlen && s[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+char *my_strndup(const char *s, size_t n)
+ {
+    size_t len = my_strnlen(s, n);
+    char *new_str = (char *)malloc(len + 1);
+
+    if (!new_str)
+        return NULL;
+
+    ft_memcpy(new_str, s, len);
+    new_str[len] = '\0';
+
+    return new_str;
+}
+
+char	*trim_outer_quotes(char *str)
+{
+	size_t	len;
+	char	*trimmed;
+
+	if (!str)
+		return (NULL);
+	len = ft_strlen(str);
+	if (len >= 2 && ft_check_quotes(str[0]) && ft_check_quotes(str[len -1]))
+	{
+		trimmed = my_strndup(str + 1, len - 2);
+		free(str);
+		return (trimmed);
+	}
+	ft_printf("JRSF\n");
+	return (str); 
+}
+
+char *remove_inner_quotes(char *str)
+{
+    size_t len = ft_strlen(str);
+
+    char *result = (char *)malloc(len + 1);
+    if (!result)
+        return NULL;
+    size_t i = 1, j = 0;  
+    result[j++] = str[0];
+    while (i < len - 1) {  
+        if (str[i] != '"' && str[i] != '\'')
+            result[j++] = str[i];
+        i++;
+    }
+    result[j++] = str[len - 1];
+    result[j] = '\0';
+    return result;
+}
+
+bool has_inner_quotes(char *str)
+{
+    size_t len;
+    size_t i;
+
+	i = 1;
+    if (!str)
+        return false;
+    len = ft_strlen(str);
+    while (i < len - 1) 
+	{
+        if (str[i] == '"' || str[i] == '\'')
+            return true;
+        i++;
+    }
+    return false;
+}
 
 void	ft_echo(t_token *tk, t_env *env)
 {
 	t_token	*curr;
 	int		flag;
+	int		quotes;
+	size_t	len;
 	char	*temp;
 
 	flag = 0;
+	quotes = 0;
 	curr = tk;
+	
 	while (curr)
 	{
+		
 		if (ft_strcmp(curr->cmd, "echo") == 0)
 			curr = curr->next;
 		if (ft_strcmp(curr->cmd, "-n") == 0)
@@ -98,11 +165,20 @@ void	ft_echo(t_token *tk, t_env *env)
 			curr = curr->next;
 			continue ;
 		}
-		temp = has_dollar(curr->cmd,env);
+		len = ft_strlen(curr->cmd);
+		if (ft_check_quotes(curr->cmd[0]) && ft_check_quotes(curr->cmd[len -1]))
+		{
+			temp = trim_outer_quotes(curr->cmd);
+			quotes= 1;
+			ft_printf("esdjfz\n");
+		}
+		else if (has_inner_quotes(curr->cmd) && !quotes)
+			temp =remove_inner_quotes(curr->cmd);
+		else 
+			temp = ft_strdup(curr->cmd);
+		temp = replace_dollars(temp, env);
 		if (temp)
 			ft_printf("%s ",temp);
-		else if (curr->cmd)
-			ft_printf("%s ", curr->cmd);
 		curr = curr->next;
 	}
 	if (!flag)

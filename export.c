@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/21 16:09:27 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 17:38:07 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	equal_handler_export(char *input, char **key, char **value, int flag, t_env 
 			return (-1);
 		}
 		*key = temp;
-		*value = get_value(input,env);
+		*value = get_value(input,*key,env);
 		if (remove_added_quotes(key, 1) == -1 || ( value && remove_added_quotes(value, 0) == -1))
 		{
 			ft_printf("Error in the variable syntax or the value syntax\n");
@@ -90,14 +90,22 @@ void	sort_env_list(t_env *env)
 	}
 }
 
-void	print_export_env( t_env *env)
+int	print_export_env(  t_token *token,t_env *env)
 {
+	t_token	*curr;
+
+	curr = token;
 	if (ft_list_size(token) == 1 && curr->cmd && !ft_strcmp(curr->cmd, "export"))
-    while (env)
-    {
-        printf("declare -x %s\n",env->line);
+	{
+		sort_env_list(env);
+		while (env)
+   	 {
+        printf("declare -x \" %s \" \n",env->line);
         env = env->next;
-    }
+    	}
+		return (1);
+	}
+    return (0);
 }
 
 void	respective_addition(t_env **env, t_env **copy, char *key, char *value, int flag)
@@ -115,7 +123,11 @@ void	respective_addition(t_env **env, t_env **copy, char *key, char *value, int 
 		if (check_if_var_exist(env, key))
 			ft_update_env(key, get_value_from_env(key, *env), env, copy);
 		else
-			ft_add_key_to_env(env, copy, key);
+		{
+			ft_add_key_to_env(copy, key);
+			ft_printf("i passed \n");
+		}
+			
 		return ;
 	}
 }
@@ -128,17 +140,15 @@ void	ft_export(t_token *token, t_env *env)
 	char	*value;
 	int		i;
 
-	copy = copy_env(env);
+	copy= copy_env(env);
 	curr = token;
 	key = NULL;
 	value = NULL;
-	if (print_export_env(env))
+	if (print_export_env(token,copy))
 			return ;
 	curr = curr->next;
 	while (curr && curr->cmd)
 	{
-		
-	
 		i = set_key_value(curr->cmd, &key, &value,env);
 		if (i == 1)
 		{

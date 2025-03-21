@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/21 15:16:20 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 20:43:07 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,17 +112,17 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);
 //export
 char	*get_key(char *input);
 int		has_equal(char *input);
-char	*get_value(char *input, t_env *env);
+char	*get_value(char *input, char *key, t_env *env);
 int		check_valid_key(char *key);
 size_t	extract_key_env(char *line);
 char	*get_dollar_value(char *str, t_env *env);
 int		remove_added_quotes(char **value, int flag);
 char	*has_dollar(char *input, t_env *env);
 void	ft_export(t_token *token, t_env *env);
-		void	ft_add_key_to_env(t_env **env, t_env **copy, char *key);
+		void	ft_add_key_to_env(t_env **copy, char *key);
 int		check_if_var_exist(t_env **env, char *key);
 char	*get_value_from_env(char *key, t_env *env);
-// int		print_export_env(t_token *token, t_env *env);
+int		print_export_env(t_token *token, t_env *env);
 		void	ft_add_env(char *key, char *value, t_env **env, t_env **copy);
 		int	ft_update_env(char *key, char *value, t_env **env, t_env **copy);
 		void	ft_push_to_env(t_env **env, t_env *node);
@@ -141,5 +141,8 @@ void	ft_free_env(t_env *head);
 t_env *copy_env(t_env *envp);
 void print_env_list(t_env *env_list);
 char	*quotes_in_env(char *value, char *key, int flag);
+int 	expansion_helper(char key ,t_env *env);
+bool	get_va_expander(char *key ,t_env *env);
+char	*replace_dollars(char *value,t_env *env);
 
 #endif
