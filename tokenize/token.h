@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:48:25 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/03/18 16:01:21 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/20 14:59:21 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdlib.h>
 # include <stdio.h>
+#include <stdbool.h>
 # include <sys/wait.h>
 # include "../includes/libft/libft.h"
 
@@ -53,5 +54,6 @@ int		ft_check_special_char(char *str);
 int		ft_delimeter(char *str);
 int		ft_check_quotes(char c);
 int		ft_check_space(char c);
+bool 	escape(const char *str, int index);
 
 #endif

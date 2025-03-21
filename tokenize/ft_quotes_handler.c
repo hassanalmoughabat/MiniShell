@@ -3,30 +3,48 @@
 /*                                                        :::      ::::::::   */
 /*   ft_quotes_handler.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 01:26:28 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/01/16 11:59:24 by njoudieh         ###   ########.fr       */
+/*   Updated: 2025/03/20 22:51:27 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "token.h"
 
+bool	escape(const char *str, int index)
+{
+	int	count;
+
+	count = 0;
+	while (index > 0 && str[index - 1] == '\\')
+	{
+		count ++;
+		index --;
+	}
+	return ((count % 2) != 0);
+}
+
 int	ft_find_next_quote(char *line, size_t *i)
 {
 	char	quote_saved;
+	size_t	start;
 
 	quote_saved = line[*i];
-	if (ft_strchr(line + *i + 1, quote_saved))
+	start = *i + 1;
+
+	while (line[start])
 	{
-		(*i)++;
-		while (line[*i] != quote_saved)
-			(*i)++;
-		(*i)++;
-		return (1);
+		if (line[start] == quote_saved && !escape(line, start))
+		{
+			*i = start + 1;
+			return (1);
+		}
+		start++;
 	}
 	return (0);
 }
+
 
 int	ft_handle_quotes(char **input, t_token **token_list)
 {

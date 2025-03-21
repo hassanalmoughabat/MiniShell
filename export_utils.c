@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/19 04:20:03 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 03:04:51 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,10 @@ int	remove_added_quotes(char **value, int flag)
 	j = 0;
 	if (!result)
 		return (-1);
-	while (i < ft_strlen(temp))
+	while (i < ft_strlen(temp) && temp[i])
 	{
 		if (ft_check_quotes(temp[i]))
 		{
-			ft_printf("Inside my handle export quotes\n");
 			if (handle_export_quotes(temp, result, &i, &j, flag) == -1)
 				return (-1);	
 		}
@@ -58,19 +57,18 @@ int	remove_added_quotes(char **value, int flag)
 			result[j++] = temp[i++];
 	}
 	result[j] = '\0';
-	free(*value);
-	*value = result;
+	if (*value)
+		free (*value);
+	*value = ft_strdup(result);
 	return (0);
 }
 
-void	ft_push_to_env(t_env **env, t_env *node, char *new_line)
+void	ft_push_to_env(t_env **env, t_env *node)
 {
 	t_env	*curr;
 
-	if (!env || !node || !new_line)
+	if (!env || !node)
 		return ;
-	node->line = new_line;
-	node->next = NULL;
 	if (!*env)
 	{
 		*env = node;

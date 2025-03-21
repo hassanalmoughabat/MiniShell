@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/19 02:51:50 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 14:32:46 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,61 @@ void	ft_exit(t_token *tk, char **ft_env, t_env *env, char *input)
 	free(input);
 	exit(exit_code % 256);
 }
+void	handle_dollar(char *str, t_env *env)
+{
+	char	*env_value;
+
+	env_value = my_getenv(str + 1, transform(env));
+	if (env_value && str)
+		ft_printf("%s", env_value);
+	else
+		ft_printf("Variable not found\n");
+}
+
+// char *trim_outer_quotes( char *str) {
+//     int i = 0, j = 0;
+// 	char *new;
+//     int len = ft_strlen(str);
+
+//     if (len < 2 || !ft_check_quotes(str[0]) || str[0] != str[len - 1])
+//         return strdup(str);
+//     new = malloc(len - 1);
+//     if (!new)
+//         return NULL;
+//    while (str[i])
+//         new[j++] = str[i];
+//     new[j] = '\0';
+//     return new;
+// }
+
+void	ft_echo(t_token *tk, t_env *env)
+{
+	t_token	*curr;
+	int		flag;
+	char	*temp;
+
+	flag = 0;
+	curr = tk;
+	while (curr)
+	{
+		if (ft_strcmp(curr->cmd, "echo") == 0)
+			curr = curr->next;
+		if (ft_strcmp(curr->cmd, "-n") == 0)
+		{
+			flag = 1;
+			curr = curr->next;
+			continue ;
+		}
+		temp = has_dollar(curr->cmd,env);
+		if (temp)
+			ft_printf("%s ",temp);
+		else if (curr->cmd)
+			ft_printf("%s ", curr->cmd);
+		curr = curr->next;
+	}
+	if (!flag)
+		ft_printf("\n");
+}
 
 void	handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 {
@@ -73,8 +128,8 @@ void	handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 			ft_export(tk, env);
 		else if (ft_strcmp(curr->cmd, "unset") == 0)
 			ft_unset(tk, &env);
-		// else if (ft_strcmp(curr->cmd, "echo") == 0)
-		// 	ft_echo(tk, env, ft_env);
+		else if (ft_strcmp(curr->cmd, "echo") == 0)
+			ft_echo(tk, env);
 		curr = curr->next;
 	}
 }

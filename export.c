@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/19 13:23:58 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/21 16:09:27 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,38 +28,25 @@ int	has_equal(char *input)
 	return (0);
 }
 
-int	equal_handler_export(char *input, char **key, char **value, int flag)
+int	equal_handler_export(char *input, char **key, char **value, int flag, t_env *env)
 {
 	char	*temp;
 
 	if (flag == 1)
 	{
 		temp = get_key(input);
-		// ft_printf(" INSIDE EQUAL_HANDLER_EXPORT FN\n");
-		// ft_printf("%s\n",temp);
 		if (!temp)
 		{
-			ft_printf("Error in allocating the key\n");
+			ft_printf("Error in key syntax \n");
 			return (-1);
 		}
 		*key = temp;
-			*value = get_value(input);
-		// ft_printf("whatttt\n");
+		*value = get_value(input,env);
 		if (remove_added_quotes(key, 1) == -1 || ( value && remove_added_quotes(value, 0) == -1))
 		{
 			ft_printf("Error in the variable syntax or the value syntax\n");
 			return (-1);
 		}
-	}
-	if (flag == 3)
-	{
-		if (remove_added_quotes(key, 1) == -1 )
-		{
-			ft_printf("Error in the variable syntax or the value syntax\n");
-			return (-1);
-		}
-		else
-			ft_printf("%s\n",key);
 	}
 	if (flag == 2)
 	{
@@ -103,67 +90,32 @@ void	sort_env_list(t_env *env)
 	}
 }
 
-// void	add_declare_x(t_env *env)
-// {
-// 	t_env	*current;
-// 	char	*new;
-
-// 	if (!env || !env)
-// 		return ;
-// 	current = env;
-// 	while (current)
-// 	{
-// 		if (!current->line || ft_strlen(current->line) < 11
-// 			|| ft_strncmp(current->line, "declare -x ", 11))
-// 		{
-// 			new= ft_strjoin("declare -x ",current->line);
-// 			if (!new)
-// 				return ;
-// 			free(current->line);
-// 			current->line = new;
-// 		}
-// 		current = current->next;
-// 	}
-// }
-
-int	print_export_env(t_token *token, t_env *env)
+void	print_export_env( t_env *env)
 {
-	t_token	*current;
-	t_env	*e;
-	int		len;
-
-	len = ft_list_size(token);
-	e = env;
-	current = token;
-	if (len == 1 && current->cmd && !ft_strcmp(current->cmd, "export"))
-	{
-		sort_env_list(env);
-		while (e)
-		{
-			ft_printf("declare -x %s\n",e->line);
-			e = e->next;
-		}
-		return (1);
-	}
-	return (0);
+	if (ft_list_size(token) == 1 && curr->cmd && !ft_strcmp(curr->cmd, "export"))
+    while (env)
+    {
+        printf("declare -x %s\n",env->line);
+        env = env->next;
+    }
 }
 
-void	respective_addition(t_env **env, char *key, char *value, int flag)
+void	respective_addition(t_env **env, t_env **copy, char *key, char *value, int flag)
 {
 	if (flag == 1)
 	{
 		if (check_if_var_exist(env, key))
-			ft_update_env(key, value, env);
+			ft_update_env(key, value, env, copy);
 		else
-			ft_add_env(key, value, env);
+			ft_add_env(key, value, env, copy);
 		return ;
 	}
 	if (flag == 2)
 	{
 		if (check_if_var_exist(env, key))
-			ft_update_env(key, get_value_from_env(key, *env), env);
+			ft_update_env(key, get_value_from_env(key, *env), env, copy);
 		else
-			ft_add_key_to_env(env, key);
+			ft_add_key_to_env(env, copy, key);
 		return ;
 	}
 }
@@ -171,36 +123,31 @@ void	respective_addition(t_env **env, char *key, char *value, int flag)
 void	ft_export(t_token *token, t_env *env)
 {
 	t_token	*curr;
+	t_env	*copy;
 	char	*key;
 	char	*value;
 	int		i;
 
+	copy = copy_env(env);
 	curr = token;
 	key = NULL;
 	value = NULL;
-	if (print_export_env(token, env))
-		return ;
+	if (print_export_env(env))
+			return ;
 	curr = curr->next;
 	while (curr && curr->cmd)
 	{
+		
+	
 		i = set_key_value(curr->cmd, &key, &value,env);
 		if (i == 1)
 		{
-			// ft_printf("OHHH NOOO\n");
-			// ft_printf("%s %s",key,value);
 			if (has_equal(curr->cmd))
-				respective_addition(&env, key, value, 1);
-			else if (check_if_var_exist(&env, key) && value)
-			{
-				// ft_printf("HELPP\n");
-				ft_update_env(key, get_value_from_env(key, env), &env);
-				// ft_printf("%s %s",key,get_value_from_env(key, env));
-				// ft_printf("YEEESHHH\n");
-			}
+				respective_addition(&env, &copy, key, value, 1);
 			else
-				respective_addition(&env, key, value, 2);
+				respective_addition(&env, &copy, key, value, 2);
 		}
-		else if (i == 2)
+		if (i == 2)
 			return ;
 		curr = curr->next;
 	}
