@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/01/07 14:21:12 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/17 03:07:19 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_strcmp(char *s1, char *s2)
 	while (s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
 		i++;
 	return (s1[i] - s2[i]);
-}	
+}
 
 void	free_my_env(t_env *env)
 {
@@ -49,7 +49,7 @@ t_env	*create_env_node(char *envp)
 	{
 		free(new_node);
 		return (NULL);
-	}		
+	}
 	new_node->next = NULL;
 	return (new_node);
 }

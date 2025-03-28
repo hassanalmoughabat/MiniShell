@@ -1,4 +1,4 @@
-NAME  = tokenization.a
+NAME  = tokenize.a
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 SRCS = ft_error_handler.c ft_list_functions.c  ft_quotes_handler.c ft_quotes_helper.c  ft_space_handler.c ft_special_char_handler.c  ft_tokenize.c 

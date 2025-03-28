@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:48:25 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/02/11 12:39:13 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:59:21 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdlib.h>
 # include <stdio.h>
+#include <stdbool.h>
 # include <sys/wait.h>
 # include "../includes/libft/libft.h"
 
@@ -43,9 +44,9 @@ t_token	*ft_tokenize(char *input);
 void	ft_add_token_last(t_token **t_list, t_token *new_token);
 void	ft_skip_added_spaces(char **str);
 void	ft_free_token_list(t_token **list);
-void	ft_quote_error(char c);
-
-int	ft_append_operator(t_token **list, t_token_type operator, char **input, char *value);
+int		ft_quote_error(char c);
+int		ft_append_operator(t_token **list, t_token_type operator,
+			char **input, char *value);
 int		ft_handle_quotes(char **input, t_token **token_list);
 int		ft_handle_operators(char **input, t_token **list);
 int		ft_find_next_quote(char *line, size_t *i);
@@ -53,5 +54,6 @@ int		ft_check_special_char(char *str);
 int		ft_delimeter(char *str);
 int		ft_check_quotes(char c);
 int		ft_check_space(char c);
+bool 	escape(const char *str, int index);
 
 #endif
