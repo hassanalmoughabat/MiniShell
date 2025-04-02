@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/19 22:44:46 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/01 21:11:10 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	ft_unset(t_token *token, t_env **env)
 	
 	while (curr)
 	{
-		key = get_key(curr->cmd);
+		key = get_var(curr->cmd);
 		current = *env;
 		while (current)
 		{

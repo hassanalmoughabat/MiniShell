@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/21 21:29:22 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/31 18:47:22 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,23 +53,13 @@ void	ft_exit(t_token *tk, char **ft_env, t_env *env, char *input)
 	free(input);
 	exit(exit_code % 256);
 }
-void	handle_dollar(char *str, t_env *env)
+
+size_t my_strnlen(const char *s, size_t maxlen)
 {
-	char	*env_value;
-
-	env_value = my_getenv(str + 1, transform(env));
-	if (env_value && str)
-		ft_printf("%s", env_value);
-	else
-		ft_printf("Variable not found\n");
-}
-
-size_t my_strnlen(const char *s, size_t maxlen) {
     size_t len = 0;
 
-    while (len < maxlen && s[len] != '\0') {
+    while (len < maxlen && s[len])
         len++;
-    }
     return len;
 }
 
@@ -80,7 +70,6 @@ char *my_strndup(const char *s, size_t n)
 
     if (!new_str)
         return NULL;
-
     ft_memcpy(new_str, s, len);
     new_str[len] = '\0';
 
@@ -95,13 +84,12 @@ char	*trim_outer_quotes(char *str)
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
-	if (len >= 2 && ft_check_quotes(str[0]) && ft_check_quotes(str[len -1]))
+	if (len >= 2 && ft_check_quotes(str[0]) && ft_check_quotes(str[len - 1]))
 	{
 		trimmed = my_strndup(str + 1, len - 2);
 		free(str);
 		return (trimmed);
 	}
-	ft_printf("JRSF\n");
 	return (str); 
 }
 
@@ -112,14 +100,25 @@ char *remove_inner_quotes(char *str)
     char *result = (char *)malloc(len + 1);
     if (!result)
         return NULL;
-    size_t i = 1, j = 0;  
-    result[j++] = str[0];
-    while (i < len - 1) {  
-        if (str[i] != '"' && str[i] != '\'')
-            result[j++] = str[i];
+    size_t i = 0, j = 0;
+    while (i < len)
+	{  
+        if (str[i] == '\\' && (ft_check_quotes(str[i + 1])))
+		{
+			i ++;
+			result[j++] = str[i];
+		}
+		else if (str[i] == '\\' && str[i + 1] == '$')
+		{
+			i ++;
+			result[j++] = str[i];
+		}
+		else if (str[i] == '\\' && str[i + 1] == '\\')
+			result[j++] = str[i++];
+		else if (str[i] != '"' && str[i] != '\'')
+        	result[j++] = str[i];
         i++;
     }
-    result[j++] = str[len - 1];
     result[j] = '\0';
     return result;
 }
@@ -129,14 +128,14 @@ bool has_inner_quotes(char *str)
     size_t len;
     size_t i;
 
-	i = 1;
+	i = 0;
     if (!str)
         return false;
     len = ft_strlen(str);
-    while (i < len - 1) 
+    while (i < len) 
 	{
-        if (str[i] == '"' || str[i] == '\'')
-            return true;
+        if ((str[i] == '"' || str[i] == '\'' || str[i] == '\\' || str[i] == '$') && escape(str, i))
+			return true;
         i++;
     }
     return false;
@@ -149,34 +148,43 @@ void	ft_echo(t_token *tk, t_env *env)
 	int		quotes;
 	size_t	len;
 	char	*temp;
+	char	*t;
 
 	flag = 0;
 	quotes = 0;
 	curr = tk;
-	
+	t =NULL;
 	while (curr)
 	{
-		
-		if (ft_strcmp(curr->cmd, "echo") == 0)
+		if (!ft_strcmp(curr->cmd, "echo"))
 			curr = curr->next;
-		if (ft_strcmp(curr->cmd, "-n") == 0)
+		if (!ft_strcmp(curr->cmd, "-n"))
 		{
 			flag = 1;
 			curr = curr->next;
 			continue ;
 		}
 		len = ft_strlen(curr->cmd);
-		if (ft_check_quotes(curr->cmd[0]) && ft_check_quotes(curr->cmd[len -1]))
+		if (ft_check_quotes(curr->cmd[0]) && ft_check_quotes(curr->cmd[len - 1]))
 		{
 			temp = trim_outer_quotes(curr->cmd);
+			ft_printf("%s \n",temp);
+			if (curr->cmd[0] == '\"' && curr->cmd[len - 1] == '\"')
+			{
+				t= remove_inner_quotes(temp);
+				temp = ft_strdup(t);
+				ft_printf("%s \n",temp);
+				free (t);
+			}
 			quotes= 1;
-			ft_printf("esdjfz\n");
 		}
 		else if (has_inner_quotes(curr->cmd) && !quotes)
+		{
 			temp =remove_inner_quotes(curr->cmd);
+		}
 		else 
 			temp = ft_strdup(curr->cmd);
-		temp = replace_dollars(temp, env);
+		// temp = replace_dollars(temp, env);
 		if (temp)
 			ft_printf("%s ",temp);
 		curr = curr->next;
@@ -187,25 +195,19 @@ void	ft_echo(t_token *tk, t_env *env)
 
 void	handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 {
-	t_token	*curr;
-
-	curr = tk;
-	while (curr)
-	{
-		if (ft_strcmp(curr->cmd, "env") == 0)
+		if (!ft_strcmp(tk->cmd, "env"))
 			ft_print_env(env);
-		else if (ft_strcmp(curr->cmd, "pwd") == 0)
+		else if (!ft_strcmp(tk->cmd, "pwd"))
 			ft_pwd();
-		else if (ft_strcmp(curr->cmd, "cd") == 0)
+		else if (!ft_strcmp(tk->cmd, "cd"))
 			ft_cd(tk, env, ft_env);
-		else if (ft_strcmp(curr->cmd, "exit") == 0)
+		else if (!ft_strcmp(tk->cmd, "exit"))
 			ft_exit(tk, ft_env, env, input);
-		else if (ft_strcmp(curr->cmd, "export") == 0)
-			ft_export(tk, env);
-		else if (ft_strcmp(curr->cmd, "unset") == 0)
+		else if (!ft_strcmp(tk->cmd, "export"))
+			ft_export(tk, &env);
+		else if (!ft_strcmp(tk->cmd, "unset"))
 			ft_unset(tk, &env);
-		else if (ft_strcmp(curr->cmd, "echo") == 0)
+		else if (!ft_strcmp(tk->cmd, "echo"))
 			ft_echo(tk, env);
-		curr = curr->next;
-	}
 }
+		

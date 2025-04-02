@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/21 17:08:23 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/31 04:58:08 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,18 @@ int	check_if_var_exist(t_env **env, char *key)
 	current = *env;
 	while (current)
 	{
-		
-		if (current->line
+		if (has_equal(current->line) && current->line
 			&& extract_key_env(current->line) == ft_strlen(key)
 			&& !ft_strncmp(current->line, key, ft_strlen(key)))
+			{
+				ft_printf("Variable already exist and have equal\n");
+				return (1);
+			}
+		if (!has_equal(current->line) && current->line && !ft_strncmp(current->line, key, ft_strlen(key)))
+		{
+			ft_printf("Variable already exist with no equal\n");
 			return (1);
+		}
 		current = current->next;
 	}
 	return (0);
@@ -40,6 +47,8 @@ int	remove_added_quotes(char **value, int flag)
 
 	if (!*value || !value)
 		return (0);
+	ft_printf("i [a]\n");
+	ft_printf("%s\n",*value);
 	temp = *value;
 	result = malloc(ft_strlen(temp) + 1);
 	i = 0;
@@ -48,10 +57,11 @@ int	remove_added_quotes(char **value, int flag)
 		return (-1);
 	while (i < ft_strlen(temp) && temp[i])
 	{
-		if (ft_check_quotes(temp[i]))
+		if (ft_check_quotes(temp[i]) && !escape(temp, i))
 		{
+			ft_printf("I entered here upper condition correct\n");
 			if (handle_export_quotes(temp, result, &i, &j, flag) == -1)
-				return (-1);	
+				return(free(result),-1);
 		}
 		else
 			result[j++] = temp[i++];
@@ -60,23 +70,21 @@ int	remove_added_quotes(char **value, int flag)
 	if (*value)
 		free (*value);
 	*value = ft_strdup(result);
+	ft_printf("%s %d i closed here \n",*value, i);
 	return (0);
 }
 
 void	ft_push_to_env(t_env **env, t_env *node)
 {
-	t_env	*curr;
-
-	if (!env || !node)
-		return ;
-	ft_printf("%s\n",node->line);
-	if (!*env)
+    if (!env || !node)
+        return;
+    if (!*env)
 	{
-		*env = node;
-		return ;
-	}
-	curr = *env;
-	while (curr->next)
-		curr = curr->next;
-	curr->next = node;
+        *env = node;
+        return;
+    }
+    t_env *curr = *env;
+    while (curr->next)
+        curr = curr->next;
+    curr->next = node;
 }

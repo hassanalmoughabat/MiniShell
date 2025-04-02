@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/17 01:39:21 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/27 20:16:35 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	is_a_path_command(char *cmd, char **ft_env)
 	i = 0;
 	while (ft_env[i])
 	{
-		if (strncmp(ft_env[i], "PATH=", 5) == 0)
+		if (ft_strncmp(ft_env[i], "PATH=", 5) == 0)
 		{
 			path_env = ft_env[i] + 5;
 			break ;
@@ -100,10 +100,7 @@ int	is_a_path_command(char *cmd, char **ft_env)
 			len = ft_strlen(start);
 		dir = ft_substr(start, 0, len);
 		if (!dir)
-		{
-			ft_printf("Error: Memory allocation failed in ft_substr\n");
 			return (0);
-		}
 		tmp = ft_strjoin(dir, "/");
 		free(dir);
 		if (!tmp)
@@ -114,10 +111,7 @@ int	is_a_path_command(char *cmd, char **ft_env)
 		full_path = ft_strjoin(tmp, cmd);
 		free(tmp);
 		if (!full_path)
-		{
-			ft_printf("Error: Memory allocation failed in ft_strjoin\n");
 			return (0);
-		}
 		if (access(full_path, X_OK) == 0)
 		{
 			found = 1;
@@ -171,7 +165,6 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 
 	command = 0;
 	curr = tk;
-	ft_printf("here before pipe check\n");
 	if (curr->type == T_PIPE)
 		handle_pipe(tk, ft_env, *env);
 	else if ((curr->type == T_DGREAT || curr->type == T_DLESS

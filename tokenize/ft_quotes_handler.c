@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 01:26:28 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/20 22:51:27 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/03/27 14:39:53 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 bool	escape(const char *str, int index)
 {
 	int	count;
+	int	i;
 
 	count = 0;
 	while (index > 0 && str[index - 1] == '\\')
@@ -22,7 +23,8 @@ bool	escape(const char *str, int index)
 		count ++;
 		index --;
 	}
-	return ((count % 2) != 0);
+	i = count % 2;
+	return (i != 0);
 }
 
 int	ft_find_next_quote(char *line, size_t *i)
@@ -35,7 +37,12 @@ int	ft_find_next_quote(char *line, size_t *i)
 
 	while (line[start])
 	{
-		if (line[start] == quote_saved && !escape(line, start))
+		if (line[start] == '\"' && line[start] == quote_saved && !escape(line, start))
+		{
+			*i = start + 1;
+			return (1);
+		}
+		else if (line[start] == '\'' && line[start] == quote_saved)
 		{
 			*i = start + 1;
 			return (1);
@@ -44,7 +51,6 @@ int	ft_find_next_quote(char *line, size_t *i)
 	}
 	return (0);
 }
-
 
 int	ft_handle_quotes(char **input, t_token **token_list)
 {
@@ -59,8 +65,13 @@ int	ft_handle_quotes(char **input, t_token **token_list)
 	{
 		if (ft_check_quotes(temp[i]))
 		{
-			if (!ft_find_next_quote(temp, &i))
-				return (ft_quote_error(temp[i]), 0);
+			if (!escape(temp, i))
+			{
+				if (!ft_find_next_quote(temp, &i))
+					return (ft_quote_error(temp[i]), 0);
+			}
+			else 	
+				i ++;
 		}
 		else
 			i++;
