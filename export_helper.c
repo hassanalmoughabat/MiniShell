@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:29 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/01 21:10:39 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/02 23:03:59 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*get_value_from_env(char *key ,t_env *env)
 			len = ft_strlen(current->line) - i -1;
 			value = ft_substr(current->line, i + 1, len);
 			if (remove_added_quotes(&value, 0) == -1)
-			// 	return(free(value),NULL);
+				return(free(value),NULL);
 			return (value);
 		}
 		current = current->next;
@@ -125,6 +125,7 @@ char	*get_var(char *input)
 		return (NULL);
 	return (key);
 }
+
 int	ft_update_env(char *key, char *value, t_env **env, t_env **copy)
 {
 	t_env	*current;

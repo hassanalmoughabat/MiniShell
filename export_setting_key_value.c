@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 19:38:56 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/02 03:24:53 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/03 00:58:10 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ char	*extract_dollar_var(char *key, int *index)
 	length = 0;
 	j = 0;
 	while (key[*index] && !ft_check_space(key[*index]) &&
-		!ft_check_dollar(key, *index) && !ft_check_quotes(key[*index]))
+		key[*index] != '$' && !ft_check_quotes(key[*index]))
 	{
 		(*index) ++;
 		length ++;
@@ -208,7 +208,6 @@ char	*extract_value(char *str, int *index)
 char	*handle_dollar(char *key, t_env *env)
 {
 	int		 i = 0;
-	int		flag;
 	char	*value;
 	char	*expanded;
 	char	*var_name;
@@ -220,18 +219,22 @@ char	*handle_dollar(char *key, t_env *env)
 		{
 			if (key[i + 1] && !ft_check_space(key[i + 1]) && !ft_check_exceptions(key, i + 1))
 			{
-				i++;
-				if (ft_isdigit(key[i]))
+				if (!key[i + 1] || ft_check_space(key[i + 1]))
 				{
-					i ++;
+					expanded = ft_strjoin(expanded, "\\$");
+					i++;
 					continue;
 				}
-				// if (key[i] == *)
+				if (ft_isdigit(key[i]))
+				{
+					i += 2;
+					continue;
+				}
+				// if (key[i] == ?)
 				// {
 				// 	var_name = 
 				// }
 				var_name = extract_dollar_var(key, &i);
-				ft_printf("the extracted value of dollar is %s\n",var_name);
 				if (var_name)
 				{
 					value = get_value_from_env(var_name, env);
@@ -247,8 +250,6 @@ char	*handle_dollar(char *key, t_env *env)
 				expanded = ft_strjoin(expanded, var_name);
 				free (var_name);
 			}
-			else if (ft_check_space(key[i + 1]))
-				expanded = ft_strjoin(expanded, "\\$");
 		}
 		else
 			expanded = ft_strjoin_char(expanded, key[i]);
@@ -328,7 +329,6 @@ char	*extract_and_expand(char *input, t_env *env)
 		{
 			if (remove_added_quotes(&substr, 1) == -1)
 				return (free(substr), free(expanded), NULL);
-			ft_printf("the value of str is %s\n",substr);
 			if (ft_has_dollar(substr))
 				substr = handle_dollar(substr, env);
 		}
@@ -338,7 +338,6 @@ char	*extract_and_expand(char *input, t_env *env)
 				return (free(substr), free(expanded), NULL);
 		}
 		expanded = ft_strjoin(expanded, substr);
-		ft_printf("the value of extract and expand is %s\n",expanded);
 		free(substr);
 	}
 	return (expanded);
@@ -352,14 +351,12 @@ char	*handle_double_quotes_expansion(char *str, t_env *env)
 	result = ft_strdup("");
 	if (remove_added_quotes(&str, 1) == -1)
 		return (free(result), NULL);
-	ft_printf("after removing the quotes %s\n", str);
 	if (ft_has_dollar(str))
 		temp = handle_dollar(str, env);
 	else
 		temp = ft_strdup(str);
 	free(result);
 	result = temp;
-	ft_printf("after replacing the dollar %s\n", result);
 	return (result);
 }
 
@@ -391,14 +388,12 @@ void	handle_value(char *value, char **result, t_env *env)
 		temp = handle_double_quotes_expansion(value, env);
 	else if (!quote_type(value) || quote_type(value) == 1)
 		temp = handle_Noquotes_Singlequotes(value, env);
-	ft_printf("this is the temp after the handling %s\n",temp);
 	if (temp)
 	{
 		if (*result)
 			free(*result);
 		*result = temp;
 	}
-	ft_printf("the key after handling value %s\n", *result);
 }
 char	*ft_strcat(char *dest, const char *src)
 {
@@ -437,7 +432,6 @@ void	set_value(char **value, char quote, char *input, int flag)
 		else
 			new_value = ft_strdup(equal_pos);
 		*value = ft_strdup(new_value);
-		ft_printf("the value is %s\n",*value);
 		free(new_value);
 	}
 }
@@ -445,26 +439,16 @@ char	*get_value(char *input, t_env *env, char quote, int flag)
 {
 	char	*value;
 	char 	*result;
-	char	*temp;
 
 	result = ft_strdup("");
 	value = ft_strdup("");
 	if (!input)
 		return (NULL);
-	if (ft_has_dollar(input))
-	{
-		handle_value(input, &temp, env);
-		ft_printf("THIS IS THE INPUT WITH REPLACEMENT %s\n",temp);
-		input = ft_strdup(temp);
-	}
-	ft_printf("i am before set value with flag %d and quote %c \n",flag,quote);
 	set_value(&value, quote, input, flag);
-	ft_printf("i am after set value\n", value);
 	if (!value)
 		return (NULL);
 	handle_value(value, &result, env);
 	set_value(&value, quote, input, flag);
-	ft_printf("i am after handle value\n", value);
 	if (!result)
 		return (free(result), free(value), NULL);
 	return (result);
@@ -532,7 +516,6 @@ char	*get_key(char *input , t_env *env, char *quote, int *ind)
 	if (!input)
 		return (NULL);
 	set_key(input, &key, quote, ind);
-	ft_printf("key before checking %s\n",key);
 	if (!check_valid_key(key))
 		return (free(key), free(result), NULL);
 	handle_value(key, &result, env);
@@ -544,7 +527,6 @@ char	*get_key(char *input , t_env *env, char *quote, int *ind)
 		result = ft_strdup(new_result);
 		free(new_result);
 	}
-	ft_printf("the key after handling value %s\n",result);
 	if (!check_key_after_expansion(result))
 		return (free(key), free(result), NULL);
 	return (free(key), result);

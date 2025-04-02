@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/31 04:58:08 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/02 23:17:15 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,9 @@ int	check_if_var_exist(t_env **env, char *key)
 		if (has_equal(current->line) && current->line
 			&& extract_key_env(current->line) == ft_strlen(key)
 			&& !ft_strncmp(current->line, key, ft_strlen(key)))
-			{
-				ft_printf("Variable already exist and have equal\n");
 				return (1);
-			}
 		if (!has_equal(current->line) && current->line && !ft_strncmp(current->line, key, ft_strlen(key)))
-		{
-			ft_printf("Variable already exist with no equal\n");
 			return (1);
-		}
 		current = current->next;
 	}
 	return (0);
@@ -47,8 +41,6 @@ int	remove_added_quotes(char **value, int flag)
 
 	if (!*value || !value)
 		return (0);
-	ft_printf("i [a]\n");
-	ft_printf("%s\n",*value);
 	temp = *value;
 	result = malloc(ft_strlen(temp) + 1);
 	i = 0;
@@ -59,7 +51,6 @@ int	remove_added_quotes(char **value, int flag)
 	{
 		if (ft_check_quotes(temp[i]) && !escape(temp, i))
 		{
-			ft_printf("I entered here upper condition correct\n");
 			if (handle_export_quotes(temp, result, &i, &j, flag) == -1)
 				return(free(result),-1);
 		}
@@ -70,7 +61,6 @@ int	remove_added_quotes(char **value, int flag)
 	if (*value)
 		free (*value);
 	*value = ft_strdup(result);
-	ft_printf("%s %d i closed here \n",*value, i);
 	return (0);
 }
 

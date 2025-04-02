@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/31 18:47:22 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/03 00:23:27 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,48 +145,27 @@ void	ft_echo(t_token *tk, t_env *env)
 {
 	t_token	*curr;
 	int		flag;
-	int		quotes;
-	size_t	len;
 	char	*temp;
-	char	*t;
 
 	flag = 0;
-	quotes = 0;
 	curr = tk;
-	t =NULL;
+	temp = NULL;
+	if (curr && !ft_strcmp(curr->cmd, "echo"))
+		curr = curr->next;
 	while (curr)
 	{
-		if (!ft_strcmp(curr->cmd, "echo"))
-			curr = curr->next;
-		if (!ft_strcmp(curr->cmd, "-n"))
+		if (!ft_strcmp(curr->cmd, "-n") || !ft_strcmp(curr->cmd, "\"-n\""))
 		{
 			flag = 1;
 			curr = curr->next;
 			continue ;
 		}
-		len = ft_strlen(curr->cmd);
-		if (ft_check_quotes(curr->cmd[0]) && ft_check_quotes(curr->cmd[len - 1]))
+		if (curr)
 		{
-			temp = trim_outer_quotes(curr->cmd);
-			ft_printf("%s \n",temp);
-			if (curr->cmd[0] == '\"' && curr->cmd[len - 1] == '\"')
-			{
-				t= remove_inner_quotes(temp);
-				temp = ft_strdup(t);
-				ft_printf("%s \n",temp);
-				free (t);
-			}
-			quotes= 1;
+			handle_value(curr->cmd, &temp, env);
+			if (temp)
+				ft_printf("%s ",temp);
 		}
-		else if (has_inner_quotes(curr->cmd) && !quotes)
-		{
-			temp =remove_inner_quotes(curr->cmd);
-		}
-		else 
-			temp = ft_strdup(curr->cmd);
-		// temp = replace_dollars(temp, env);
-		if (temp)
-			ft_printf("%s ",temp);
 		curr = curr->next;
 	}
 	if (!flag)
@@ -195,19 +174,24 @@ void	ft_echo(t_token *tk, t_env *env)
 
 void	handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 {
-		if (!ft_strcmp(tk->cmd, "env"))
-			ft_print_env(env);
-		else if (!ft_strcmp(tk->cmd, "pwd"))
-			ft_pwd();
-		else if (!ft_strcmp(tk->cmd, "cd"))
-			ft_cd(tk, env, ft_env);
-		else if (!ft_strcmp(tk->cmd, "exit"))
-			ft_exit(tk, ft_env, env, input);
-		else if (!ft_strcmp(tk->cmd, "export"))
-			ft_export(tk, &env);
-		else if (!ft_strcmp(tk->cmd, "unset"))
-			ft_unset(tk, &env);
-		else if (!ft_strcmp(tk->cmd, "echo"))
-			ft_echo(tk, env);
+	static 	t_env	*copy;
+
+	copy = NULL;
+	if (copy == NULL)
+		copy = copy_env(env);
+	if (!ft_strcmp(tk->cmd, "env"))
+		ft_print_env(env);
+	else if (!ft_strcmp(tk->cmd, "pwd"))
+		ft_pwd();
+	else if (!ft_strcmp(tk->cmd, "cd"))
+		ft_cd(tk, env, ft_env);
+	else if (!ft_strcmp(tk->cmd, "exit"))
+		ft_exit(tk, ft_env, env, input);
+	else if (!ft_strcmp(tk->cmd, "export"))
+		ft_export(tk, &env,&copy);
+	else if (!ft_strcmp(tk->cmd, "unset"))
+		ft_unset(tk, &env, &copy);
+	else if (!ft_strcmp(tk->cmd, "echo"))
+		ft_echo(tk, env);
 }
 		

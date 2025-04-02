@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/01 21:06:44 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/02 23:15:10 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int	equal_handler_export(char *input, char **key, char **value, int flag, t_env 
 	if (flag == 1)
 	{
 		temp = get_key(input, env, &quote, &indicator);
-		ft_printf("the key after get_key %s\n",temp);
 		if (!temp)
 		{
 			ft_printf("Error in key syntax \n");
@@ -47,7 +46,6 @@ int	equal_handler_export(char *input, char **key, char **value, int flag, t_env 
 		}
 		*key = temp;
 		*value = get_value(input, env,quote, indicator);
-		ft_printf("%s\n",*value);
 		if (!*value)
 			*value = ft_strdup("\"\"");
 	}
@@ -136,9 +134,9 @@ void	respective_addition(t_env **env, t_env **copy, char *key, char *value, int 
 	}
 }
 
-void	ft_export(t_token *token, t_env **env)
+void	ft_export(t_token *token, t_env **env, t_env **copy)
 {
-	static 	t_env	*copy=NULL;
+	
 	t_token	*curr;
 	char	*key;
 	char	*value;
@@ -147,22 +145,18 @@ void	ft_export(t_token *token, t_env **env)
 	curr = token;
 	key = NULL;
 	value = NULL;
-	if (copy == NULL)
-		copy = copy_env(*env);
-	if (print_export_env(token, copy))
+	if (print_export_env(token, *copy))
 		return ;
 	curr = curr->next;
 	while (curr && curr->cmd)
 	{
-		ft_printf("I ENTERED\n");
-		i = set_key_value(curr->cmd, &key, &value, copy);
-		ft_printf("%s %s %d\n",key,value,i);
+		i = set_key_value(curr->cmd, &key, &value, *copy);
 		if (i == 1)
 		{
 			if (has_equal(curr->cmd))
-				respective_addition(env, &copy, key, value, 1);
+				respective_addition(env, copy, key, value, 1);
 			else
-				respective_addition(env, &copy, key, value, 2);
+				respective_addition(env, copy, key, value, 2);
 		}
 		if (i == 2)
 			return ;

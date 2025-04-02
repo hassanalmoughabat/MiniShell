@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/01 21:11:10 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/02 21:06:27 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,13 @@ void delete_env_node(t_env **env, char *target)
         current = current->next;
     }
 }
-
-void	ft_unset(t_token *token, t_env **env)
+void	detect_key(t_token *tk, t_env **env)
 {
-	t_token	*curr;
-	t_env	*current;
-	char	*key;
+	t_token		*curr;
+	t_env		*current;
+	char		*key;
 
-	if (!token || !(*env) || !env)
-		return ;
-	curr = token;
-	curr = curr->next;
-	
+	curr = tk;
 	while (curr)
 	{
 		key = get_var(curr->cmd);
@@ -68,4 +63,17 @@ void	ft_unset(t_token *token, t_env **env)
 		curr = curr->next;
 	}
 	return ;
+}
+void	ft_unset(t_token *token, t_env **env, t_env **copy)
+{
+	t_token	*current;	
+	if (!token || !(*env) || !env)
+		return ;
+	current = token;
+	while (current)
+	{
+		detect_key(token, env);
+		detect_key(token, copy);
+		current = current->next;
+	}
 }
