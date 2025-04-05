@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:48:25 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/03/20 14:59:21 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/04 03:21:01 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef enum s_token_type
 	T_DLESS,
 	T_DGREAT,
 	T_PIPE,
+	T_NL,
 }	t_token_type;
 
 typedef struct s_token

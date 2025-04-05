@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/02 23:06:47 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/05 21:52:32 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,54 +105,59 @@ void	update_env_value(t_env *head, const char *target,
 //piping functions && redirection
 void	handle_pipe(t_token *lst, char **ft_env, t_env *env);
 void	handle_redirection(t_token *tk, char **ft_env, t_env *env);
-
 //parsing 
 int		is_a_path_command(char *cmd, char **ft_env);
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);
-
-//export
-char	*get_key(char *input, t_env *env, char *quote, int *ind);
-int		has_equal(char *input);
-char	*get_value(char *input, t_env *env, char quote, int flag);
-int		check_valid_key(char *key);
+// copy of env
+t_env 	*copy_env(t_env *envp);
+void	print_env_list(t_env *env_list);
+// env getters
 char	*get_var(char *input);
-size_t	extract_key_env(char *line);
-int		remove_added_quotes(char **value, int flag);
-void	ft_export(t_token *token, t_env **env, t_env **copy);
-void	ft_add_key_to_env(t_env **copy, char *key);
-int		check_if_var_exist(t_env **env, char *key);
-char	*get_value_from_env(char *key, t_env *env);
-int		print_export_env(t_token *token, t_env *env);
-void	ft_add_env(char *key, char *value, t_env **env, t_env **copy, int flag);
-int		ft_update_env(char *key, char *value, t_env **env, t_env **copy);
+char	*get_value_from_env(char *key ,t_env *env);
+//node manipulation in env
 void	ft_push_to_env(t_env **env, t_env *node);
-void	respective_addition(t_env **env, t_env **copy, char *key, char *value, int flag);
-int		set_key_value(char *input, char **key, char **value,t_env *env);
-int		handle_export_quotes(char *temp, char *result, size_t *i, size_t *j, int flag);
-int		equal_handler_export(char *input, char **key, char **value, int flag, t_env *env);
-
+void	ft_add_key_to_env(t_env **copy, char *key);
+int		ft_update_env(char *key, char *value, t_env **env, t_env **copy);
+void	ft_add_env(char *key, char *value, t_env **env, t_env **copy,int flag);
 //unset
 void	ft_unset(t_token *token, t_env **env, t_env **copy);
-void	delete_env_node(t_env **env, char *target);
-
 // expansion utils	
-int		ft_check_dollar(char *value, int index);
+char	*handle_dollar(char *key, t_env *env);
+char	*extract_and_expand(char *input, t_env *env);
 void	handle_value(char *value, char **result, t_env *env);
-char	*handle_Noquotes_Singlequotes(char *str, t_env *env);
-char	*handle_double_quotes_expansion(char *str, t_env *env);
-
-//copy env utils
-t_env	*new_env_node(char *key_value);
-void	ft_free_env(t_env *head);
-t_env	*copy_env(t_env *envp);
-void	print_env_list(t_env *env_list);
+// export
+int		has_equal(char *input);
+int		check_if_var_exist(t_env **env, char *key);
+int		print_export_env( t_token *token, t_env *env);
+void	ft_export(t_token *token, t_env **env, t_env **copy);
+int		equal_handler_export(char *input, char **key, char **value, t_env *env);
+// export validator
+int		check_valid_key(char *key);
+int		check_key_after_expansion(char *key);
+// export quotes handlers
+int		quote_type(char *str);
+int		remove_added_quotes(char **value);
+char	*quotes_in_env(char *value, char *key, int flag);
+int		handle_export_quotes(char *temp, char *result, size_t *i, size_t *j);
+// functions added
+int 	ft_has_dollar(char *str);
+char	*ft_strjoin_char(char *str, char c);
+char	*ft_strcat(char *dest, const char *src);
+char	*join_env_value(char *expanded, char *value);
+int		ft_check_dollar(char *value, int index);
+// extractors of values and keys
+size_t	extract_key_env(char *line);
+char	*extract_dollar_var(char *key, int *index);
+char	*extract_quoted_substring(char *input, int *i);
+char	*extract_unquoted_substring(char *input, int *i);
+// setters and getters of values and keys
+int		has_equal_in_quote(char *input, char *quote);
+char	*get_key(char *input , t_env *env, char *quote, int *ind);
+void	set_key(char *input,char **result, char *quote, int *flag);
+void	set_value(char **value, char quote, char *input, int flag);
+char	*get_value(char *input, t_env *env, char quote, int flag);
+int		set_key_value(char *input, char **key, char **value,t_env *env);
 // echo
 void	ft_echo(t_token *tk, t_env *env);
-char	*quotes_in_env(char *value, char *key, int flag);
-char	*trim_outer_quotes(char *str);
-bool	has_inner_quotes(char *str);
-char	*remove_inner_quotes(char *str);
-char	*my_strndup(const char *s, size_t n);
-size_t	my_strnlen(const char *s, size_t maxlen);
-
+void	echo_quotes_removal(t_token **tk);
 #endif

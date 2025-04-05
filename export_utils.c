@@ -6,11 +6,66 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/02 23:17:15 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 00:41:20 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minihell.h"
+
+void	swap_env_nodes(t_env *a, t_env *b)
+{
+	char	*temp;
+
+	temp = a->line;
+	a->line = b->line;
+	b->line = temp;
+}
+
+void	sort_env_list(t_env *env)
+{
+	int		swapped;
+	t_env	*ptr;
+	t_env	*last;
+
+	last = NULL;
+	if (!env || !env)
+		return ;
+	while (swapped)
+	{
+		swapped = 0;
+		ptr = env;
+		while (ptr->next != last)
+		{
+			if (strcmp(ptr->line, ptr->next->line) > 0)
+			{
+				swap_env_nodes(ptr, ptr->next);
+				swapped = 1;
+			}
+			ptr = ptr->next;
+		}
+		last = ptr;
+	}
+}
+
+int	print_export_env( t_token *token, t_env *env)
+{
+	t_token	*curr;
+
+	curr = token;
+	if (ft_list_size(token) == 1 && curr->cmd
+		&& !ft_strcmp(curr->cmd, "export"))
+	{
+		// sort_env_list(env);export
+		
+		while (env)
+		{
+			printf("declare -x %s\n", env->line);
+			env = env->next;
+		}
+		return (1);
+	}
+	return (0);
+}
 
 int	check_if_var_exist(t_env **env, char *key)
 {
@@ -24,57 +79,11 @@ int	check_if_var_exist(t_env **env, char *key)
 		if (has_equal(current->line) && current->line
 			&& extract_key_env(current->line) == ft_strlen(key)
 			&& !ft_strncmp(current->line, key, ft_strlen(key)))
-				return (1);
-		if (!has_equal(current->line) && current->line && !ft_strncmp(current->line, key, ft_strlen(key)))
+			return (1);
+		if (!has_equal(current->line) && current->line
+			&& !ft_strncmp(current->line, key, ft_strlen(key)))
 			return (1);
 		current = current->next;
 	}
 	return (0);
-}
-
-int	remove_added_quotes(char **value, int flag)
-{
-	char	*temp;
-	char	*result;
-	size_t	i;
-	size_t	j;
-
-	if (!*value || !value)
-		return (0);
-	temp = *value;
-	result = malloc(ft_strlen(temp) + 1);
-	i = 0;
-	j = 0;
-	if (!result)
-		return (-1);
-	while (i < ft_strlen(temp) && temp[i])
-	{
-		if (ft_check_quotes(temp[i]) && !escape(temp, i))
-		{
-			if (handle_export_quotes(temp, result, &i, &j, flag) == -1)
-				return(free(result),-1);
-		}
-		else
-			result[j++] = temp[i++];
-	}
-	result[j] = '\0';
-	if (*value)
-		free (*value);
-	*value = ft_strdup(result);
-	return (0);
-}
-
-void	ft_push_to_env(t_env **env, t_env *node)
-{
-    if (!env || !node)
-        return;
-    if (!*env)
-	{
-        *env = node;
-        return;
-    }
-    t_env *curr = *env;
-    while (curr->next)
-        curr = curr->next;
-    curr->next = node;
 }

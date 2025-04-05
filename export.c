@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/02 23:15:10 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 00:15:15 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,90 +28,28 @@ int	has_equal(char *input)
 	return (0);
 }
 
-int	equal_handler_export(char *input, char **key, char **value, int flag, t_env *env)
+int	equal_handler_export(char *input, char **key, char **value,t_env *env)
 {
 	char	*temp;
 	char	quote;
 	int		indicator;
 
 	indicator = 0;
-	quote ='\0';
-	if (flag == 1)
-	{
-		temp = get_key(input, env, &quote, &indicator);
-		if (!temp)
-		{
-			ft_printf("Error in key syntax \n");
-			return (-1);
-		}
-		*key = temp;
-		*value = get_value(input, env,quote, indicator);
-		if (!*value)
-			*value = ft_strdup("\"\"");
-	}
-	if (flag == 2)
-	{
-		*key = NULL;
-		*value = NULL;
-		return (0);
-	}
+	quote = '\0';
+	temp = get_key(input, env, &quote, &indicator);
+	if (!temp)
+		return (ft_printf("Error in key syntax \n"), -1);
+	*key = temp;
+	*value = get_value(input, env, quote, indicator);
+	if (!*value)
+	*value = ft_strdup("\"\"");
 	return (1);
-}
-
-void swap_env_nodes(t_env *a, t_env *b)
-{
-    char *temp = a->line;
-    a->line = b->line;
-    b->line = temp;
-}
-
-void	sort_env_list(t_env *env)
-{
-	int swapped;
-	t_env *ptr;
-	t_env *last;
-
-	last = NULL;
-	if (!env || !env)
-		return ;
-	while (swapped)
-	{
-		swapped = 0;
-		ptr = env;
-		while (ptr->next != last)
-		{
-			if (strcmp(ptr->line, ptr->next->line) > 0)
-			{
-				swap_env_nodes(ptr, ptr->next);
-				swapped = 1;
-			}
-			ptr = ptr->next;
-		}
-		last = ptr;
-	}
-}
-
-int	print_export_env(  t_token *token,t_env *env)
-{
-	t_token	*curr;
-
-	curr = token;
-	if (ft_list_size(token) == 1 && curr->cmd && !ft_strcmp(curr->cmd, "export"))
-	{
-		sort_env_list(env);
-		while (env)
-		{
-			printf("declare -x %s\n",env->line);
-			env = env->next;
-    	}
-		return (1);
-	}
-    return (0);
 }
 
 void	respective_addition(t_env **env, t_env **copy, char *key, char *value, int flag)
 {
 	char	*val;
+
 	if (flag == 1)
 	{
 		if (check_if_var_exist(copy, key))
@@ -136,7 +74,6 @@ void	respective_addition(t_env **env, t_env **copy, char *key, char *value, int 
 
 void	ft_export(t_token *token, t_env **env, t_env **copy)
 {
-	
 	t_token	*curr;
 	char	*key;
 	char	*value;

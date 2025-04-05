@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 03:33:31 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/25 02:47:42 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/04 03:45:50 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ int	ft_check_quotes(char c)
 
 int	ft_delimeter(char *str)
 {
-	if (*str == ' ' || *str == '\t' || !ft_strncmp(str, ">", 1)
-		|| !ft_strncmp(str, "<", 1) || !ft_strncmp(str, "|", 1))
+	if (*str == ' ' || *str == '\t' || *str == '\n' ||
+		!ft_strncmp(str, ">", 1) || !ft_strncmp(str, "<", 1) ||
+		!ft_strncmp(str, "|", 1))
 		return (1);
 	return (0);
 }

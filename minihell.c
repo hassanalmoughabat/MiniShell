@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/02 23:23:26 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/05 22:07:27 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,35 @@ void	print_welcome_message(void)
 	ft_printf("\n");
 }
 
+void	replace_dollar(t_token **t_list, t_env *env)
+{
+	t_token		*curr;
+	char		*temp;
+
+	if (!t_list || !*t_list)
+		return ;
+	curr = *t_list;
+	temp = NULL;
+	while (curr)
+	{
+		if (ft_has_dollar(curr->cmd))
+		{
+			handle_value(curr->cmd, &temp, env);
+			if (temp)
+			{
+				free(curr->cmd);
+				curr->cmd = ft_strdup(temp);
+			}
+			else
+			{
+				free(curr->cmd);
+				curr->cmd = ft_strdup("");
+			}
+		}
+		curr = curr->next;
+	}
+}
+
 int	ft_read(char *input, char **ftenv, t_env *env)
 {
 	t_token	*inp;
@@ -59,6 +88,8 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 		else
 		{
 			inp = ft_tokenize(input);
+			replace_dollar(&inp, env);
+			display_list(inp);
 			if (inp)
 				after_parsing(inp, ftenv, &env, input);
 			add_history(input);

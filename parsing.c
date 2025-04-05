@@ -6,17 +6,18 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/27 20:16:35 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/05 19:40:41 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minihell.h"
 
-void	handle_pipe(t_token *lst, char **ft_env, t_env * env)
+void	handle_pipe(t_token *lst, char **ft_env, t_env *env)
 {
 	ft_printf("hey");
 }
-void handle_redirection(t_token *tk, char **ft_env, t_env *env)
+
+void	handle_redirection(t_token *tk, char **ft_env, t_env *env)
 {
 	ft_printf("hey");
 }
@@ -170,9 +171,12 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 	else if ((curr->type == T_DGREAT || curr->type == T_DLESS
 			|| curr->type == T_GREAT || curr->type == T_LESS))
 		handle_redirection(tk, ft_env, *env);
-	else if (ft_is_builtin(curr))
-		handle_builtin(tk, ft_env, *env, input);
 	else
-		handle_path_command(ft_env, input);
-	return ;
+	{
+		remove_added_quotes(&(curr->cmd));
+		if (ft_is_builtin(curr))
+			handle_builtin(tk, ft_env, *env, input);
+		else
+			handle_path_command(ft_env, input);
+	}
 }
