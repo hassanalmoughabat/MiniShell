@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/21 20:43:07 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 16:25:32 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIHELL_H
 # define MINIHELL_H
+#define MAX_HEREDOC_SIZE 16384
 
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"
@@ -89,9 +90,6 @@ char	*path_extract(char *str, int count);
 
 //builtins
 
-
-
-
 int		ft_pwd(void);
 char	*ft_get_pwd(void);
 void	ft_print_env(t_env *env);
@@ -114,7 +112,10 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env);
 // redirection
 int handle_dgreat(char *filename);
 int handle_great(char *cmd);
-int handle_dless(char *delimiter);
+int handle_dless(char *delimiter, t_env *env, int flag);
+char *cut_from_op(char op, char *str, t_env *env);
+void handle_cat_heredoc(char **ft_env, t_env *env, t_token *tk);
+int contain_list(char *str, t_token *tk);
 // parsing
 int is_a_path_command(char *cmd, char **ft_env);
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);

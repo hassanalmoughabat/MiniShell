@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:48:25 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/03/20 14:59:21 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/03 17:05:22 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef enum s_token_type
 	T_DLESS,
 	T_DGREAT,
 	T_PIPE,
+	newline,
 }	t_token_type;
 
 typedef struct s_token

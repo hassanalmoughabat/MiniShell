@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/21 21:29:22 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/03 16:42:14 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,6 @@ void	ft_echo(t_token *tk, t_env *env)
 		{
 			temp = trim_outer_quotes(curr->cmd);
 			quotes= 1;
-			ft_printf("esdjfz\n");
 		}
 		else if (has_inner_quotes(curr->cmd) && !quotes)
 			temp =remove_inner_quotes(curr->cmd);

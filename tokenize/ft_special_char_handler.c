@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_special_char_handler.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:43:38 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/03/16 19:44:50 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/03 17:08:10 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,7 @@ int	ft_handle_operators(char **input, t_token **list)
 		return (ft_append_operator(list, T_DLESS, input, "<<"));
 	else if (!ft_strncmp(*input, "|", 1))
 		return (ft_append_operator(list, T_PIPE, input, "|"));
+	else if (!ft_strncmp(*input, "\n", 1))
+		return (ft_append_operator(list, newline, input, "newline"));
 	return (0);
 }

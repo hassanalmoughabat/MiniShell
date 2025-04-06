@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/20 15:03:30 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/03 17:35:28 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	print_welcome_message(void)
 		red, reset);
 	ft_printf("%s#%s            %sWelcome to minihell!%s             %s#%s\n",
 		yellow, reset, cyan, reset, yellow, reset);
-	ft_printf("%s#%s       %sA small copy of Hell is with you!%s      %s#%s\n",
+	ft_printf("%s#%s       %sA small copy of Hell is with you!%s     %s#%s\n",
 		yellow, reset, cyan, reset, yellow, reset);
 	ft_printf("%s######################################################%s\n",
 		red, reset);
@@ -53,7 +53,7 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 	print_welcome_message();
 	while (1)
 	{
-		input = readline("minishell>");
+		input = readline("minishell > ");
 		if (!input)
 			break ;
 		else

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/18 14:56:14 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/03 17:35:05 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,14 +127,19 @@ void	ft_cd(t_token *tk, t_env *env, char **ft_env)
 	char	*dir;
 	char	*pwd;
 	char	*oldpwd;
+	char	 *home;
+	int		size;
 
-	(void)ft_env;
+	home = my_getenv("HOME", ft_env);
+	size = ft_list_size(tk);
 	dir = find_dir_in_list(tk);
 	pwd = ft_get_cd_pwd();
 	oldpwd = ft_strdup(pwd);
 	if (!oldpwd)
 		update_env_value(env, "PWD", pwd);
-	if (chdir(dir) != 0)
+	else if (dir == NULL && size == 1)
+		chdir(home);
+	else if (chdir(dir) != 0)
 		error_print("directory not found\n", 1);
 	else
 	{

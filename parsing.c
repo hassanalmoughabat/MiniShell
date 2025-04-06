@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/17 01:39:21 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 16:25:27 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,100 +37,23 @@ int	ft_is_builtin(t_token *tk)
 	curr = tk;
 	while (curr)
 	{
-		if ((ft_strcmp(curr->cmd, "cd") == 0)
-			|| (ft_strcmp(curr->cmd, "env") == 0))
+		if ((ft_strcmp(curr->cmd, "cd") == 0))
 			return (1);
-		else if ((ft_strcmp(curr->cmd, "env") == 0)
-			|| (ft_strcmp(curr->cmd, "echo") == 0))
+		else if (ft_strcmp(curr->cmd, "echo") == 0)
 			return (1);
-		else if (ft_strcmp(curr->cmd, "export") == 0)
-			return (1);
-		else if (ft_strcmp(curr->cmd, "unset") == 0)
+		else if (ft_strcmp(curr->cmd, "pwd") == 0)
 			return (1);
 		else if (ft_strcmp(curr->cmd, "exit") == 0)
 			return (1);
-		else if (ft_strcmp(curr->cmd, "pwd") == 0)
+		else if (ft_strcmp(curr->cmd, "unset") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "export") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "env") == 0)
 			return (1);
 		curr = curr->next;
 	}
 	return (0);
-}
-
-int	is_a_path_command(char *cmd, char **ft_env)
-{
-	char	*path_env;
-	int		i;
-	char	*start;
-	char	*colon;
-	char	*dir;
-	char	*tmp;
-	char	*full_path;
-	int		found;
-	size_t	len;
-
-	path_env = NULL;
-	i = 0;
-	while (ft_env[i])
-	{
-		if (strncmp(ft_env[i], "PATH=", 5) == 0)
-		{
-			path_env = ft_env[i] + 5;
-			break ;
-		}
-		i++;
-	}
-	if (!path_env)
-	{
-		ft_printf("Error: PATH environment variable not found\n");
-		return (0);
-	}
-	found = 0;
-	start = path_env;
-	while (*start)
-	{
-		colon = ft_strchr(start, ':');
-		if (colon)
-			len = (size_t)(colon - start);
-		else
-			len = ft_strlen(start);
-		dir = ft_substr(start, 0, len);
-		if (!dir)
-		{
-			ft_printf("Error: Memory allocation failed in ft_substr\n");
-			return (0);
-		}
-		tmp = ft_strjoin(dir, "/");
-		free(dir);
-		if (!tmp)
-		{
-			ft_printf("Error: Memory allocation failed in ft_strjoin\n");
-			return (0);
-		}
-		full_path = ft_strjoin(tmp, cmd);
-		free(tmp);
-		if (!full_path)
-		{
-			ft_printf("Error: Memory allocation failed in ft_strjoin\n");
-			return (0);
-		}
-		if (access(full_path, X_OK) == 0)
-		{
-			found = 1;
-			free(full_path);
-			break ;
-		}
-		free(full_path);
-		if (colon)
-			start = colon + 1;
-		else
-			break ;
-	}
-	if (!found)
-	{
-		ft_printf("Error: Command Not Found\n");
-		return (0);
-	}
-	return (1);
 }
 
 void	handle_path_command(char *envp[], char *cmd)
@@ -159,20 +82,111 @@ void	handle_path_command(char *envp[], char *cmd)
 	}
 }
 
+static char *get_delimeter(t_token *tk)
+{
+	t_token *curr;
+
+	curr = tk;
+	while (curr)
+	{
+		if (ft_strcmp(curr->cmd, "<<") == 0)
+			return curr->next->cmd;
+		curr = curr->next;
+	}
+	return (NULL);
+}
+static char *find_command_around_heredoc(t_token *tk, char *delimiter)
+{
+    t_token *curr = tk;
+    t_token *command_before = NULL;
+    
+    while (curr)
+    {
+        if (curr->next && ft_strcmp(curr->next->cmd, "<<") == 0)
+            command_before = curr;
+
+        if (ft_strcmp(curr->cmd, "<<") == 0 && curr->next)
+        {
+            curr = curr->next;
+            while (curr)
+            {
+                if (ft_strcmp(curr->cmd, delimiter) == 0 && curr->next)
+                    return curr->next->cmd;
+                curr = curr->next;
+            }
+            if (command_before)
+                return command_before->cmd;
+                
+            return NULL;
+        }
+        curr = curr->next;
+    }
+    return NULL;  
+}
+
+ void handle_cat_heredoc(char **ft_env, t_env *env, t_token *tk)
+{
+    t_token *curr;
+    int read_fd;
+    pid_t pid;
+    int status;
+    char *path;
+	char *cmd;
+    char *delimeter;
+
+    delimeter = get_delimeter(tk);
+    cmd = find_command_around_heredoc(tk, delimeter);
+	if (cmd)
+    {
+		char *args[] = {cmd, NULL};
+	    path = get_path(cmd, ft_env);
+		curr = tk;
+	    read_fd = handle_dless(delimeter, env, 1);
+	    if (!read_fd)
+		        return;
+   		 pid = fork();  
+    	if (pid == -1)
+    	    return;
+   		 else if (pid == 0)
+    	{
+        	dup2(read_fd, STDIN_FILENO);
+        	close(read_fd);
+       		 execve(path, args, ft_env);
+       		 exit(EXIT_FAILURE);
+    	}
+    	else
+    	{
+   			  close(read_fd);
+   	    	 waitpid(pid, &status, 0);
+   	 	}
+	}
+	else
+		handle_dless(delimeter, env, 0);
+}
+
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 {
 	t_token	*curr;
 	int		command;
-
+	int flag;
+	
+	flag = 0;
 	command = 0;
 	curr = tk;
+	
 	if (curr->type == T_PIPE)
+	{
 		handle_pipe(tk, ft_env, *env);
-	else if ((curr->type == T_DGREAT || curr->type == T_DLESS
-			|| curr->type == T_GREAT || curr->type == T_LESS))
+	}
+	else if (contain_list("<<", tk) || contain_list(">>", tk)
+			|| contain_list("<", tk) || contain_list(">", tk))
+	{
 		handle_redirection(tk, ft_env, *env);
+	}
 	else if (ft_is_builtin(curr))
+	{
 		handle_builtin(tk, ft_env, *env, input);
+	}
 	else
 		handle_path_command(ft_env, input);
 	return ;
