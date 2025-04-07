@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/05 18:53:51 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 22:34:47 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ void	ft_unset(t_token *token, t_env **env, t_env **copy)
 			detect_key(token, env);
 			detect_key(token, copy);
 		}
+		if (!ft_strcmp(current->cmd, "new_line"))
+			return ;
 		current = current->next;
 	}
 }

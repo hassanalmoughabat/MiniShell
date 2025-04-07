@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/05 22:07:27 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/07 04:16:11 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ void	replace_dollar(t_token **t_list, t_env *env)
 			{
 				free(curr->cmd);
 				curr->cmd = ft_strdup(temp);
+				free(temp);
+				temp = NULL;
 			}
 			else
 			{
@@ -88,6 +90,7 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 		else
 		{
 			inp = ft_tokenize(input);
+			display_list(inp);
 			replace_dollar(&inp, env);
 			display_list(inp);
 			if (inp)

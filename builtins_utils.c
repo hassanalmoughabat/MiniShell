@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 10:35:30 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/03/16 20:32:39 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 22:39:11 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	print_env(char **ftenv)
 	i = 0;
 	while (ftenv[i])
 	{
-		ft_printf("envp is %s\n", ftenv[i]);
+		ft_printf("envp is %s", ftenv[i]);
 		i ++;
 	}
 }

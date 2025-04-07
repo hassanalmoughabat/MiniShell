@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:43:38 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/04/04 04:14:19 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 22:34:03 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,6 @@ int	ft_handle_operators(char **input, t_token **list)
 	else if (!ft_strncmp(*input, "|", 1))
 		return (ft_append_operator(list, T_PIPE, input, "|"));
 	else if (!ft_strncmp(*input, "\n", 1))
-		return (ft_append_operator(list, T_NL, input, "\\n"));
+		return (ft_append_operator(list, T_NL, input, "new_line"));
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/05 21:52:32 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/07 02:41:02 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void	ft_add_env(char *key, char *value, t_env **env, t_env **copy,int flag);
 //unset
 void	ft_unset(t_token *token, t_env **env, t_env **copy);
 // expansion utils	
-char	*handle_dollar(char *key, t_env *env);
+char	*handle_dollar(char *key, t_env *env, int flag);
 char	*extract_and_expand(char *input, t_env *env);
 void	handle_value(char *value, char **result, t_env *env);
 // export
@@ -149,7 +149,7 @@ int		ft_check_dollar(char *value, int index);
 size_t	extract_key_env(char *line);
 char	*extract_dollar_var(char *key, int *index);
 char	*extract_quoted_substring(char *input, int *i);
-char	*extract_unquoted_substring(char *input, int *i);
+char	*extract_unquoted_substring(char *input, int *i, int *flag);
 // setters and getters of values and keys
 int		has_equal_in_quote(char *input, char *quote);
 char	*get_key(char *input , t_env *env, char *quote, int *ind);
@@ -159,5 +159,5 @@ char	*get_value(char *input, t_env *env, char quote, int flag);
 int		set_key_value(char *input, char **key, char **value,t_env *env);
 // echo
 void	ft_echo(t_token *tk, t_env *env);
-void	echo_quotes_removal(t_token **tk);
+void	replace_dollar(t_token **t_list, t_env *env);
 #endif

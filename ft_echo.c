@@ -6,25 +6,25 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:24:32 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/05 20:44:10 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 22:35:06 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minihell.h"
 
-void	echo_quotes_removal(t_token **tk)
-{
-	t_token	*current;
+// void	echo_quotes_removal(t_token **tk)
+// {
+// 	t_token	*current;
 
-	if (!*tk || !tk)
-		return ;
-	current = *tk;
-	while (current)
-	{
-		remove_added_quotes(&current->cmd);
-		current = current->next;
-	}
-}
+// 	if (!*tk || !tk)
+// 		return ;
+// 	current = *tk;
+// 	while (current)
+// 	{
+// 		remove_added_quotes(&current->cmd);
+// 		current = current->next;
+// 	}
+// }
 
 int	handle_n(char *option)
 {
@@ -71,6 +71,8 @@ void	ft_echo(t_token *tk, t_env *env)
 				ft_printf("%s ", temp);
 			}	
 		}
+		if (curr && !ft_strcmp(curr->cmd, "new_line"))
+			return ;
 		curr = curr->next;
 	}
 	if (!flag)

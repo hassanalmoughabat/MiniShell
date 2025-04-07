@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/06 00:15:15 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/07 04:17:51 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ void	ft_export(t_token *token, t_env **env, t_env **copy)
 				respective_addition(env, copy, key, value, 2);
 		}
 		if (i == 2)
+			return ;
+		if (!ft_strcmp(curr->cmd, "new_line"))
 			return ;
 		curr = curr->next;
 	}

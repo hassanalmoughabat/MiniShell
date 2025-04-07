@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/05 18:32:47 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 17:23:05 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,21 +57,27 @@ void	ft_exit(t_token *tk, char **ft_env, t_env *env, char *input)
 void	handle_builtin(t_token *tk, char **ft_env, t_env *env, char *input)
 {
 	static t_env	*copy;
+	t_token			*curr;
 
+	curr = tk;
 	if (copy == NULL)
 		copy = copy_env(env);
-	if (!ft_strcmp(tk->cmd, "env"))
-		ft_print_env(env);
-	else if (!ft_strcmp(tk->cmd, "pwd"))
-		ft_pwd();
-	else if (!ft_strcmp(tk->cmd, "cd"))
-		ft_cd(tk, env, ft_env);
-	else if (!ft_strcmp(tk->cmd, "exit"))
-		ft_exit(tk, ft_env, env, input);
-	else if (!ft_strcmp(tk->cmd, "export"))
-		ft_export(tk, &env, &copy);
-	else if (!ft_strcmp(tk->cmd, "unset"))
-		ft_unset(tk, &env, &copy);
-	else if (!ft_strcmp(tk->cmd, "echo"))
-		ft_echo(tk, env);
+	while(curr)
+	{
+		if (!ft_strcmp(curr->cmd, "env"))
+			ft_print_env(env);
+		else if (!ft_strcmp(curr->cmd, "pwd"))
+			ft_pwd();
+		else if (!ft_strcmp(curr->cmd, "cd"))
+			ft_cd(curr, env, ft_env);
+		else if (!ft_strcmp(curr->cmd, "exit"))
+			ft_exit(curr, ft_env, env, input);
+		else if (!ft_strcmp(curr->cmd, "export"))
+			ft_export(curr, &env, &copy);
+		else if (!ft_strcmp(curr->cmd, "unset"))
+			ft_unset(curr, &env, &copy);
+		else if (!ft_strcmp(curr->cmd, "echo"))
+			ft_echo(curr, env);
+		curr = curr->next;
+	}
 }

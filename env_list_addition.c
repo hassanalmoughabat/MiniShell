@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:29 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/06 00:37:22 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/07 04:18:10 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	update_both(t_env **copy, t_env **env, char *key, char *value)
 
 	current = *env;
 	curr1 = *copy;
-	ft_printf("I AM HERE IN UPDATE BOTH\n");
 	while (curr1 && current)
 	{
 		extract_key = get_var(curr1->line);
@@ -78,7 +77,6 @@ void	update_copy_add_env(t_env **copy, t_env **env, char *key, char *value)
 	t_env	*curr1;
 
 	curr1 = *copy;
-	ft_printf("I AM HERE IN UPDATE COPY ADD ENV FUNCTION\n");
 	while (curr1)
 	{
 		extract_key = get_var(curr1->line);

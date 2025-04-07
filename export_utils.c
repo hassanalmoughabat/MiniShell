@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/06 00:41:20 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/07 04:18:02 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ int	print_export_env( t_token *token, t_env *env)
 		&& !ft_strcmp(curr->cmd, "export"))
 	{
 		// sort_env_list(env);export
-		
 		while (env)
 		{
 			printf("declare -x %s\n", env->line);

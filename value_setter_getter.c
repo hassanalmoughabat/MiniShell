@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:31:49 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/06 00:17:20 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/06 23:03:29 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	set_value(char **value, char quote, char *input, int flag)
 	char	*new_value;
 	size_t 	len;
 
+	len = 0;
 	equal_pos = ft_strchr(input, '=');
 	equal_pos ++;
 	if (ft_check_space(*equal_pos))
@@ -46,7 +47,7 @@ void	set_value(char **value, char quote, char *input, int flag)
 	{
 		if (flag)
 		{
-			first_quote = ft_strchr_unescaped(equal_pos, quote);
+
 			len = first_quote - equal_pos - 1;
 			new_value = malloc(len + 3);
 			if (!new_value)
@@ -73,7 +74,7 @@ char	*get_value(char *input, t_env *env, char quote, int flag)
 	if (!input)
 		return (NULL);
 	set_value(&value, quote, input, flag);
-	ft_printf("%s value in get value\n", value);
+	// ft_printf("%s value in get value\n", value);
 	if (!value)
 		return (NULL);
 	handle_value(value, &result, env);
@@ -155,8 +156,10 @@ int	set_key_value(char *input, char **key, char **value, t_env *env)
 			return (-1);
 		return (1);
 	}
+	ft_printf("above duplicate\n");
 	*key = ft_strdup(input);
-	if (!check_valid_key(*key))
+	ft_printf("key is  %s \n", *key);
+	if (*key && !check_valid_key(*key))
 	{
 		ft_printf("Error in key syntax\n");
 		return (free(*key), -1);

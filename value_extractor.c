@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:39:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/05 18:54:11 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/04/07 04:17:23 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,18 @@ char	*extract_quoted_substring(char *input, int *i)
 	return (substr);
 }
 
-char	*extract_unquoted_substring(char *input, int *i)
+char	*extract_unquoted_substring(char *input, int *i, int *flag)
 {
 	int		start;
 	char	*substr;
 
 	start = *i;
 	while (input[*i] && !ft_check_quotes(input[*i]))
+	{
+		if (input[*i] == '$' && !escape(input, *i))
+			*flag = 1;
 		(*i)++;
+	}
 	substr = ft_substr(input, start, (*i) - start);
 	return (substr);
 }
