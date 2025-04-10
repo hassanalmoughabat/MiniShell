@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/10 20:41:34 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/04/10 21:17:35 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env);
 // redirection
 int handle_dgreat(char *filename);
 int handle_great(char *cmd);
-int handle_dless(char *delimiter, t_env *env, int flag);
+int handle_dless(char *delimiter, t_env *env, int flag, int quote);
 
 // heredoc
 char *extract_variable(const char *line);

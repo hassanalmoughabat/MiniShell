@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 20:35:40 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/10 20:44:29 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/04/10 21:49:38 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,53 @@ char *find_command_around_heredoc(t_token *tk, char *delimiter)
     return NULL;  
 }
 
-int handle_dless(char *delimiter, t_env *env, int flag)
+static int is_delimeter_quoted(t_token *tk)
+{
+    t_token *curr;
+    char    *delimeter;
+    int     i;
+
+    curr = tk;
+    while (curr)
+    {
+        if (ft_strcmp(curr->cmd, "<<") == 0 && curr->next)
+        {
+            delimeter = curr->next->cmd;
+            i = 0;
+            while (delimeter[i])
+            {
+                if (delimeter[i] == '\'' || delimeter[i] == '\"')
+                    return (1);
+                i++;
+            }
+        }
+        curr = curr->next;
+    }
+    return (0);
+}
+
+char *extract_variable_quote(char *line)
+{
+    if (!line)
+        return NULL;
+    size_t start = 0;
+    size_t end = strlen(line);
+    while (line[start] == '\'' && start < end)
+        start++;
+    while (end > start && line[end - 1] == '\'')
+        end--;
+    size_t len = end - start;
+    if (len == 0)
+        return NULL;
+    char *result = (char *)malloc(len + 1);
+    if (!result)
+        return NULL;
+    strncpy(result, line + start, len);
+    result[len] = '\0';
+
+    return result;
+}
+int handle_dless(char *delimiter, t_env *env, int flag, int quote)
 {
     int pipefd[2];
     size_t total_written = 0;
@@ -139,14 +185,15 @@ int handle_dless(char *delimiter, t_env *env, int flag)
             free(line);
             break;
         }
-        
-        if (contain_char(line, '$') && flag == 1)
-        {
-            val = cut_from_op('$', line, env); 
-			oldval =  extract_variable(line);
-			line = replace_variable(line, oldval, val);
-
-        }
+        if (quote == 0)
+      	  if (contain_char(line, '$') && flag == 1  && !contain_char(line, '\"'))
+       	 	{
+				if (contain_char(line, '\'') == 1)
+					line = extract_variable_quote(line);
+        	    val = cut_from_op('$', line, env); 
+				oldval =  extract_variable(line);
+				line = replace_variable(line, oldval, val);
+        	}
         size_t line_len = strlen(line);
         if (total_written + line_len + 1 > MAX_HEREDOC_SIZE)
         {
@@ -162,7 +209,8 @@ int handle_dless(char *delimiter, t_env *env, int flag)
     }
     close(pipefd[1]);
     return pipefd[0];
-}
+} 
+
 
  void handle_cat_heredoc(char **ft_env, t_env *env, t_token *tk)
 {
@@ -173,7 +221,9 @@ int handle_dless(char *delimiter, t_env *env, int flag)
     char *path;
 	char *cmd;
     char *delimeter;
+	int quote;
 
+	quote = is_delimeter_quoted(tk);
     delimeter = get_delimeter(tk);
 	printf("delimeter is %s\n", delimeter);
     cmd = find_command_around_heredoc(tk, delimeter);
@@ -182,7 +232,7 @@ int handle_dless(char *delimiter, t_env *env, int flag)
 		char *args[] = {cmd, NULL};
 	    path = get_path(cmd, ft_env);
 		curr = tk;
-	    read_fd = handle_dless(delimeter, env, 1);
+	    read_fd = handle_dless(delimeter, env, 1, quote);
 	    if (!read_fd)
 		        return;
    		 pid = fork();  
@@ -202,5 +252,5 @@ int handle_dless(char *delimiter, t_env *env, int flag)
    	 	}
 	}
 	else
-		handle_dless(delimeter, env, 0);
+		handle_dless(delimeter, env, 0, quote);
 }
