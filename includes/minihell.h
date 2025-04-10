@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/06 16:25:32 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/04/10 20:41:34 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,20 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env);
 int handle_dgreat(char *filename);
 int handle_great(char *cmd);
 int handle_dless(char *delimiter, t_env *env, int flag);
+
+// heredoc
+char *extract_variable(const char *line);
+char *replace_variable(char *line, char *var_name, char *new_val);
 char *cut_from_op(char op, char *str, t_env *env);
 void handle_cat_heredoc(char **ft_env, t_env *env, t_token *tk);
 int contain_list(char *str, t_token *tk);
+int validate_delimiter(const char *delimiter);
+char *ft_strsub(char const *s, unsigned int start, size_t len);
+char *extract_content_without_quotes(char *str, char quote_type);
+char *get_delimeter(t_token *tk);
+char *find_command_around_heredoc(t_token *tk, char *delimiter);
+int contain_char(char *str, char c);
+
 // parsing
 int is_a_path_command(char *cmd, char **ft_env);
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);
