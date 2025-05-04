@@ -111,7 +111,7 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env);
 
 // redirection
 int handle_dgreat(char *filename);
-int handle_great(char *cmd);
+int handle_great(char *filename, t_token *tk, char **ft_env, t_env *env);
 int handle_dless(char *delimiter, t_env *env, int flag, int quote);
 
 // heredoc

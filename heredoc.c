@@ -165,13 +165,27 @@ char *extract_variable_quote(char *line)
 
     return result;
 }
+
+static int is_quoted_format(const char *line)
+{
+    if (!line)
+        return 0;
+
+    // Check for the ''$VAR'' pattern - double single quotes around a variable
+    size_t len = strlen(line);
+    if (len >= 4 && line[0] == '\'' && line[1] == '\'' && line[len - 2] == '\'' && line[len - 1] == '\'')
+        return 1;
+    return 0;
+}
+
 int handle_dless(char *delimiter, t_env *env, int flag, int quote)
 {
     int pipefd[2];
     size_t total_written = 0;
     char *line;
     char *val;
-	char *oldval;
+    char *oldval;
+    char *processed_line;
 
     if (!validate_delimiter(delimiter))
         return -1;
@@ -185,32 +199,90 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
             free(line);
             break;
         }
-        if (quote == 0)
-      	  if (contain_char(line, '$') && flag == 1  && !contain_char(line, '\"'))
-       	 	{
-				if (contain_char(line, '\'') == 1)
-					line = extract_variable_quote(line);
-        	    val = cut_from_op('$', line, env); 
-				oldval =  extract_variable(line);
-				line = replace_variable(line, oldval, val);
-        	}
-        size_t line_len = strlen(line);
+
+        processed_line = NULL;
+
+        // Process based on quote patterns
+        if (quote == 0 && contain_char(line, '$') && flag == 1 && !contain_char(line, '\"'))
+        {
+            if (is_quoted_format(line))
+            {
+                char *inner_content = ft_strsub(line, 2, strlen(line) - 4);
+                oldval = extract_variable(inner_content);
+                if (oldval)
+                {
+                    val = cut_from_op('$', inner_content, env);
+                    if (val)
+                    {
+                        processed_line = malloc(strlen(val) + 3);
+                        if (processed_line)
+                        {
+                            processed_line[0] = '\'';
+                            strcpy(processed_line + 1, val);
+                            processed_line[strlen(val) + 1] = '\'';
+                            processed_line[strlen(val) + 2] = '\0';
+                        }
+                        free(inner_content);
+                    }
+                    free(oldval);
+                }
+                if (!processed_line)
+                    processed_line = ft_strdup(line);
+            }
+            else if (line[0] == '\'' && line[strlen(line) - 1] == '\'')
+            {
+                char *inner_content = ft_strsub(line, 1, strlen(line) - 2);
+                oldval = extract_variable(inner_content);
+                if (oldval)
+                {
+                    val = cut_from_op('$', inner_content, env);
+                    processed_line = ft_strdup(val ? val : "");
+                    free(oldval);
+                }
+                free(inner_content);
+                if (!processed_line)
+                    processed_line = ft_strdup(line);
+            }
+            else
+            {
+                oldval = extract_variable(line);
+                if (oldval)
+                {
+                    val = cut_from_op('$', line, env);
+                    if (val)
+                    {
+                        processed_line = replace_variable(line, oldval, val);
+                        free(oldval);
+                    }
+                }
+            }
+        }
+        char *final_line;
+        if (processed_line)
+            final_line = processed_line;
+        else
+            final_line = line;
+        size_t line_len = strlen(final_line);
+
         if (total_written + line_len + 1 > MAX_HEREDOC_SIZE)
         {
             free(line);
+            if (processed_line)
+                free(processed_line);
             close(pipefd[0]);
             close(pipefd[1]);
             return -1;
         }
-        write(pipefd[1], line, line_len);
+        write(pipefd[1], final_line, line_len);
         write(pipefd[1], "\n", 1);
         total_written += line_len + 1;
         free(line);
+        if (processed_line)
+            free(processed_line);
     }
     close(pipefd[1]);
     return pipefd[0];
-} 
-
+}
 
  void handle_cat_heredoc(char **ft_env, t_env *env, t_token *tk)
 {
