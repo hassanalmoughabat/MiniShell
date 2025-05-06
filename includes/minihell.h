@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/10 21:17:35 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/06 20:00:37 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <unistd.h>
 # include <stdbool.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -110,7 +111,7 @@ void	handle_pipe(t_token *lst, char **ft_env, t_env *env);
 int handle_redirection(t_token *tk, char **ft_env, t_env *env);
 
 // redirection
-int handle_dgreat(char *filename);
+int handle_dgreat(char *filename, t_token *tk, char **ft_env, t_env *env);
 int handle_great(char *filename, t_token *tk, char **ft_env, t_env *env);
 int handle_dless(char *delimiter, t_env *env, int flag, int quote);
 
