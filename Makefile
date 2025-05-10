@@ -1,41 +1,90 @@
-NAME       = minishell
+NAME		:= minishell
 
-SRCS       = env_utils.c env.c error_handle.c minihell.c builtins.c parsing.c ft_cd.c leak.c export.c builtins_utils.c env_getters.c env_list_addition.c  expansion_helper.c expansion.c export_utils.c extra_functions.c ft_echo.c key_validators.c quotes_extra_functions.c quotes_functions.c unset.c value_extractor.c value_setter_getter.c copy_env.c
-OBJS       = $(SRCS:.c=.o)
+LIBFT		:= libft.a
+LIBFT_PATH	:= "includes/libft"
+PRINTF		:= libftprintf.a
+PRINTF_PATH	:= "includes/ft_printf"
+CC			:= cc
+CFLAGS		:= -Wall -Werror -Wextra -g
 
-CC         = cc
-CFLAGS     = -Wall -Wextra -g -Iincludes -I$(LIBFT) -I$(PRINTF) -I$(TOKENIZE)
+BUILTINS	:=	builtins/builtins_utils.c \
+				builtins/builtins.c \
+				builtins/copy_env.c \
+				builtins/env_getters.c \
+				builtins/env_list_addition.c \
+				builtins/env_utils.c \
+				builtins/env.c \
+				builtins/error_handle.c \
+				builtins/export_utils.c \
+				builtins/export.c \
+				builtins/extra_functions.c \
+				builtins/ft_cd.c \
+				builtins/ft_cd_cont.c \
+				builtins/ft_echo.c \
+				builtins/ft_exit.c \
+				builtins/ft_exit_utils.c\
+				builtins/key_validators.c \
+				builtins/quotes_extra_functions.c \
+				builtins/quotes_functions.c \
+				builtins/unset.c \
+				builtins/value_extractor.c \
+				builtins/value_getter.c \
+				builtins/value_setter.c
 
-LIBFT      = includes/libft
-PRINTF     = includes/ft_printf
-TOKENIZE   = tokenize
-LIBS       = $(TOKENIZE)/tokenize.a $(LIBFT)/libft.a $(PRINTF)/libftprintf.a
-READLINE   = -lreadline
+EXPANSION	:=	expansion/expander_extraction.c\
+				expansion/expansion_cases.c\
+				expansion/expansion_helper.c \
+				expansion/expansion.c
+
+SHELL_LVL	:=	shell_lvl/shell_handling.c
+
+SIGNALING	:=	signaling_heredocs/ft_signal.c \
+				signaling_heredocs/ft_heredocs.c \
+				signaling_heredocs/heredoc_helper.c \
+				signaling_heredocs/heredoc_utils.c
+
+TOKENIZE	:= 	tokenize/ft_error_handler.c \
+				tokenize/ft_list_functions.c \
+				tokenize/ft_quotes_handler.c \
+				tokenize/ft_quotes_helper.c \
+				tokenize/ft_space_handler.c \
+				tokenize/ft_special_char_handler.c \
+				tokenize/ft_tokenize.c
+
+SRCS		:=	$(BUILTINS)\
+				$(EXPANSION)\
+				$(SHELL_LVL)\
+				$(SIGNALING)\
+				$(TOKENIZE)\
+				free_functions.c minihell.c parsing_path_handling.c parsing.c
+
+OBJS		:= $(SRCS:.c=.o)
+
+READLINE	:= -lreadline
+
+%.o: %.c
+	@$(CC) $(CFLAGS) -c $< -o $@ -Iinclude -I$(READLINE_PATH)/include
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)/libft.a $(PRINTF)/libftprintf.a $(TOKENIZE)/tokenize.a
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(READLINE) -o $(NAME)
+$(LIBFT):
+	@make --no-print-directory -C $(LIBFT_PATH)
+$(PRINTF):
+	@make --no-print-directory -C $(PRINTF_PATH)
 
-$(LIBFT)/libft.a:
-	make -C $(LIBFT)
-
-$(PRINTF)/libftprintf.a:
-	make -C $(PRINTF)
-
-$(TOKENIZE)/tokenize.a:
-	make -C $(TOKENIZE)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(NAME): $(LIBFT) $(PRINTF) $(OBJS)
+	@$(CC) -o $(NAME) $(OBJS) -L$(LIBFT_PATH) -lft -L$(PRINTF_PATH) -lftprintf $(READLINE)
 
 clean:
-	rm -f $(OBJS)
-	@$(MAKE) -C $(LIBFT) clean --silent
-	@$(MAKE) -C $(PRINTF) clean --silent
-	@$(MAKE) -C $(TOKENIZE) clean --silent
+	@make --no-print-directory clean -C $(LIBFT_PATH)
+	@make --no-print-directory clean -C $(PRINTF_PATH)
+	@rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	@make --no-print-directory fclean -C $(LIBFT_PATH)
+	@make --no-print-directory fclean -C $(PRINTF_PATH)
+	@rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re

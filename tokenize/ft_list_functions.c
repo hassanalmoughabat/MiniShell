@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 15:26:30 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/04/04 03:54:59 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/07 20:31:36 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,20 @@ t_token	*create_token(char *value, t_token_type operator)
 
 	new_token = (t_token *)ft_calloc(1, sizeof(t_token));
 	if (!new_token)
-		return (0);
+		return (NULL);
 	new_token->type = operator;
-	new_token->cmd = ft_strdup(value);
+	if (value)
+	{
+		new_token->cmd = ft_strdup(value);
+		if (!new_token->cmd)
+		{
+			free(new_token);
+			return (NULL);
+		}
+	}
+	else
+		new_token->cmd = NULL;
+	new_token->next = NULL;
 	return (new_token);
 }
 

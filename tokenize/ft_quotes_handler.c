@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 01:26:28 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/03/27 14:39:53 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/07 19:29:54 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ int	ft_find_next_quote(char *line, size_t *i)
 
 	quote_saved = line[*i];
 	start = *i + 1;
-
 	while (line[start])
 	{
-		if (line[start] == '\"' && line[start] == quote_saved && !escape(line, start))
+		if (line[start] == '\"' && line[start] == quote_saved
+			&& !escape(line, start))
 		{
 			*i = start + 1;
 			return (1);
@@ -52,6 +52,24 @@ int	ft_find_next_quote(char *line, size_t *i)
 	return (0);
 }
 
+// char	*create_and_add(char *temp, char **input, int i, t_token **list)
+// {
+// 	char		*cmd;
+// 	t_token		*new_token;
+
+// 	cmd = ft_substr(temp, 0, i);
+// 	if (!cmd)
+// 		return (0);
+// 	new_token = create_token (cmd, T_IDENTIFIER);
+// 	if (!new_token)
+// 	{
+// 		ft_free_token_list(list);
+// 		return (NULL);
+// 	}
+// 	*input += i;
+// 	return (free(cmd),(ft_add_token_last(list, new_token), 1));
+// }
+
 int	ft_handle_quotes(char **input, t_token **token_list)
 {
 	size_t	i;
@@ -60,6 +78,7 @@ int	ft_handle_quotes(char **input, t_token **token_list)
 	t_token	*new_token;
 
 	temp = *input;
+	cmd = NULL;
 	i = 0;
 	while (temp[i] && !ft_delimeter(temp + i))
 	{
@@ -68,9 +87,9 @@ int	ft_handle_quotes(char **input, t_token **token_list)
 			if (!escape(temp, i))
 			{
 				if (!ft_find_next_quote(temp, &i))
-					return (ft_quote_error(temp[i]), 0);
+					return (ft_error_message_quotes(temp[i]), 0);
 			}
-			else 	
+			else
 				i ++;
 		}
 		else
@@ -80,8 +99,9 @@ int	ft_handle_quotes(char **input, t_token **token_list)
 	if (!cmd)
 		return (0);
 	new_token = create_token (cmd, T_IDENTIFIER);
+	free(cmd);
 	if (!new_token)
-		return (free(cmd), 0);
+		return (0);
 	*input += i;
 	return ((ft_add_token_last(token_list, new_token), 1));
 }

@@ -6,35 +6,21 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/05 19:40:41 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/02 23:05:13 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minihell.h"
 
-void	handle_pipe(t_token *lst, char **ft_env, t_env *env)
-{
-	ft_printf("hey");
-}
+// void	handle_pipe(t_token *lst, char **ft_env, t_env *env)
+// {
+// 	ft_putstr_fd("hey", 1);
+// }
 
-void	handle_redirection(t_token *tk, char **ft_env, t_env *env)
-{
-	ft_printf("hey");
-}
-
-static int	ft_exist(char *str, char c)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			return (1);
-		i++;
-	}
-	return (0);
-}
+// void	handle_redirection(t_token *tk, char **ft_env, t_env *env)
+// {
+// 	ft_putstr_fd("hey0, 1", 1);
+// }
 
 int	ft_is_builtin(t_token *tk)
 {
@@ -87,7 +73,7 @@ int	is_a_path_command(char *cmd, char **ft_env)
 	}
 	if (!path_env)
 	{
-		ft_printf("Error: PATH environment variable not found\n");
+		ft_putstr_fd("Error: PATH environment variable not found\n", 2);
 		return (0);
 	}
 	found = 0;
@@ -105,10 +91,7 @@ int	is_a_path_command(char *cmd, char **ft_env)
 		tmp = ft_strjoin(dir, "/");
 		free(dir);
 		if (!tmp)
-		{
-			ft_printf("Error: Memory allocation failed in ft_strjoin\n");
 			return (0);
-		}
 		full_path = ft_strjoin(tmp, cmd);
 		free(tmp);
 		if (!full_path)
@@ -119,6 +102,8 @@ int	is_a_path_command(char *cmd, char **ft_env)
 			free(full_path);
 			break ;
 		}
+		else
+			g_minishell.env->exit_status = ft_err_msg((t_error){cmd, ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
 		free(full_path);
 		if (colon)
 			start = colon + 1;
@@ -126,57 +111,6 @@ int	is_a_path_command(char *cmd, char **ft_env)
 			break ;
 	}
 	if (!found)
-	{
-		ft_printf("Error: Command Not Found\n");
-		return (0);
-	}
-	return (1);
-}
-
-void	handle_path_command(char *envp[], char *cmd)
-{
-	char	**s_cmd;
-	char	*path;
-	pid_t	pid;
-	int		status;
-
-	s_cmd = ft_split(cmd, ' ');
-	if (!s_cmd || !s_cmd[0])
-		error_print_free("minishell: command not found", 1, s_cmd);
-	pid = fork();
-	if (pid == -1)
-		error_print_free("fork", 1, s_cmd);
-	else if (pid == 0)
-	{
-		path = get_path(s_cmd[0], envp);
-		if (!path || execve(path, s_cmd, envp) == -1)
-			error_print_free("minishell: command not found", 1, s_cmd);
-	}
-	else
-	{
-		waitpid(pid, &status, 0);
-		ft_free_tab(s_cmd);
-	}
-}
-
-void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
-{
-	t_token	*curr;
-	int		command;
-
-	command = 0;
-	curr = tk;
-	if (curr->type == T_PIPE)
-		handle_pipe(tk, ft_env, *env);
-	else if ((curr->type == T_DGREAT || curr->type == T_DLESS
-			|| curr->type == T_GREAT || curr->type == T_LESS))
-		handle_redirection(tk, ft_env, *env);
-	else
-	{
-		remove_added_quotes(&(curr->cmd));
-		if (ft_is_builtin(curr))
-			handle_builtin(tk, ft_env, *env, input);
-		else
-			handle_path_command(ft_env, input);
-	}
+		g_minishell.env->exit_status = ft_err_msg((t_error){cmd, ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:48:25 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/04/04 03:21:01 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/05 13:06:58 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <stdlib.h>
 # include <stdio.h>
-#include <stdbool.h>
+# include <stdbool.h>
 # include <sys/wait.h>
 # include "../includes/libft/libft.h"
 
@@ -45,7 +45,7 @@ t_token	*ft_tokenize(char *input);
 void	ft_add_token_last(t_token **t_list, t_token *new_token);
 void	ft_skip_added_spaces(char **str);
 void	ft_free_token_list(t_token **list);
-int		ft_quote_error(char c);
+int		ft_error_message_quotes(char c);
 int		ft_append_operator(t_token **list, t_token_type operator,
 			char **input, char *value);
 int		ft_handle_quotes(char **input, t_token **token_list);
@@ -55,6 +55,6 @@ int		ft_check_special_char(char *str);
 int		ft_delimeter(char *str);
 int		ft_check_quotes(char c);
 int		ft_check_space(char c);
-bool 	escape(const char *str, int index);
+bool	escape(const char *str, int index);
 
 #endif
