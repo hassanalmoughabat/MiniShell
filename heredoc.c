@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 20:35:40 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/11 12:40:09 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/11 13:23:12 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,7 +291,6 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
 
 	quote = is_delimeter_quoted(tk);
     delimeter = get_delimeter(tk);
-	printf("delimeter is %s\n", delimeter);
     cmd = find_command_around_heredoc(tk, delimeter);
 	if (cmd)
     {
