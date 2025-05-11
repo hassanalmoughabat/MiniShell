@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/06 20:00:37 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/11 13:12:34 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,12 @@ typedef struct s_shell
 
 }	t_shell;
 
-// typedef struct s_command
-// {
-// 	char				**args;
-// 	char				*infile;
-// 	char				*outfile;
-// 	int					append;
-// 	struct s_command	*next;
-// }	t_command;
+typedef struct s_redir_params
+{
+	char	**ft_env;
+	t_env	*env;
+}	t_redir_params;
+
 
 // error handling
 void	ft_free_tab(char **tab);
@@ -108,12 +106,44 @@ void	update_env_value(t_env *head, const char *target,
 
 //piping functions && redirection
 void	handle_pipe(t_token *lst, char **ft_env, t_env *env);
-int handle_redirection(t_token *tk, char **ft_env, t_env *env);
+int	handle_redirection(t_token *tk, char **ft_env, t_env *env);
 
 // redirection
-int handle_dgreat(char *filename, t_token *tk, char **ft_env, t_env *env);
-int handle_great(char *filename, t_token *tk, char **ft_env, t_env *env);
+ int	handle_great(char *filename, t_token *tk, char **ft_env, t_env *env);
+int	handle_dgreat(char *filename, t_token *tk, char **ft_env, t_env *env);
 int handle_dless(char *delimiter, t_env *env, int flag, int quote);
+
+
+// redirection_utils
+int	handle_redirect_child(int fd, t_token *tk, t_token *redirect_token,
+		t_redir_params *params);
+int	handle_redirect_fork(int fd, t_token *tk, t_token *redirect_token,
+		t_redir_params *params);
+ t_redir_params	*init_redir_params(char **ft_env, t_env *env);
+
+// redirection_utils2
+ int	count_tokens(t_token *tokens);
+ char	**build_args_array(t_token *cmd_tokens);
+void	print_cmd_error(char *cmd, char *msg);
+void	execute_external_cmd(t_token *cmd_tokens, char **ft_env);
+void	execute_with_redirect(t_token *cmd_tokens, char **ft_env,
+			t_env *env, int fd);
+
+
+// redirection_utils3
+int	open_output_file(char *filename, int flags);
+int	handle_standalone_redirect(char *filename, t_token *tk, int flags);
+t_token	*find_redirect_token(t_token *tk, char *redirect_op);
+t_token	*copy_tokens_before_redirect(t_token *tk, t_token *redirect_token);
+void	execute_builtin_redirect(t_token *cmd_tokens, char **ft_env,
+		t_env *env);
+
+//handle redirection utils
+ int	handle_output_redirect(t_token *curr, t_token *tk,
+		char **ft_env, t_env *env);
+ int	handle_input_redirect(t_token *curr, t_token *tk,
+		char **ft_env, t_env *env);
+	
 
 // heredoc
 char *extract_variable(const char *line);

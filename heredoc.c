@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 20:35:40 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/04/10 21:49:38 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/11 12:40:09 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@ char *extract_content_without_quotes(char *str, char quote_type)
     len = ft_strlen(str);
     if (len < 2)
         return (ft_strdup(str));
-    
-    // Check if string starts and ends with the same quote type
-    if (str[0] == quote_type && str[len - 1] == quote_type)
+        if (str[0] == quote_type && str[len - 1] == quote_type)
     {
         result = (char *)malloc(sizeof(char) * (len - 1));
         if (!result)
@@ -170,8 +168,6 @@ static int is_quoted_format(const char *line)
 {
     if (!line)
         return 0;
-
-    // Check for the ''$VAR'' pattern - double single quotes around a variable
     size_t len = strlen(line);
     if (len >= 4 && line[0] == '\'' && line[1] == '\'' && line[len - 2] == '\'' && line[len - 1] == '\'')
         return 1;
@@ -201,8 +197,6 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
         }
 
         processed_line = NULL;
-
-        // Process based on quote patterns
         if (quote == 0 && contain_char(line, '$') && flag == 1 && !contain_char(line, '\"'))
         {
             if (is_quoted_format(line))
