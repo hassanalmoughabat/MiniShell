@@ -58,7 +58,6 @@ char *cut_from_op(char op, char *str, t_env *env)
     char *send;
     int i ;
 
-    int len = ft_strlen(str);
     pos = ft_index(str, op); 
     start = pos;
     count = 0;
@@ -79,7 +78,6 @@ char *cut_from_op(char op, char *str, t_env *env)
 
  char *replace_variable(char *line, char *var_name, char *new_val)
 {
-     
     size_t before_len;
     size_t var_name_len;
     size_t new_val_len;
@@ -90,18 +88,20 @@ char *cut_from_op(char op, char *str, t_env *env)
     pos = strstr(line, var_name);
     if (!pos)
         return ft_strdup(line); 
-        before_len = pos - line;
-        var_name_len = ft_strlen(var_name);
-        new_val_len = ft_strlen(new_val);
-        after_len = ft_strlen(pos + var_name_len);
-        new_len = before_len + new_val_len + after_len;
+    before_len = pos - line;
+    var_name_len = ft_strlen(var_name);
+    new_val_len = ft_strlen(new_val);
+    after_len = ft_strlen(pos + var_name_len);
+    new_len = before_len + new_val_len + after_len;
     char *new_line = malloc(new_len + 1);
     if (!new_line)
-        return NULL;
-	strncpy(new_line, line, before_len);                   
+    {
+           return (NULL);
+    }
+    strncpy(new_line, line, before_len);                   
     ft_strcpy(new_line + before_len, new_val);                 
     ft_strcpy(new_line + before_len + new_val_len, pos + var_name_len);
-    return new_line;
+    return (new_line);
 }
 
 

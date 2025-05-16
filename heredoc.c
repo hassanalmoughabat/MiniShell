@@ -27,7 +27,7 @@ char *extract_content_without_quotes(char *str, char quote_type)
     len = ft_strlen(str);
     if (len < 2)
         return (ft_strdup(str));
-        if (str[0] == quote_type && str[len - 1] == quote_type)
+    if (str[0] == quote_type && str[len - 1] == quote_type)
     {
         result = (char *)malloc(sizeof(char) * (len - 1));
         if (!result)
@@ -280,7 +280,6 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
 
  void handle_cat_heredoc(char **ft_env, t_env *env, t_token *tk)
 {
-    t_token *curr;
     int read_fd;
     pid_t pid;
     int status;
@@ -296,7 +295,6 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
     {
 		char *args[] = {cmd, NULL};
 	    path = get_path(cmd, ft_env);
-		curr = tk;
 	    read_fd = handle_dless(delimeter, env, 1, quote);
 	    if (!read_fd)
 		        return;

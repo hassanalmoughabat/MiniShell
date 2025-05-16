@@ -49,12 +49,7 @@ int	contain_list(char *str, t_token *tk)
 {
 	if (curr->next && curr->next->type == T_IDENTIFIER)
 	{
-		if (contain_list("<<", tk) == 1)
 			handle_cat_heredoc(ft_env, env, tk);
-		else
-		{
-			handle_dless(curr->next->cmd, tk, ft_env, env); 
-		}
 		return (1);
 	}
 	else

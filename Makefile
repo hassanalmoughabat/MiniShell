@@ -4,7 +4,7 @@ SRCS       = env_utils.c env.c error_handle.c minihell.c builtins.c parsing.c ft
 OBJS       = $(SRCS:.c=.o)
 
 CC         = cc
-CFLAGS     = -Wall -Wextra -g -Iincludes -I$(LIBFT) -I$(PRINTF) -I$(TOKENIZE)
+CFLAGS     = -Wall -Wextra -Werror -g -Iincludes -I$(LIBFT) -I$(PRINTF) -I$(TOKENIZE)
 
 LIBFT      = includes/libft
 PRINTF     = includes/ft_printf

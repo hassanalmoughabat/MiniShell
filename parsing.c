@@ -12,23 +12,11 @@
 
 #include "includes/minihell.h"
 
-void	handle_pipe(t_token *lst, char **ft_env, t_env * env)
-{
-	ft_printf("hey");
-}
-static int	ft_exist(char *str, char c)
-{
-	int	i;
+// void	handle_pipe(t_token *lst, char **ft_env, t_env * env)
+// {
+// 	ft_printf("hey");
+// }
 
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 int	ft_is_builtin(t_token *tk)
 {
@@ -85,16 +73,11 @@ void	handle_path_command(char *envp[], char *cmd)
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 {
 	t_token	*curr;
-	int		command;
-	int flag;
 	
-	flag = 0;
-	command = 0;
 	curr = tk;
-	
 	if (curr->type == T_PIPE)
 	{
-		handle_pipe(tk, ft_env, *env);
+		return;
 	}
 	else if (contain_list("<<", tk) || contain_list(">>", tk)
 			|| contain_list("<", tk) || contain_list(">", tk))
