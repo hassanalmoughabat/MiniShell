@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 01:26:28 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/07 19:29:54 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/18 00:42:42 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,24 +52,6 @@ int	ft_find_next_quote(char *line, size_t *i)
 	return (0);
 }
 
-// char	*create_and_add(char *temp, char **input, int i, t_token **list)
-// {
-// 	char		*cmd;
-// 	t_token		*new_token;
-
-// 	cmd = ft_substr(temp, 0, i);
-// 	if (!cmd)
-// 		return (0);
-// 	new_token = create_token (cmd, T_IDENTIFIER);
-// 	if (!new_token)
-// 	{
-// 		ft_free_token_list(list);
-// 		return (NULL);
-// 	}
-// 	*input += i;
-// 	return (free(cmd),(ft_add_token_last(list, new_token), 1));
-// }
-
 int	ft_handle_quotes(char **input, t_token **token_list)
 {
 	size_t	i;
@@ -99,9 +81,8 @@ int	ft_handle_quotes(char **input, t_token **token_list)
 	if (!cmd)
 		return (0);
 	new_token = create_token (cmd, T_IDENTIFIER);
-	free(cmd);
 	if (!new_token)
-		return (0);
+		return (free(cmd), 0);
 	*input += i;
 	return ((ft_add_token_last(token_list, new_token), 1));
 }

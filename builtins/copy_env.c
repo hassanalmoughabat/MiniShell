@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 23:34:20 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/10 12:12:45 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/16 17:43:30 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	print_env_list(t_env *env_list)
 {
 	while (env_list)
 	{
-		printf("%s\n", env_list->line);
+		ft_printf("%s\n", env_list->line);
 		env_list = env_list->next;
 	}
 }

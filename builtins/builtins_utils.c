@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 10:35:30 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/05 12:04:32 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/16 17:43:14 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ void	display_list(t_token *tk)
 	curr = tk;
 	while (curr)
 	{
-		printf("line is %s\n", curr->cmd);
-		printf("line is %d\n", curr->type);
+		ft_printf("line is %s\n", curr->cmd);
+		ft_printf("line is %d\n", curr->type);
 		curr = curr->next;
 	}
 }

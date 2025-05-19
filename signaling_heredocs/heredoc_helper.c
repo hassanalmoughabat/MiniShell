@@ -6,58 +6,58 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 20:40:13 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/06 19:00:03 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/18 17:10:51 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-int	validate_delimiter(const char *delimiter)
+int validate_delimiter(const char *delimiter)
 {
-	if (!delimiter || *delimiter == '\0')
-		return (0);
-	return (1);
+    if (!delimiter || *delimiter == '\0')
+    {
+        return 0;
+    }
+    return 1;
 }
 
-int	contain_char(char *str, char c)
+ int contain_char(char *str, char c)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			return (1);
-		i++;
-	}
-	return (0);
+    i = 0;
+    while (str[i])
+    {
+        if (str[i] == c)
+            return (1);
+        i++;
+    }
+    return (0);
 }
 
-int	ft_index(char *str, char c)
+int ft_index(char *str, char c)
 {
-	int	i;
+	int i = 0;
 
-	i = 0;
 	while (str[i])
 	{
 		if (str[i] == c)
 			return (i);
 		i++;
 	}
-	return (0);
+	return 0;
 }
 
-char	*cut_from_op(char op, char *str, t_env *env)
+char *cut_from_op(char op, char *str, t_env *env)
 {
-	int		pos;
-	int		count = 0;
-	int		start;
-	int		end;
-	char	*value;
-	char	*send;
-	int		i;
+    int pos;
+    int count = 0;
+    int start;
+    int end;
+    char *value;
+    char *send;
+    int i ;
 
-    // int len = ft_strlen(str);
     pos = ft_index(str, op); 
     start = pos;
     count = 0;
@@ -78,7 +78,6 @@ char	*cut_from_op(char op, char *str, t_env *env)
 
  char *replace_variable(char *line, char *var_name, char *new_val)
 {
-     
     size_t before_len;
     size_t var_name_len;
     size_t new_val_len;
@@ -95,11 +94,17 @@ char	*cut_from_op(char op, char *str, t_env *env)
     after_len = ft_strlen(pos + var_name_len);
     new_len = before_len + new_val_len + after_len;
     char *new_line = malloc(new_len + 1);
-	strncpy(new_line, line, before_len);                   
+    if (!new_line)
+    {
+           return (NULL);
+    }
+    strncpy(new_line, line, before_len);                   
     ft_strcpy(new_line + before_len, new_val);                 
     ft_strcpy(new_line + before_len + new_val_len, pos + var_name_len);
-    return new_line;
+    return (new_line);
 }
+
+
 
 char *extract_variable(const char *line)
 {

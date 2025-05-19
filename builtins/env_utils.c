@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/05 12:10:19 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/17 23:17:04 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ char	*get_path(char *cmd, char *envp[])
 		free(path_part);
 		if (access(exec, F_OK | X_OK) == 0)
 		{
+			ft_free_tab(allpath);
 			ft_free_tab(s_cmd);
 			return (exec);
 		}
@@ -109,5 +110,5 @@ char	*get_path(char *cmd, char *envp[])
 	}
 	ft_free_tab(allpath);
 	ft_free_tab(s_cmd);
-	return (cmd);
+	return (ft_strdup(cmd));
 }

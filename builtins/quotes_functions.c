@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:35:27 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/09 12:06:58 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/16 19:19:56 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ int	remove_added_quotes(char **value)
 			result[j++] = temp[i++];
 	}
 	result[j] = '\0';
+    free(*value);
 	*value = ft_strdup(result);
 	return (free(result), 0);
 }

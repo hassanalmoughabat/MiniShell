@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/07 12:18:18 by hal-moug          #+#             */
-/*   Updated: 2025/04/29 23:44:06 by njoudieh42       ###   ########.fr       */
+/*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
+/*   Updated: 2025/05/20 00:42:48 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 	while (1)
 	{
 		ft_init_signals();
-		input = readline("minishell:~$");
+		input = readline("minishell:~$ ");
 		if (!input)
 			break ;
 		else
@@ -94,16 +94,16 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 				free_array(ftenv);
 			ftenv = transform(g_minishell.env);
 			replace_dollar(&inp);
-			// if (inp)
-			// 	display_list(inp);
 			if (inp)
 				after_parsing(inp, ftenv, &env, input);
-			if (inp)
-				free_token_list(inp);
+			// display_list(inp);
+			// if (inp)
+			// 	free_token_list(inp);
 			add_history(input);
+			// free(input);
 		}
 	}
-	return (0);
+	return (g_minishell.env->exit_status);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -123,10 +123,7 @@ int	main(int argc, char **argv, char **envp)
 	else
 		g_minishell.path = path;
 	ft_read(input, ft_transform, g_minishell.env);
-	if (path)
-		free(path);
-	if (ft_transform)
-		free_array(ft_transform);
+	// cleanup_minishell(&g_minishell, ft_transform, path);
 	ft_printf("exit \n");
-	return (0);
+	return (g_minishell.env->exit_status);
 }

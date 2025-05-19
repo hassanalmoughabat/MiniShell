@@ -6,20 +6,15 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/02 23:05:13 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/16 14:32:44 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minihell.h"
 
-// void	handle_pipe(t_token *lst, char **ft_env, t_env *env)
+// void	handle_pipe(t_token *lst, char **ft_env, t_env * env)
 // {
-// 	ft_putstr_fd("hey", 1);
-// }
-
-// void	handle_redirection(t_token *tk, char **ft_env, t_env *env)
-// {
-// 	ft_putstr_fd("hey0, 1", 1);
+// 	ft_printf("hey");
 // }
 
 int	ft_is_builtin(t_token *tk)
@@ -29,19 +24,19 @@ int	ft_is_builtin(t_token *tk)
 	curr = tk;
 	while (curr)
 	{
-		if ((ft_strcmp(curr->cmd, "cd") == 0)
-			|| (ft_strcmp(curr->cmd, "env") == 0))
+		if ((ft_strcmp(curr->cmd, "cd") == 0))
 			return (1);
-		else if ((ft_strcmp(curr->cmd, "env") == 0)
-			|| (ft_strcmp(curr->cmd, "echo") == 0))
+		else if (ft_strcmp(curr->cmd, "echo") == 0)
 			return (1);
-		else if (ft_strcmp(curr->cmd, "export") == 0)
-			return (1);
-		else if (ft_strcmp(curr->cmd, "unset") == 0)
+		else if (ft_strcmp(curr->cmd, "pwd") == 0)
 			return (1);
 		else if (ft_strcmp(curr->cmd, "exit") == 0)
 			return (1);
-		else if (ft_strcmp(curr->cmd, "pwd") == 0)
+		else if (ft_strcmp(curr->cmd, "unset") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "export") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "env") == 0)
 			return (1);
 		curr = curr->next;
 	}

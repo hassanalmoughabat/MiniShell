@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:33:51 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/09 21:54:42 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/17 15:08:36 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,14 @@ void	update_shlvl_in_env(t_env **env, int new_shlvl)
 		curr = curr->next;
 	new_value = ft_itoa(new_shlvl);
 	new_line = ft_strjoin("SHLVL=", new_value);
+	free(new_value);
 	if (curr)
 	{
 		free(curr->line);
 		curr->line = new_line;
 	}
 	else
-	{
 		add_shell_level(&g_minishell.env, new_line);
-		free (new_line);
-	}
-	free (new_value);
 }
 
 void	shell_handling(t_token *tk)

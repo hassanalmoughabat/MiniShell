@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:15:21 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/09 12:28:35 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/18 00:08:29 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,19 @@ void	ft_cd(t_token *tk, t_env *env, char **ft_env)
 	char	*dir;
 	char	*pwd;
 	char	*oldpwd;
+	char	*home;
+	int		size;
 
-	(void)ft_env;
+	home = my_getenv("HOME", ft_env);
+	size = ft_list_size(tk);
 	dir = find_dir_in_list(tk);
 	pwd = ft_get_cd_pwd();
 	oldpwd = ft_strdup(pwd);
 	if (!oldpwd)
 		update_env_value(env, "PWD", pwd);
-	if (chdir(dir) != 0)
+	else if (dir == NULL && size == 1)
+		chdir(home);
+	else if (chdir(dir) != 0)
 		g_minishell.env->exit_status = ft_err_msg((t_error){dir,
 				ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
 	else

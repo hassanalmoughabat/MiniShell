@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 12:50:35 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/08 13:36:29 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/19 00:12:05 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,25 +19,27 @@ void	free_token_list(t_token *head)
 	while (head)
 	{
 		tmp = head->next;
-		if (head->cmd)
-			free(head->cmd);
+		free(head->cmd);
 		free(head);
 		head = tmp;
 	}
 }			
 
-void	free_env_list(t_env *head)
+void free_env_list(t_env *env)
 {
-	t_env	*temp;
-
-	while (head)
-	{
-		temp = head;
-		head = head->next;
-		if (temp->line)
-			free(temp->line);
-		free(temp);
-	}
+    t_env *current;
+    t_env *next;
+    
+    current = env;
+    while (current != NULL)
+    {
+        next = current->next;
+        
+        if (current->line)
+            free(current->line);
+        free(current);
+        current = next;
+    }
 }
 
 void	free_array(char **arr)
@@ -74,4 +76,19 @@ void	free_shell(t_shell *shell)
 	if (shell->path)
 		free(shell->path);
 	free(shell);
+}
+
+void	cleanup_minishell(t_shell *shell, char **transform_result, char *input)
+{
+	if (input)
+		free(input);
+	if (transform_result)
+		free_array(transform_result);
+	if (shell)
+	{
+		if (shell->path)
+			free(shell->path);
+		if (shell->env)
+			free_env_list(shell->env);
+	}
 }

@@ -40,8 +40,12 @@ SHELL_LVL	:=	shell_lvl/shell_handling.c
 
 SIGNALING	:=	signaling_heredocs/ft_signal.c \
 				signaling_heredocs/ft_heredocs.c \
+				signaling_heredocs/handle_great_main.c \
 				signaling_heredocs/heredoc_helper.c \
-				signaling_heredocs/heredoc_utils.c
+				signaling_heredocs/heredoc_utils.c \
+				signaling_heredocs/handle_great_utils.c \
+				signaling_heredocs/handle_great.c \
+				signaling_heredocs/handle_redirection.c
 
 TOKENIZE	:= 	tokenize/ft_error_handler.c \
 				tokenize/ft_list_functions.c \
