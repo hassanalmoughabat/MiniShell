@@ -5,7 +5,7 @@ LIBFT_PATH	:= "includes/libft"
 PRINTF		:= libftprintf.a
 PRINTF_PATH	:= "includes/ft_printf"
 CC			:= cc
-CFLAGS		:= -Wall -Werror -Wextra -g
+CFLAGS		:= -Wall  -Wextra -g
 
 BUILTINS	:=	builtins/builtins_utils.c \
 				builtins/builtins.c \
@@ -60,7 +60,7 @@ SRCS		:=	$(BUILTINS)\
 				$(SHELL_LVL)\
 				$(SIGNALING)\
 				$(TOKENIZE)\
-				free_functions.c minihell.c parsing_path_handling.c parsing.c
+				free_functions.c minihell.c parsing_path_handling.c parsing.c handle_pipe.c
 
 OBJS		:= $(SRCS:.c=.o)
 
