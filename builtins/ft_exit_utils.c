@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:04:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/10 01:48:30 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/21 01:51:53 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,10 @@ void	handle_exit_code(t_token *curr)
 	{
 		if (ft_isnum(curr->cmd) && in_range)
 			g_minishell.env->exit_status = ft_err_msg((t_error){curr->cmd,
-						ERROR_MESG_TOO_MANY_ARGS, ENU_GENEREAL_FAILURE});
+					ERROR_MESG_TOO_MANY_ARGS, ENU_GENEREAL_FAILURE});
 		else
 			g_minishell.env->exit_status = ft_err_msg((t_error){curr->cmd,
-						ERROR_MESG_NUMERIC_REQUIRED, ENU_MISUSED_BUILTIN});
+					ERROR_MESG_NUMERIC_REQUIRED, ENU_MISUSED_BUILTIN});
 	}
 	else if (ft_list_size(curr) == 1)
 	{
@@ -119,7 +119,7 @@ void	handle_exit_code(t_token *curr)
 		}
 		else
 			g_minishell.env->exit_status = ft_err_msg((t_error){curr->cmd,
-						ERROR_MESG_NUMERIC_REQUIRED, ENU_MISUSED_BUILTIN});
+					ERROR_MESG_NUMERIC_REQUIRED, ENU_MISUSED_BUILTIN});
 	}
 	else
 		g_minishell.env->exit_status = ft_err_msg((t_error){curr->cmd,

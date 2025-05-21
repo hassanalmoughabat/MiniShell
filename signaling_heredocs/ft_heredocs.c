@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredocs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:56:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/20 20:44:23 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/18 23:50:53 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
             break;
         }
         processed_line = NULL;
-        if (quote == 0 && contain_char(line, '$') && flag == 1)
+        if (quote == 0 && contain_char(line, '$') && flag == 1 && !contain_char(line, '\"'))
         {
             if (is_quoted_format(line))
             {
@@ -237,7 +237,7 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
                 if (!processed_line)
                     processed_line = ft_strdup(line);
             }
-            else if ((line[0] == '\'' && line[strlen(line) - 1] == '\'') || (line[0] == '\"' && line[strlen(line) - 1] == '\"'))
+            else if (line[0] == '\'' && line[strlen(line) - 1] == '\'')
             {
                 char *inner_content = ft_strsub(line, 1, strlen(line) - 2);
                 oldval = extract_variable(inner_content);
@@ -293,94 +293,71 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
 }
 void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
 {
-    t_token *curr;
     int read_fd;
     pid_t pid;
     int status;
     char *path;
     char *cmd;
-    char *delimiter;
+    char *delimeter;
     int quote;
 
-    curr = tk;
-    while (curr)
+    quote = is_delimeter_quoted(tk);
+    delimeter = get_delimeter(tk);
+    cmd = find_command_around_heredoc(tk, delimeter);
+    g_minishell.signint_child = true;
+    pid = fork();    
+    if (pid == -1)
     {
-        if (curr->cmd && ft_strcmp(curr->cmd, "<<") == 0 && curr->next)
+        free(delimeter);
+        return;
+    }
+    if (pid == 0)
+    {
+        signal(SIGINT, ft_heredoc_sigint_handler);
+        signal(SIGQUIT, SIG_IGN);
+        if (cmd)
         {
-            delimiter = get_delimeter(curr);
-            if (!delimiter)
-                return;
-                
-            quote = is_delimeter_quoted(curr);
-            cmd = find_command_around_heredoc(tk, delimiter);
-
-            g_minishell.signint_child = true;
-            pid = fork();
-            
-            if (pid == -1)
+            char *args[] = {cmd, NULL};
+            path = get_path(cmd, ft_env);
+            read_fd = handle_dless(delimeter, env, 1, quote);
+            if (read_fd < 0)
             {
-                free(delimiter);
-                return;
-            }
-            else if (pid == 0)
-            {
-                signal(SIGINT, ft_sigint_handler);
-                signal(SIGQUIT, SIG_IGN);
-                
-                if (cmd)
-                {
-                    char *args[] = {cmd, NULL};
-                    path = get_path(cmd, ft_env);
-                    read_fd = handle_dless(delimiter, env, 1, quote);
-                    if (read_fd < 0)
-                    {
-                        free(delimiter);
-                        exit(1);
-                    }
-                    
-                    dup2(read_fd, STDIN_FILENO);
-                    close(read_fd);
-                    execve(path, args, ft_env);
-                    exit(EXIT_FAILURE);
-                }
-                else
-                {
-                    read_fd = handle_dless(delimiter, env, 0, quote);
-                    if (read_fd < 0)
-                    {
-                        free(delimiter);
-                        exit(1);
-                    }
-                    close(read_fd);
-                    exit(EXIT_SUCCESS);
-                }
-            }
-            else
-            {
-                free(delimiter);
-                waitpid(pid, &status, 0);
-                g_minishell.signint_child = false;
-                
-                if (WIFSIGNALED(status))
-                {
-                    env->exit_status = 128 + WTERMSIG(status);
-                    if (WTERMSIG(status) == SIGINT)
-                    {
-                        g_minishell.heredoc_sigint = true;
-                        return; 
-                    }
-                }
-                else
-                    env->exit_status = WEXITSTATUS(status);
-                curr = curr->next->next;
-                continue;
-            }
+                free(delimeter);
+                exit(1);
+            } 
+            setup_exec_signals();
+            dup2(read_fd, STDIN_FILENO);
+            close(read_fd);
+            execve(path, args, ft_env);
+            exit(EXIT_FAILURE);
         }
-        curr = curr->next;
+        else
+        {
+            read_fd = handle_dless(delimeter, env, 0, quote);
+            if (read_fd < 0)
+            {
+                free(delimeter);
+                exit(1);
+            }
+            close(read_fd);
+            exit(EXIT_SUCCESS);
+        }
+    }
+    else
+    {
+        free(delimeter);
+        waitpid(pid, &status, 0);
+        g_minishell.signint_child = false;
+        if (WIFSIGNALED(status))
+        {
+            env->exit_status = 128 + WTERMSIG(status);
+            if (WTERMSIG(status) == SIGINT)
+                g_minishell.heredoc_sigint = true;
+        }
+        else
+            env->exit_status = WEXITSTATUS(status);
     }
 }
-
-
 //  void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
 // {
 //     int read_fd;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_path_handling.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/20 18:21:49 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/16 22:10:48 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 	curr = tk;
 	replace_dollar(&tk);
 	if (curr->type == T_PIPE)
-		handle_pipe(tk, ft_env, *env);
+		return ;
 	else if (contain_list("<<", tk) || contain_list(">>", tk)
 		|| contain_list("<", tk) || contain_list(">", tk))
 		handle_redirection(tk, ft_env, *env);

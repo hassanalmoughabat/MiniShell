@@ -56,9 +56,8 @@ int	handle_input_redirect(t_token *curr, t_token *tk,
 			g_minishell.signint_child = true;
 			handle_heredoc(ft_env, env, tk);
 		}
-		else
-			return (handle_great(curr->next->cmd, tk, ft_env, env));
-		return (g_minishell.env->exit_status);
+		else if (curr->type == T_LESS)
+			return (handle_less(curr->next->cmd, tk, ft_env, env));
 	}
 	else
 	{
@@ -67,6 +66,7 @@ int	handle_input_redirect(t_token *curr, t_token *tk,
 		g_minishell.env->exit_status = 1;
 		return (1);
 	}
+	return (0);
 }
 
 int	handle_redirection(t_token *tk, char **ft_env, t_env *env)
