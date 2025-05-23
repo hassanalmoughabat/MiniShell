@@ -1,7 +1,5 @@
 {
-	"C_Cpp.errorSquiggles": "disabled",
 	"files.associations": {
-		"minihell.h": "c",
-		"string.h": "c"
+		"minihell.h": "c"
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_special_char_handler.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:43:38 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/04/03 17:08:10 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/16 14:18:58 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	ft_append_operator(t_token **list, t_token_type operator,
 int	ft_check_special_char(char *str)
 {
 	if (!ft_strncmp(str, "<", 1) || !ft_strncmp(str, ">", 1)
-		|| !ft_strncmp(str, "|", 1))
+		|| !ft_strncmp(str, "|", 1) || !ft_strncmp(str, "\n", 1))
 		return (1);
 	return (0);
 }
@@ -48,6 +48,6 @@ int	ft_handle_operators(char **input, t_token **list)
 	else if (!ft_strncmp(*input, "|", 1))
 		return (ft_append_operator(list, T_PIPE, input, "|"));
 	else if (!ft_strncmp(*input, "\n", 1))
-		return (ft_append_operator(list, newline, input, "newline"));
+		return (ft_append_operator(list, T_NL, input, "new_line"));
 	return (0);
 }

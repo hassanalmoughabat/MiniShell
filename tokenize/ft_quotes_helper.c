@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_quotes_helper.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 03:33:31 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/01/09 14:56:16 by njoudieh         ###   ########.fr       */
+/*   Updated: 2025/05/16 14:18:40 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 
 int	ft_check_quotes(char c)
 {
-	if (c == '\'' || c == '\"')
+	if (c == '\"' || c == '\'')
 		return (1);
 	return (0);
 }
 
 int	ft_delimeter(char *str)
 {
-	if (*str == ' ' || *str == '\t' || !ft_strncmp(str, ">", 1)
-		|| !ft_strncmp(str, "<", 1) || !ft_strncmp(str, "|", 1))
+	if (*str == ' ' || *str == '\t' || *str == '\n'
+		|| !ft_strncmp(str, ">", 1) || !ft_strncmp(str, "<", 1)
+		|| !ft_strncmp(str, "|", 1))
 		return (1);
 	return (0);
 }

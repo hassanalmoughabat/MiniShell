@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/04/10 20:36:45 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/16 14:32:44 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 // {
 // 	ft_printf("hey");
 // }
-
 
 int	ft_is_builtin(t_token *tk)
 {
@@ -44,51 +43,69 @@ int	ft_is_builtin(t_token *tk)
 	return (0);
 }
 
-void	handle_path_command(char *envp[], char *cmd)
+int	is_a_path_command(char *cmd, char **ft_env)
 {
-	char	**s_cmd;
-	char	*path;
-	pid_t	pid;
-	int		status;
+	char	*path_env;
+	int		i;
+	char	*start;
+	char	*colon;
+	char	*dir;
+	char	*tmp;
+	char	*full_path;
+	int		found;
+	size_t	len;
 
-	s_cmd = ft_split(cmd, ' ');
-	if (!s_cmd || !s_cmd[0])
-		error_print_free("minishell: command not found", 1, s_cmd);
-	pid = fork();
-	if (pid == -1)
-		error_print_free("fork", 1, s_cmd);
-	else if (pid == 0)
+	path_env = NULL;
+	i = 0;
+	while (ft_env[i])
 	{
-		path = get_path(s_cmd[0], envp);
-		if (!path || execve(path, s_cmd, envp) == -1)
-			error_print_free("minishell: command not found", 1, s_cmd);
+		if (ft_strncmp(ft_env[i], "PATH=", 5) == 0)
+		{
+			path_env = ft_env[i] + 5;
+			break ;
+		}
+		i++;
 	}
-	else
+	if (!path_env)
 	{
-		waitpid(pid, &status, 0);
-		ft_free_tab(s_cmd);
+		ft_putstr_fd("Error: PATH environment variable not found\n", 2);
+		return (0);
 	}
-}
-
-void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
-{
-	t_token	*curr;
-	
-	curr = tk;
-	if (curr->type == T_PIPE)
+	found = 0;
+	start = path_env;
+	while (*start)
 	{
-		return;
+		colon = ft_strchr(start, ':');
+		if (colon)
+			len = (size_t)(colon - start);
+		else
+			len = ft_strlen(start);
+		dir = ft_substr(start, 0, len);
+		if (!dir)
+			return (0);
+		tmp = ft_strjoin(dir, "/");
+		free(dir);
+		if (!tmp)
+			return (0);
+		full_path = ft_strjoin(tmp, cmd);
+		free(tmp);
+		if (!full_path)
+			return (0);
+		if (access(full_path, X_OK) == 0)
+		{
+			found = 1;
+			free(full_path);
+			break ;
+		}
+		else
+			g_minishell.env->exit_status = ft_err_msg((t_error){cmd, ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
+		free(full_path);
+		if (colon)
+			start = colon + 1;
+		else
+			break ;
 	}
-	else if (contain_list("<<", tk) || contain_list(">>", tk)
-			|| contain_list("<", tk) || contain_list(">", tk))
-	{
-		handle_redirection(tk, ft_env, *env);
-	}
-	else if (ft_is_builtin(curr))
-	{
-		handle_builtin(tk, ft_env, *env, input);
-	}
-	else
-		handle_path_command(ft_env, input);
-	return ;
+	if (!found)
+		g_minishell.env->exit_status = ft_err_msg((t_error){cmd, ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
+	return (0);
 }
