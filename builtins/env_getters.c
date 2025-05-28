@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:55:30 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/07 19:18:55 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/29 00:52:03 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ char	*get_value_from_env(char *key, t_env *env)
 			value = ft_strdup(temp);
 			if (!value)
 				return (NULL);
-			if (remove_added_quotes(&value) == -1)
-				return (free(value), NULL);
 			return (value);
 		}
 		current = current->next;

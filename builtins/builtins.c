@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/21 01:49:48 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/27 23:54:34 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	handle_builtin(t_token *tk, char **ft_env, t_env **env)
 		copy = copy_env(*env);
 	if (!copy)
 		return ;
+	remove_added_quotes(&tk->cmd);
 	if (!ft_strcmp(tk->cmd, "env"))
 		ft_print_env(g_minishell.env);
 	else if (!ft_strcmp(tk->cmd, "pwd"))

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/18 17:08:22 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/28 01:42:36 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
 		exit(EXIT_FAILURE);
 	}
 	close(fd);
-	if (ft_is_builtin(cmd_tokens))
+	if (ft_is_builtin(cmd_tokens->cmd))
 		execute_builtin_redirect(cmd_tokens, ft_env, env);
 	else
 		execute_external_cmd(cmd_tokens, ft_env);

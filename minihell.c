@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/20 00:42:48 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/27 18:16:46 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,9 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 				free_array(ftenv);
 			ftenv = transform(g_minishell.env);
 			replace_dollar(&inp);
+			display_list(inp);
 			if (inp)
-				after_parsing(inp, ftenv, &env, input);
+				after_parsing(inp, ftenv, &env);
 			// display_list(inp);
 			// if (inp)
 			// 	free_token_list(inp);

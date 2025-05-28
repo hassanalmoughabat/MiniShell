@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/16 14:32:44 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/27 23:48:53 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,26 @@
 // 	ft_printf("hey");
 // }
 
-int	ft_is_builtin(t_token *tk)
+int	ft_is_builtin(char *cmd)
 {
-	t_token	*curr;
+	char	*temp;
 
-	curr = tk;
-	while (curr)
-	{
-		if ((ft_strcmp(curr->cmd, "cd") == 0))
-			return (1);
-		else if (ft_strcmp(curr->cmd, "echo") == 0)
-			return (1);
-		else if (ft_strcmp(curr->cmd, "pwd") == 0)
-			return (1);
-		else if (ft_strcmp(curr->cmd, "exit") == 0)
-			return (1);
-		else if (ft_strcmp(curr->cmd, "unset") == 0)
-			return (1);
-		else if (ft_strcmp(curr->cmd, "export") == 0)
-			return (1);
-		else if (ft_strcmp(curr->cmd, "env") == 0)
-			return (1);
-		curr = curr->next;
-	}
+	temp = ft_strdup(cmd);
+	remove_added_quotes(&temp);
+	if ((ft_strcmp(temp, "cd") == 0))
+		return (1);
+	else if (ft_strcmp(temp, "echo") == 0)
+		return (1);
+	else if (ft_strcmp(temp, "pwd") == 0)
+		return (1);
+	else if (ft_strcmp(temp, "exit") == 0)
+		return (1);
+	else if (ft_strcmp(temp, "unset") == 0)
+		return (1);
+	else if (ft_strcmp(temp, "export") == 0)
+		return (1);
+	else if (ft_strcmp(temp, "env") == 0)
+		return (1);
 	return (0);
 }
 

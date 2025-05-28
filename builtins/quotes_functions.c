@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:35:27 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/16 19:19:56 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/29 00:52:27 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int quote_type(char *str)
 
     while (str[i])
     {
-        if (str[i] == '\'' && !in_double)
+        if (str[i] == '\'' && !escape(str, i) && !in_double)
         {
             in_single = !in_single;
             if (!in_single)
@@ -71,7 +71,7 @@ int	remove_added_quotes(char **value)
 			result[j++] = temp[i++];
 	}
 	result[j] = '\0';
-    free(*value);
+    // free(*value);
 	*value = ft_strdup(result);
 	return (free(result), 0);
 }

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:31:49 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/11 01:47:18 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/28 01:41:33 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,19 @@ void	set_key(char *input, char **result, char *quote, int *flag)
 	return ;
 }
 
-int	set_key_value(char *input, char **key, char **value, t_env *env)
+int	set_key_value(t_token *tk, char **key, char **value, t_env *env)
 {
+	char	*input;
+
+	input = tk->cmd;
 	if (has_equal(input) && ft_strlen(input) > 1)
 	{
-		if (equal_handler_export(input, key, value, env) == -1)
+		if (equal_handler_export(tk, input, key, value, env) == -1)
 			return (-1);
 		return (1);
 	}
 	*key = ft_strdup(input);
-	if (*key && !check_valid_key(*key, env))
+	if (*key && !check_valid_key(tk, *key, env))
 		return (free(*key), -1);
 	if (remove_added_quotes(key) == -1 || !ft_strcmp(*key, ""))
 		return (error_message_export(key), -1);

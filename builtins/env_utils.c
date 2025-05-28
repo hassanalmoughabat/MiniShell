@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/17 23:17:04 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/27 16:56:04 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ t_env	*create_env_node(char *envp)
 		return (NULL);
 	new_node->line = ft_strdup(envp);
 	new_node->exit_status = ENU_SUCCESS;
+	new_node->safe_quotes = false;
 	if (!new_node->line)
 	{
 		free(new_node);
@@ -94,6 +95,8 @@ char	*get_path(char *cmd, char *envp[])
 	i = 0;
 	allpath = ft_split(my_getenv("PATH", envp), ':');
 	s_cmd = ft_split(cmd, ' ');
+	if (!allpath)
+		return (NULL);
 	while (allpath[i])
 	{
 		path_part = ft_strjoin(allpath[i], "/");

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:00:00 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/21 02:37:08 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/28 17:19:19 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,12 @@ void	execute_with_input_redirect(t_token *cmd_tokens, char **ft_env,
 		exit(EXIT_FAILURE);
 	}
 	close(fd);
-	if (ft_is_builtin(cmd_tokens))
+	if (ft_is_builtin(cmd_tokens->cmd))
 		execute_builtin_redirect(cmd_tokens, ft_env, env);
 	else
 		execute_external_cmd(cmd_tokens, ft_env);
 }
 
-/*
- * Special handling for exit command with redirections
- * Returns 1 if exit was handled, 0 otherwise
-*/
 int	handle_exit_special(t_token *cmd_tokens, t_env *env, t_env **copy)
 {
 	t_token	*curr;
