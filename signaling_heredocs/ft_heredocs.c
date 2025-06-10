@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:56:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/07 14:06:23 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:33:43 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ char *find_command_around_heredoc(t_token *tk, char *delimiter)
     return NULL;  
 }
 
-static int is_delimeter_quoted(t_token *tk)
+int is_delimeter_quoted(t_token *tk)
 {
     t_token *curr;
     char    *delimeter;
@@ -357,7 +357,6 @@ void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
     char *delimiter;
     int quote;
 
-    printf("Handling heredoc...\n");
     curr = tk;
     while (curr)
     {
@@ -436,53 +435,3 @@ void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
     }
 }
 
-
-//  void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
-// {
-//     int read_fd;
-//     pid_t pid;
-//     int status;
-//     char *path;
-// 	char *cmd;
-//     char *delimeter;
-// 	int quote;
-
-// 	quote = is_delimeter_quoted(tk);
-//     delimeter = get_delimeter(tk);
-//     cmd = find_command_around_heredoc(tk, delimeter);
-// 	if (cmd)
-//     {
-// 		g_minishell.signint_child = true;
-// 		char *args[] = {cmd, NULL};
-// 	    path = get_path(cmd, ft_env);
-// 	    read_fd = handle_dless(delimeter, env, 1, quote);
-// 	    if (!read_fd)
-// 		        return;
-// 		pid = fork();
-// 		signal(SIGQUIT, SIG_IGN);
-//     	if (pid == -1)
-//     	    return;
-//    		if (pid == 0)
-//     	{
-// 			setup_exec_signals();
-//         	dup2(read_fd, STDIN_FILENO);
-//         	close(read_fd);
-//        		execve(path, args, ft_env);
-// 			exit(EXIT_FAILURE);
-// 			 // ft_clean_all();
-//     	}
-//     	else
-// 			{
-// 				waitpid(pid, &status, 0);
-// 				signal(SIGQUIT, ft_heredoc_sigint_handler);
-// 				g_minishell.signint_child = false;
-// 				close(read_fd);
-// 				if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-// 					env->exit_status = 128 + SIGINT;
-// 				else
-// 					env->exit_status = 0;
-//    		}
-// 	}
-// 	else
-// 		handle_dless(delimeter, env, 0, quote);
-// }

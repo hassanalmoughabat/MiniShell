@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/07 14:48:05 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:16:12 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,15 +89,12 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 		return ;
 	curr = tk;
 	replace_dollar(&tk);
-	print_tk_with_type(tk);
-	printf("type is: %d\n", curr->type);
+	// print_tk_with_type(tk);
 	if (contain_char(input, '|'))
 		pipe = 1;
-	printf("Pipe status: %d\n", pipe);
 	if (curr->type == T_PIPE || pipe == 1)
 	{
 		
-		printf("Handling pipe...\n");
 		handle_pipe(tk, ft_env, *env);
 	}
 	else if (contain_list("<<", tk) || contain_list(">>", tk)

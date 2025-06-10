@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/07 14:48:51 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:12:01 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct s_err
 extern t_shell	g_minishell;
 
 
+int is_delimeter_quoted(t_token *tk);
 
 
 // --------------value getter setter----------------------------
