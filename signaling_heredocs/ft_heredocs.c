@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:56:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/20 20:44:23 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/07 14:06:23 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,48 @@ static int is_delimeter_quoted(t_token *tk)
     return (0);
 }
 
+
+char *process_all_variables(char *line, t_env *env)
+{
+    char *result = ft_strdup(line);
+    char *temp_result;
+    char *var_start;
+    char *var_end;
+    char *var_name;
+    char *var_value;
+    size_t var_len;
+    
+    if (!result)
+        return NULL;
+    while ((var_start = strchr(result, '$')) != NULL)
+    {
+        var_end = var_start + 1;
+        while (*var_end && (isalnum(*var_end) || *var_end == '_'))
+            var_end++;
+        var_len = var_end - var_start;
+        var_name = malloc(var_len + 1);
+        if (!var_name)
+        {
+            free(result);
+            return NULL;
+        }
+        strncpy(var_name, var_start, var_len);
+        var_name[var_len] = '\0';
+        var_value = cut_from_op('$', var_start, env);
+        if (!var_value)
+            var_value = ft_strdup(""); 
+        temp_result = replace_variable(result, var_name, var_value);
+        free(result);
+        free(var_name);
+        free(var_value);
+        if (!temp_result)
+            return NULL;
+        result = temp_result;
+    }
+    
+    return result;
+}
+
 char *extract_variable_quote(char *line)
 {
     if (!line)
@@ -190,104 +232,117 @@ static int is_quoted_format(const char *line)
     return 0;
 }
 
+char *expand_variables(char *line, t_env *env, int quote)
+{
+    if (!line || !strchr(line, '$'))
+        return ft_strdup(line);
+    char *result = malloc(1024);
+    if (!result)
+        return NULL;
+    char *src = line;
+    char *dst = result;
+    int result_len = 0;
+    int buffer_size = 1024;
+    while (*src )
+    {
+        if (quote == 0 && *src == '$' && (isalpha(src[1]) || src[1] == '_'))
+        {
+            src++;
+            char var_name[256] = {0};
+            int i = 0;
+            
+            while (*src && (isalnum(*src) || *src == '_') && i < 255)
+            {
+                var_name[i++] = *src++;
+            }
+            var_name[i] = '\0';
+            char *value = my_getenv(var_name, transform(env));
+            if (!value)
+                value = "";
+            
+            int value_len = strlen(value);          
+            if (result_len + value_len + 1 >= buffer_size)
+            {
+                buffer_size = (result_len + value_len + 1) * 2;
+                char *new_result = realloc(result, buffer_size);
+                if (!new_result)
+                {
+                    free(result);
+                    return NULL;
+                }
+                result = new_result;
+                dst = result + result_len;
+            }
+            strcpy(dst, value);
+            dst += value_len;
+            result_len += value_len;
+        }
+        else
+        {
+            if (result_len + 1 >= buffer_size)
+            {
+                buffer_size *= 2;
+                char *new_result = realloc(result, buffer_size);
+                if (!new_result)
+                {
+                    free(result);
+                    return NULL;
+                }
+                result = new_result;
+                dst = result + result_len;
+            }
+            *dst++ = *src++;
+            result_len++;
+        }
+    }
+    
+    *dst = '\0';
+    return result;
+}
+
 int handle_dless(char *delimiter, t_env *env, int flag, int quote)
 {
     int pipefd[2];
     size_t total_written = 0;
     char *line;
-    char *val;
-    char *oldval;
-    char *processed_line;
+    char *expanded_line;
 
-	signal(SIGINT, ft_heredoc_sigint_handler);
+    signal(SIGINT, ft_heredoc_sigint_handler);
     if (!validate_delimiter(delimiter) || pipe(pipefd) == -1)
         return (-1);
+
     while (1)
     {
         line = readline("> ");
         if (!line || ft_strcmp(line, delimiter) == 0)
         {
-            free(line);
+            if (line)
+                free(line);
             break;
         }
-        processed_line = NULL;
-        if (quote == 0 && contain_char(line, '$') && flag == 1)
-        {
-            if (is_quoted_format(line))
-            {
-                char *inner_content = ft_strsub(line, 2, strlen(line) - 4);
-                oldval = extract_variable(inner_content);
-                if (oldval)
-                {
-                    val = cut_from_op('$', inner_content, env);
-                    if (val)
-                    {
-                        processed_line = malloc(strlen(val) + 3);
-                        if (processed_line)
-                        {
-                            processed_line[0] = '\'';
-                            strcpy(processed_line + 1, val);
-                            processed_line[strlen(val) + 1] = '\'';
-                            processed_line[strlen(val) + 2] = '\0';
-                        }
-                        free(inner_content);
-                    }
-                    free(oldval);
-                }
-                if (!processed_line)
-                    processed_line = ft_strdup(line);
-            }
-            else if ((line[0] == '\'' && line[strlen(line) - 1] == '\'') || (line[0] == '\"' && line[strlen(line) - 1] == '\"'))
-            {
-                char *inner_content = ft_strsub(line, 1, strlen(line) - 2);
-                oldval = extract_variable(inner_content);
-                if (oldval)
-                {
-                    val = cut_from_op('$', inner_content, env);
-                    processed_line = ft_strdup(val ? val : "");
-                    free(oldval);
-                }
-                free(inner_content);
-                if (!processed_line)
-                    processed_line = ft_strdup(line);
-            }
-            else
-            {
-                oldval = extract_variable(line);
-                if (oldval)
-                {
-                    val = cut_from_op('$', line, env);
-                    if (val)
-                    {
-                        processed_line = replace_variable(line, oldval, val);
-                        free(oldval);
-                    }
-                }
-            }
-        }
-        char *final_line;
-        if (processed_line)
-            final_line = processed_line;
-        else
-            final_line = line;
-        size_t line_len = strlen(final_line);
+        expanded_line = expand_variables(line, env, quote);
+        if (!expanded_line)
+            expanded_line = ft_strdup(line);
+
+        size_t line_len = strlen(expanded_line);
 
         if (total_written + line_len + 1 > MAX_HEREDOC_SIZE)
         {
             free(line);
-            if (processed_line)
-                free(processed_line);
+            free(expanded_line);
             close(pipefd[0]);
             close(pipefd[1]);
             return -1;
         }
-        write(pipefd[1], final_line, line_len);
+
+        write(pipefd[1], expanded_line, line_len);
         write(pipefd[1], "\n", 1);
         total_written += line_len + 1;
+
         free(line);
-        if (processed_line)
-            free(processed_line);
+        free(expanded_line);
     }
+
     close(pipefd[1]);
     return pipefd[0];
 }
@@ -302,6 +357,7 @@ void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
     char *delimiter;
     int quote;
 
+    printf("Handling heredoc...\n");
     curr = tk;
     while (curr)
     {

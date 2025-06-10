@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/20 18:23:18 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/07 14:48:51 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,26 +80,9 @@ typedef struct s_err
 
 extern t_shell	g_minishell;
 
-// typedef struct s_command
-// {
-// 	char				**args;
-// 	char				*infile;
-// 	char				*outfile;
-// 	int					append;
-// 	struct s_command	*next;
-// }	t_command;
 
-void	handle_pipe(t_token *lst, char **ft_env, t_env *env);
-void	handle_multi_level_pipe(t_token *left_cmd, t_token *right_cmd,
-		char **ft_env, t_env *env);
-void	handle_multiple_pipes(t_token *tk, char **ft_env, t_env *env);
-void	handle_simple_pipe(t_token *left_cmd, t_token *right_cmd,
-		char **ft_env, t_env *env);
-void	execute_piped_command(t_token *cmd, char **ft_env, t_env *env,
-		int in_fd, int out_fd);
-t_token	*split_commands_at_pipe(t_token *token_list, t_token **left_cmd,
-		t_token **right_cmd);
-		
+
+
 // --------------value getter setter----------------------------
 char	*get_value(char *input, char quote, int flag);
 char	*get_key(char *input, t_env *env, char *quote, int *ind);

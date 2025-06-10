@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/20 00:42:48 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/07 14:42:40 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minihell.h"
+#include "../includes/minihell.h"
 t_shell	g_minishell;
 
 int	get_shell_level(t_env *shell)

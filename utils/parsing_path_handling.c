@@ -6,11 +6,11 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/20 18:21:49 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/07 14:48:05 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minihell.h"
+#include "../includes/minihell.h"
 
 void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 {
@@ -62,16 +62,44 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 	}
 }
 
+void print_tk_with_type(t_token *tk)
+{
+	t_token *curr = tk;
+
+	while (curr)
+	{
+		if (curr->type == T_PIPE)
+			ft_printf("Pipe: %s\n", curr->cmd);
+		else if (curr->type == T_DLESS)
+			ft_printf("Redirect In: %s\n", curr->cmd);
+		else if (curr->type == T_DGREAT)
+			ft_printf("Redirect Out: %s\n", curr->cmd);
+		else
+			ft_printf("Command: %s\n", curr->cmd);
+		curr = curr->next;
+	}
+}
+
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 {
 	t_token	*curr;
-
+	int pipe ;
+	
 	if (!tk)
 		return ;
 	curr = tk;
 	replace_dollar(&tk);
-	if (curr->type == T_PIPE)
+	print_tk_with_type(tk);
+	printf("type is: %d\n", curr->type);
+	if (contain_char(input, '|'))
+		pipe = 1;
+	printf("Pipe status: %d\n", pipe);
+	if (curr->type == T_PIPE || pipe == 1)
+	{
+		
+		printf("Handling pipe...\n");
 		handle_pipe(tk, ft_env, *env);
+	}
 	else if (contain_list("<<", tk) || contain_list(">>", tk)
 		|| contain_list("<", tk) || contain_list(">", tk))
 		handle_redirection(tk, ft_env, *env);

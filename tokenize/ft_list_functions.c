@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_list_functions.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 15:26:30 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/05/17 14:57:05 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/02 18:54:57 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_token	*create_token(char *value, t_token_type operator)
 		free(value);
 		return (NULL);
 	}
+	new_token->processed = 0;
 	new_token->type = operator;
 	new_token->cmd = value;
 	new_token->next = NULL;
