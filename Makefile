@@ -45,7 +45,7 @@ SIGNALING	:=	signaling_heredocs/ft_signal.c \
 				signaling_heredocs/heredoc_utils.c \
 				signaling_heredocs/handle_great_utils.c \
 				signaling_heredocs/handle_great.c \
-				signaling_heredocs/handle_redirection.c \ 
+				signaling_heredocs/handle_redirection.c \
 				signaling_heredocs/pipes.c 
 
 TOKENIZE	:= 	tokenize/ft_error_handler.c \
