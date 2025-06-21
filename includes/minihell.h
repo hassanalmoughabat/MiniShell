@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/10 19:12:01 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/14 19:01:27 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void	ft_add_env(char *key, char *value, t_env **copy, int flag);
 int		ft_pwd(t_token *tk);
 // ----------------------helpers for builtins------------------------
 void	print_env(char **ftenv);
-void	ft_print_env(t_env *env);
+void	ft_print_env(t_env **env);
 void	display_list(t_token *tk);
 int		ft_list_size(t_token *token);
 int		ft_strcmp(char *s1, char *s2);

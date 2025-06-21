@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_great_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/18 17:08:22 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/20 21:35:40 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,11 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
 		free_token_list(cmd_tokens);
 		exit(EXIT_FAILURE);
 	}
+	free_token_list(cmd_tokens);
 	if (execve(path, args, ft_env) == -1)
 	{
-		print_cmd_error(args[0], strerror(errno));
+		printf("i am leaking  and getting out\n");
+		// print_cmd_error(args[0], strerror(errno));
 		ft_free_tab(args);
 		free(path);
 		free_token_list(cmd_tokens);

@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 14:36:57 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/10 19:38:52 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/20 21:33:31 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,26 @@ static int is_heredoc_pipe_redirect(t_token *tk)
 {
     t_token *curr;
 
-    if (!tk || tk->type != T_DLESS || !tk->next)
-        return (0);
-    curr = tk->next->next;
-    if (!curr || curr->type != T_PIPE)
-        return (0);
-    curr = curr->next;
+    curr = tk;
     while (curr)
     {
-        if ((curr->type == T_GREAT || curr->type == T_DGREAT) && curr->next)
-            return (1);
+        if (curr->next && curr->next->type == T_DLESS)
+        {
+            t_token *check = curr->next->next;
+            if (check && check->type == T_IDENTIFIER)
+                check = check->next;
+            if (check && check->type == T_PIPE)
+            {
+                check = check->next;
+                while (check)
+                {
+                    if ((check->type == T_GREAT || check->type == T_DGREAT)
+                        && check->next)
+                        return (1);
+                    check = check->next;
+                }
+            }
+        }
         curr = curr->next;
     }
     return (0);
@@ -163,21 +173,19 @@ static char     *get_append_file(t_token *curr)
 static int cat_exit_before_heredoc(t_token *lst)
 {
     t_token *curr;
-    int flag;
-    
+
     curr = lst;
-    flag = 0;
-    while (curr)
+    while (curr && curr->next)
     {
-        if (ft_strcmp(curr->cmd, "<<") == 0)
-            if (ft_strcmp(curr->cmd, "cat") == 0)
-                flag = 1;
-       curr = curr->next; 
+        if (curr->next->type == T_DLESS)
+        {
+            if (curr->cmd && (ft_strcmp(curr->cmd, "cat") == 0
+                    || ft_strcmp(curr->cmd, "rev") == 0))
+                return (1);
+        }
+        curr = curr->next;
     }
-    if (flag == 1)
-        return (1);
-    else
-        return (0);
+    return (0);
 }
 void    handle_pipe(t_token *lst, char **ft_env, t_env *env)
 {
@@ -230,6 +238,12 @@ void    handle_pipe(t_token *lst, char **ft_env, t_env *env)
             if (i < pipes_count)
                 dup2(fds[i][1], STDOUT_FILENO);
             close_all_pipes(fds, pipes_count);
+            if (contain_list(">>", cmd_tokens) || contain_list(">", cmd_tokens)
+                || contain_list("<<", cmd_tokens) || contain_list("<", cmd_tokens))
+            {
+                handle_redirection(cmd_tokens, ft_env, env);
+                exit(env->exit_status);
+            }
             if (ft_is_builtin(cmd_tokens))
             {
                 handle_builtin(cmd_tokens, ft_env, &env);
@@ -252,6 +266,7 @@ void    handle_pipe(t_token *lst, char **ft_env, t_env *env)
         i++;
     }
     close_all_pipes(fds, pipes_count);
+    
     while (wait(&status) > 0)
         ;
     while (pipes_count-- > 0)

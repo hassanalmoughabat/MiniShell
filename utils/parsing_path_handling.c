@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/10 19:16:12 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/20 21:27:23 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 			if (path)
 				free(path);
 			ft_free_tab(s_cmd);
-			ft_free_token_list(&tk);
+			// ft_free_token_list(&tk);
 			exit(127);
 		}
 	}
