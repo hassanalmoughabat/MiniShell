@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/21 19:11:07 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/21 19:54:18 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ t_env	*create_env_node(char *envp)
 	new_node->next = NULL;
 	return (new_node);
 }
-t_env *add_last_env(char *)
 t_env	*initialize_env_list(char **envp)
 {
 	t_env	*head;
