@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/14 19:01:27 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/22 17:12:54 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,15 @@ typedef struct s_err
 	t_err_msg		error_msg;
 	t_err_num		error_num;
 }	t_error;
+
+typedef struct s_pip
+{
+    t_token *cmd;
+    t_token *context;
+    int     *pipes;
+    int     pipe_count;
+    int     cmd_index;
+} t_pip;
 
 extern t_shell	g_minishell;
 
@@ -201,7 +210,7 @@ int		is_a_path_command(char *cmd, char **ft_env);
 void	handle_path_command(t_token *tk, char *envp[], char *cmd);
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);
 // ----------------------Piping and Redirections-------------------------
-void	handle_pipe(t_token *lst, char **ft_env, t_env *env);
+void	handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input);
 int		handle_redirection(t_token *tk, char **ft_env, t_env *env);
 int		handle_dless(char *delimiter, t_env *env, int flag, int quote);
 int		handle_dless(char *delimiter, t_env *env, int flag, int quote);

@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/20 21:23:25 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/22 13:31:22 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,11 @@ void	ft_unset(t_token *token, t_env **env, t_env **copy)
 	if (!token || !(*env) || !env)
 		return ;
 	current = token;
+	if (contain_list("_", token))
+	{
+		g_minishell.env->exit_status = 0;
+		return ;
+	}
 	while (current)
 	{
 		if (current->cmd)

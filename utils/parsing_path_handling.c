@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/20 21:27:23 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/22 14:35:25 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 	if (curr->type == T_PIPE || pipe == 1)
 	{
 		
-		handle_pipe(tk, ft_env, *env);
+		handle_pipe(tk, ft_env, *env, input);
 	}
 	else if (contain_list("<<", tk) || contain_list(">>", tk)
 		|| contain_list("<", tk) || contain_list(">", tk))
