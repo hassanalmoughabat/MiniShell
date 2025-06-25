@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 21:15:45 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/09 23:10:25 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/28 17:18:40 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*extract_and_expand(char *input)
 	expanded = ft_strdup("");
 	while (input[i])
 	{
-		if (ft_check_quotes(input[i]))
+		if (ft_check_quotes(input[i]) && !escape(input, i))
 			substr = extract_quoted_substring(input, &i);
 		else
 			substr = extract_unquoted_substring(input, &i, &flag);
