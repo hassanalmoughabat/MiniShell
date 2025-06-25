@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:04:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/10 01:48:30 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/28 23:48:39 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	handle_exit_code(t_token *curr)
 	if (ft_list_size(curr) >= 2)
 	{
 		if (ft_isnum(curr->cmd) && in_range)
-			g_minishell.env->exit_status = ft_err_msg((t_error){curr->cmd,
+			g_minishell.env->exit_status = ft_err_msg((t_error){"exit",
 						ERROR_MESG_TOO_MANY_ARGS, ENU_GENEREAL_FAILURE});
 		else
 			g_minishell.env->exit_status = ft_err_msg((t_error){curr->cmd,

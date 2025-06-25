@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 14:36:57 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/25 21:43:06 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/25 22:52:34 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef struct s_heredoc_info
     t_token *position;
 } t_heredoc_info;
 
-static t_heredoc_info *process_heredocs_before_pipes(t_token *lst, char **ft_env, t_env *env, int *hd_count)
+static t_heredoc_info *process_heredocs_before_pipes(t_token *lst, t_env *env, int *hd_count)
 {
     t_token *curr;
     t_heredoc_info *heredocs;
@@ -78,14 +78,15 @@ static t_heredoc_info *process_heredocs_before_pipes(t_token *lst, char **ft_env
     char *delimiter;
     int quote;
     
+    
     count = has_heredoc(lst);
     *hd_count = count;
     if (count == 0)
-        return NULL;
+        return (NULL);
     heredocs = malloc(sizeof(t_heredoc_info) * count);
     if (!heredocs)
-        return NULL;
-        curr = lst;
+        return (NULL);
+    curr = lst;
     i = 0;
     while (curr && i < count)
     {
@@ -118,6 +119,32 @@ static t_heredoc_info *process_heredocs_before_pipes(t_token *lst, char **ft_env
     }
     
     return heredocs;
+}
+
+static int	ft_pipe_builtin(t_token *tk)
+{
+	t_token	*curr;
+
+	curr = tk;
+	while (curr)
+	{
+		if ((ft_strcmp(curr->cmd, "cd") == 0))
+			return (1);
+		else if (ft_strcmp(curr->cmd, "echo") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "pwd") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "exit") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "unset") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "export") == 0)
+			return (1);
+		else if (ft_strcmp(curr->cmd, "env") == 0)
+			return (1);
+		curr = curr->next;
+	}
+	return (0);
 }
 
 static t_token *extract_command_segment(t_token *start, t_token *end)
@@ -236,7 +263,7 @@ static void	handle_pipe_child(t_token *cmd_segment, char **ft_env,
 		handle_redirection(cmd_segment, ft_env, env);
 		exit(env->exit_status);
 	}
-	if (ft_is_builtin(cmd_segment))
+	if (ft_pipe_builtin(cmd_segment))
 	{
 		handle_builtin(cmd_segment, ft_env, &env);
 		free_token_list(cmd_segment);
@@ -444,10 +471,10 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
         if (has_heredoc(lst))
             handle_heredoc(ft_env, env, lst);
         else
-            after_parsing(lst, ft_env, env, "");
+            after_parsing(lst, ft_env, &env, input);
         return;
     }
-    heredocs = process_heredocs_before_pipes(lst, ft_env, env, &hd_count);
+    heredocs = process_heredocs_before_pipes(lst, env, &hd_count);
     if (create_pipes(&pipes, pipe_count) == -1)
     {
         if (heredocs)
@@ -554,7 +581,7 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
         env->exit_status = WEXITSTATUS(status);
     else if (WIFSIGNALED(status))
         env->exit_status = 128 + WTERMSIG(status);
-        for (i = 0; i < pipe_count; i++)
+    for (i = 0; i < pipe_count; i++)
         free(pipes[i]);
     free(pipes);
 }

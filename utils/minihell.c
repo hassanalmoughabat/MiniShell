@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/20 21:12:49 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/25 22:37:32 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 			replace_dollar(&inp);
 			if (inp)
 				after_parsing(inp, ftenv, &env, input);
-			// display_list(inp);
 			// if (inp)
 			// 	free_token_list(inp);
 			add_history(input);

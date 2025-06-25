@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/10 20:40:25 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/28 01:34:37 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	has_equal(char *input)
 	return (0);
 }
 
-int	equal_handler_export(char *input, char **key, char **value, t_env *env)
+int	equal_handler_export(t_token *tk, char *input, char **key,
+		char **value, t_env *env)
 {
 	char	*temp;
 	char	quote;
@@ -38,10 +39,10 @@ int	equal_handler_export(char *input, char **key, char **value, t_env *env)
 	quote = '\0';
 	if (input[0] == '=' || input[0] == '-')
 	{
-		error_validity_export(input);
+		error_validity_export(input, tk);
 		return (env->exit_status = 1, -1);
 	}
-	temp = get_key(input, env, &quote, &indicator);
+	temp = get_key(tk, input, env, &quote, &indicator);
 	if (!temp)
 		return (-1);
 	*key = temp;
@@ -92,7 +93,7 @@ void	ft_export(t_token *token, t_env **copy)
 	curr = curr->next;
 	while (curr && curr->cmd)
 	{
-		i = set_key_value(curr->cmd, &key, &value, *copy);
+		i = set_key_value(curr, &key, &value, *copy);
 		if (i == 1)
 		{
 			if (has_equal(curr->cmd))

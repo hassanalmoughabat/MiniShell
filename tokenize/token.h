@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:48:25 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/06/02 18:54:22 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/16 14:22:12 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*cmd;
-	int 			processed;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;

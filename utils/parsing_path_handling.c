@@ -6,48 +6,193 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/22 14:35:25 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/25 22:54:04 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
+int		contains_symbols(char *tk, int flag)
+{
+	int		i;
+
+	i = 0;
+	if (flag == 1)
+	{
+		while (tk[i])
+		{
+			if ((tk[i] == '/' && !tk[i + 1])
+				|| (tk[i] == '/' && !ft_isalpha(tk[i + 1])))
+				return (1);
+			i ++;
+		}
+	}
+	else if (flag == 2)
+	{
+		while (tk[i])
+		{
+			if (tk[i] == '>' || tk[i] == '<' || tk[i] == '|')
+				return (1);
+			i ++;
+		}
+	}
+	return (0);
+}
+
+int	count_total_args(t_token *tk)
+{
+	t_token	*curr;
+	char	**split;
+	int		total;
+	int		i;
+
+	curr = tk;
+	total = 0;
+	while (curr)
+	{
+		if (ft_strchr(curr->cmd, ' '))
+		{
+			split = ft_split(curr->cmd, ' ');
+			if (split)
+			{
+				i = 0;
+				while (split[i])
+				{
+					total++;
+					i++;
+				}
+				ft_free_tab(split);
+			}
+		}
+		else
+			total++;
+		curr = curr->next;
+	}
+	return (total);
+}
+
+char	**build_argv_from_tokens(t_token *tk)
+{
+	t_token	*curr;
+	char	**argv;
+	char	**split;
+	int		count;
+	int		i;
+	int		j;
+
+	count = count_total_args(tk);
+	if (count == 0)
+		return (NULL);
+	argv = malloc(sizeof(char *) * (count + 1));
+	if (!argv)
+		return (NULL);
+	curr = tk;
+	i = 0;
+	while (curr && i < count)
+	{
+		if (ft_strchr(curr->cmd, ' '))
+		{
+			split = ft_split(curr->cmd, ' ');
+			if (split)
+			{
+				j = 0;
+				while (split[j] && i < count)
+				{
+					argv[i] = ft_strdup(split[j]);
+					remove_added_quotes(&argv[i]);
+					if (!argv[i])
+					{
+						while (--i >= 0)
+							free(argv[i]);
+						free(argv);
+						ft_free_tab(split);
+						return (NULL);
+					}
+					i++;
+					j++;
+				}
+				ft_free_tab(split);
+			}
+		}
+		else
+		{
+			argv[i] = ft_strdup(curr->cmd);
+			remove_added_quotes(&argv[i]);
+			if (!argv[i])
+			{
+				while (--i >= 0)
+					free(argv[i]);
+				free(argv);
+				return (NULL);
+			}
+			curr = curr->next;
+			i++;
+		}
+	}
+	argv[i] = NULL;
+	return (argv);
+}
+
 void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 {
-	char	**s_cmd;
+	char	**argv;
 	char	*path;
 	pid_t	pid;
 	int		status;
 
-	if (!tk->cmd || !ft_strncmp(tk->cmd, "", 1))
+	if (!cmd || !tk)
 		return ;
-	s_cmd = ft_split(cmd, ' ');
-	if (!s_cmd || !s_cmd[0])
+	// display_list(tk);
+	if (contains_symbols(cmd, 1))
 	{
-		g_minishell.env->exit_status = ft_err_msg((t_error){(tk->cmd),
+		g_minishell.env->exit_status = 127;
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(" Is a directory \n", 2);
+		return ;
+	}
+	if (!ft_strncmp(cmd, ".//", 2) && access(cmd, X_OK))
+	{
+		g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
+				ERROR_MESG_PERMISSION_DENIED, ENU_CMD_CANT_EXECUTE});
+		return ;
+	}
+	argv = build_argv_from_tokens(tk);
+	if (!argv || !argv[0])
+	{
+		remove_added_quotes(&cmd);
+		if (argv)
+			ft_free_tab(argv);
+		g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
 				ERROR, ENU_GENEREAL_FAILURE});
 		return ;
 	}
 	pid = fork();
 	if (pid == -1)
 	{
-		ft_free_tab(s_cmd);
-		g_minishell.env->exit_status = ft_err_msg((t_error){(tk->cmd),
+		ft_free_tab(argv);
+		g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
 				ERROR, ENU_GENEREAL_FAILURE});
 		return ;
 	}
 	if (pid == 0)
 	{
-		path = get_path(s_cmd[0], envp);
-		if (!path || execve(path, s_cmd, envp) == -1)
+		path = get_path(argv[0], envp);
+		if (!path)
 		{
-			ft_printf("i am leaking \n");
-			g_minishell.env->exit_status = ft_err_msg((t_error){(tk->cmd),
+			g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
+					ERROR_MESG_NO_FILE, ENU_CMD_NOT_FOUND});
+			ft_free_tab(argv);
+			exit (127);
+		}
+		if (execve(path, argv, envp) == -1)
+		{
+			remove_added_quotes(&cmd);
+			g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
 					ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
 			if (path)
 				free(path);
-			ft_free_tab(s_cmd);
-			// ft_free_token_list(&tk);
+			ft_free_tab(argv);
 			exit(127);
 		}
 	}
@@ -58,38 +203,18 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 			g_minishell.env->exit_status = WEXITSTATUS(status);
 		else
 			g_minishell.env->exit_status = 0;
-		ft_free_tab(s_cmd);
-	}
-}
-
-void print_tk_with_type(t_token *tk)
-{
-	t_token *curr = tk;
-
-	while (curr)
-	{
-		if (curr->type == T_PIPE)
-			ft_printf("Pipe: %s\n", curr->cmd);
-		else if (curr->type == T_DLESS)
-			ft_printf("Redirect In: %s\n", curr->cmd);
-		else if (curr->type == T_DGREAT)
-			ft_printf("Redirect Out: %s\n", curr->cmd);
-		else
-			ft_printf("Command: %s\n", curr->cmd);
-		curr = curr->next;
+		ft_free_tab(argv);
 	}
 }
 
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 {
 	t_token	*curr;
-	int pipe ;
+	int pipe;
 	
 	if (!tk)
 		return ;
 	curr = tk;
-	replace_dollar(&tk);
-	// print_tk_with_type(tk);
 	if (contain_char(input, '|'))
 		pipe = 1;
 	if (curr->type == T_PIPE || pipe == 1)
@@ -102,11 +227,10 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 		handle_redirection(tk, ft_env, *env);
 	else
 	{
-		remove_added_quotes(&(curr->cmd));
-		if (ft_is_builtin(curr))
+		if (ft_is_builtin(curr->cmd))
 			handle_builtin(tk, ft_env, env);
 		else
-			handle_path_command(curr, ft_env, input);
+			handle_path_command(tk, ft_env, curr->cmd);
 	}
 	return ;
 }

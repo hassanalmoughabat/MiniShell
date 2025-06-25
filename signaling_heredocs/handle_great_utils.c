@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/20 21:35:40 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/25 22:42:40 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
 		exit(EXIT_FAILURE);
 	}
 	close(fd);
-	if (ft_is_builtin(cmd_tokens))
+	if (ft_is_builtin(cmd_tokens->cmd))
 		execute_builtin_redirect(cmd_tokens, ft_env, env);
 	else
 		execute_external_cmd(cmd_tokens, ft_env);

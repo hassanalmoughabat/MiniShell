@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:39:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/09 22:33:46 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/26 22:40:21 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	*extract_unquoted_substring(char *input, int *i, int *flag)
 
 	start = *i;
 	len = 0;
-	while (input[*i] && !ft_check_quotes(input[*i]))
+	while (input[*i])
 	{
 		if (input[*i] == '$' && !escape(input, *i))
 			*flag = 1;

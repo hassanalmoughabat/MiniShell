@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:55 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/11 01:30:59 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/29 00:41:43 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ int	ft_err_msg(t_error err)
 		return (ft_putstr_fd("minishell: ", 2), ft_putstr_fd(err.cmd, 2),
 			ft_putstr_fd(": Permission denied\n", 2), err.error_num);
 	else if (err.error_msg == ERROR_MESG_TOO_MANY_ARGS)
-		return (ft_putstr_fd("minishell: exit: too many arguments\n", 2),
-			err.error_num);
+		return (ft_putstr_fd("minishell: ", 2), ft_putstr_fd(err.cmd, 2),
+			ft_putstr_fd(": too many arguments\n", 2), err.error_num);
 	else if (err.error_msg == ERROR_MESG_NUMERIC_REQUIRED)
 		return (ft_putstr_fd("minishell: exit: ", 2),
 			ft_putstr_fd(err.cmd, 2),
@@ -49,17 +49,20 @@ void	error_message_export(char **str)
 	return ;
 }
 
-void	error_validity_export(char *input)
+void	error_validity_export(char *input, t_token *tk)
 {
 	if (input[0] == '-')
 	{
 		ft_putstr_fd("bash export: ", 2);
 		ft_putchar_fd('-', 2);
-		ft_putchar_fd(input[1], 2);
+		ft_putchar_fd(input[0], 2);
 		ft_putstr_fd(": invalid option\n", 2);
 		return ;
 	}
+	remove_added_quotes(&tk->cmd);
 	ft_putstr_fd("bash export: ", 2);
-	ft_putstr_fd(input, 2);
+	ft_putchar_fd('`', 2);
+	ft_putstr_fd(tk->cmd, 2);
+	ft_putchar_fd('\'', 2);
 	ft_putstr_fd(": not a valid identifier\n", 2);
 }

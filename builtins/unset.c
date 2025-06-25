@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/22 13:31:22 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/01 00:08:49 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,6 @@ void	ft_unset(t_token *token, t_env **env, t_env **copy)
 	if (!token || !(*env) || !env)
 		return ;
 	current = token;
-	if (contain_list("_", token))
-	{
-		g_minishell.env->exit_status = 0;
-		return ;
-	}
 	while (current)
 	{
 		if (current->cmd)

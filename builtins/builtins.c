@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/14 19:00:49 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/05/27 23:54:34 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,11 @@ int	ft_pwd(t_token *tk)
 	}
 }
 
-void	ft_print_env(t_env **env)
+void	ft_print_env(t_env *env)
 {
 	t_env	*ev;
 
 	ev = env;
-	if (!env || !*env)
-	{
-		ft_putstr_fd("env: No such file or directory\n", 2);
-		g_minishell.env->exit_status = ENU_GENEREAL_FAILURE;
-		return ;
-	}
 	while (ev)
 	{
 		ft_putstr_fd(ev->line, 1);
@@ -69,21 +63,19 @@ void	handle_builtin(t_token *tk, char **ft_env, t_env **env)
 		copy = copy_env(*env);
 	if (!copy)
 		return ;
-	// while (tk)
-	// {
-		if (!ft_strcmp(tk->cmd, "env"))
-			ft_print_env(g_minishell.env);
-		else if (!ft_strcmp(tk->cmd, "pwd"))
-			ft_pwd(tk);
-		else if (!ft_strcmp(tk->cmd, "cd"))
-			ft_cd(tk, g_minishell.env, ft_env);
-		else if (!ft_strcmp(tk->cmd, "exit"))
-			ft_exit(tk, &copy);
-		else if (!ft_strcmp(tk->cmd, "export"))
-			ft_export(tk, &copy);
-		else if (!ft_strcmp(tk->cmd, "unset"))
-			ft_unset(tk, &g_minishell.env, &copy);
-		else if (!ft_strcmp(tk->cmd, "echo"))
-			ft_echo(tk);
-	// }
+	remove_added_quotes(&tk->cmd);
+	if (!ft_strcmp(tk->cmd, "env"))
+		ft_print_env(g_minishell.env);
+	else if (!ft_strcmp(tk->cmd, "pwd"))
+		ft_pwd(tk);
+	else if (!ft_strcmp(tk->cmd, "cd"))
+		ft_cd(tk, g_minishell.env, ft_env);
+	else if (!ft_strcmp(tk->cmd, "exit"))
+		ft_exit(tk, &copy);
+	else if (!ft_strcmp(tk->cmd, "export"))
+		ft_export(tk, &copy);
+	else if (!ft_strcmp(tk->cmd, "unset"))
+		ft_unset(tk, &g_minishell.env, &copy);
+	else if (!ft_strcmp(tk->cmd, "echo"))
+		ft_echo(tk);
 }

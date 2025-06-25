@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:16:46 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/11 01:31:06 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/28 01:37:56 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*get_value(char *input, char quote, int flag)
 	return (result);
 }
 
-char	*get_key(char *input, t_env *env, char *quote, int *ind)
+char	*get_key(t_token *tk, char *input, t_env *env, char *quote, int *ind)
 {
 	char	*result;
 	char	*key;
@@ -63,12 +63,12 @@ char	*get_key(char *input, t_env *env, char *quote, int *ind)
 	if (!input)
 		return (NULL);
 	set_key(input, &key, quote, ind);
-	if (!check_valid_key(key, env))
+	if (!check_valid_key(tk, key, env))
 		return (free(key), free(result), NULL);
 	handle_value(key, &result);
 	if (remove_added_quotes(&result) == -1)
 		return (free(key), free(result), NULL);
-	if (!check_key_after_expansion(result, env))
+	if (!check_key_after_expansion(result, env, tk))
 		return (error_message_export(&result), NULL);
 	return (result);
 }

@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/22 17:12:54 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/25 22:48:22 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "../tokenize/token.h"
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <linux/limits.h>
 # include <signal.h>
 # include <unistd.h>
@@ -33,8 +34,10 @@ typedef struct s_env
 {
 	char			*line;
 	int				exit_status;
+	bool			safe_quotes;
 	struct s_env	*next;
 }	t_env;
+
 
 typedef struct s_redir
 {
@@ -93,12 +96,15 @@ extern t_shell	g_minishell;
 int is_delimeter_quoted(t_token *tk);
 
 
+
+int		is_quote_token(char *str);
+
 // --------------value getter setter----------------------------
 char	*get_value(char *input, char quote, int flag);
-char	*get_key(char *input, t_env *env, char *quote, int *ind);
+char	*get_key(t_token *tk, char *input, t_env *env, char *quote, int *ind);
 void	set_value(char **value, char quote, char *input, int flag);
 void	set_key(char *input, char **result, char *quote, int *flag);
-int		set_key_value(char *input, char **key, char **value, t_env *env);
+int		set_key_value(t_token *tk, char **key, char **value, t_env *env);
 // --------------------cd----------------------------------------
 char	*ft_get_pwd(void);
 int		ft_find_old_pwd(char *str);
@@ -108,18 +114,19 @@ void	ft_cd(t_token *tk, t_env *env, char **ft_env);
 void	ft_echo(t_token *tk);
 // --------------------export-------------------------------------
 int		has_equal(char *input);
-int		check_valid_key(char *key, t_env *env);
-int		check_valid_key(char *key, t_env *env);
+// int		check_valid_key(char *key, t_env *env);
+int		check_valid_key(t_token *tk, char *key, t_env *env);
 void	ft_export(t_token *token, t_env **copy);
 void	ft_add_key_to_env(t_env **copy, char *key);
 int		check_if_var_exist(t_env **env, char *key);
 char	*get_value_from_env(char *key, t_env *env);
 int		print_export_env( t_token *token, t_env *env);
-int		check_key_after_expansion(char *key, t_env *env);
+// int		check_key_after_expansion(char *key, t_env *env);
 char	*quotes_in_env(char *value, char *key, int flag);
 int		ft_update_env(char *key, char *value, t_env **env, t_env **copy);
 int		handle_export_quotes(char *temp, char *result, size_t *i, size_t *j);
-int		equal_handler_export(char *input, char **key, char **value, t_env *env);
+int	equal_handler_export(t_token *tk, char *input, char **key,
+		char **value, t_env *env);
 // ---------------------env------------------------------------------
 char	*get_var(char *input);
 size_t	extract_key_env(char *line);
@@ -130,7 +137,7 @@ void	ft_add_env(char *key, char *value, t_env **copy, int flag);
 int		ft_pwd(t_token *tk);
 // ----------------------helpers for builtins------------------------
 void	print_env(char **ftenv);
-void	ft_print_env(t_env **env);
+void	ft_print_env(t_env *env);
 void	display_list(t_token *tk);
 int		ft_list_size(t_token *token);
 int		ft_strcmp(char *s1, char *s2);
@@ -159,7 +166,7 @@ void	cleanup_minishell(t_shell *shell, char **transform_result, char *input);
 int		ft_err_msg(t_error err);
 int		ft_error_message_quotes(char c);
 void	error_message_export(char **str);
-void	error_validity_export(char *input);
+void	error_validity_export(char *input, t_token *tk);
 // ----------------------expansion-------------------------------------
 int		ft_has_dollar(char *str);
 void	replace_dollar(t_token **t_list);
@@ -172,7 +179,7 @@ void	handle_value(char *value, char **result);
 int		ft_check_exceptions(char *str, int index);
 char	*extract_dollar_var(char *key, int *index);
 char	*join_env_value(char *expanded, char *value);
-int		check_key_after_expansion(char *key, t_env *env);
+int		check_key_after_expansion(char *key, t_env *env, t_token *tk);
 void	get_dollar_val(char *key, int *i, char **expanded);
 int		dollar_cases(char *key, int *index, char **expanded);
 // -----------------------exit------------------------------------------
@@ -205,7 +212,7 @@ void	ft_init_signals(void);
 void	ft_sigint_handler(int num);
 void	ft_sigquit_handler(int num);
 // ----------------------parsing-----------------------------------------
-int		ft_is_builtin(t_token *tk);
+int	ft_is_builtin(char *cmd);
 int		is_a_path_command(char *cmd, char **ft_env);
 void	handle_path_command(t_token *tk, char *envp[], char *cmd);
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);

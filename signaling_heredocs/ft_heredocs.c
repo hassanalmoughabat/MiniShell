@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:56:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/10 19:33:43 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/25 22:45:58 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ int	get_exit_code(int status)
 	return (WEXITSTATUS(status));
 }
 
-static void setup_exec_signals(void)
-{
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
-}
+// static void setup_exec_signals(void)
+// {
+//     signal(SIGINT, SIG_DFL);
+//     signal(SIGQUIT, SIG_DFL);
+// }
 
 static void	ft_heredoc_sigint_handler(int signum)
 {
@@ -222,15 +222,15 @@ char *extract_variable_quote(char *line)
     return result;
 }
 
-static int is_quoted_format(const char *line)
-{
-    if (!line)
-        return 0;
-    size_t len = strlen(line);
-    if (len >= 4 && line[0] == '\'' && line[1] == '\'' && line[len - 2] == '\'' && line[len - 1] == '\'')
-        return 1;
-    return 0;
-}
+// static int is_quoted_format(const char *line)
+// {
+//     if (!line)
+//         return 0;
+//     size_t len = strlen(line);
+//     if (len >= 4 && line[0] == '\'' && line[1] == '\'' && line[len - 2] == '\'' && line[len - 1] == '\'')
+//         return 1;
+//     return 0;
+// }
 
 char *expand_variables(char *line, t_env *env, int quote)
 {
@@ -306,6 +306,7 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
     size_t total_written = 0;
     char *line;
     char *expanded_line;
+    (void)flag;
 
     signal(SIGINT, ft_heredoc_sigint_handler);
     if (!validate_delimiter(delimiter) || pipe(pipefd) == -1)
