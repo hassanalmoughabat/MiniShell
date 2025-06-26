@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/27 16:56:04 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/26 17:00:07 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,16 @@ t_env	*initialize_env_list(char **envp)
 		current = new_node;
 		i++;
 	}
+	new_node = create_env_node("_=/usr/bin/env");
+	if (!new_node)
+	{
+		free_my_env(head);
+		return (NULL);
+	}
+	if (!head)
+		head = new_node;
+	else
+		current->next = new_node;
 	return (head);
 }
 
