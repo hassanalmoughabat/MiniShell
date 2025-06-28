@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_helper.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 20:40:13 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/18 17:10:51 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/28 13:31:36 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,6 @@ char *cut_from_op(char op, char *str, t_env *env)
     ft_strcpy(new_line + before_len + new_val_len, pos + var_name_len);
     return (new_line);
 }
-
-
 
 char *extract_variable(const char *line)
 {

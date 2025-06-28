@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_great_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/25 22:42:40 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/28 16:38:10 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
 	}
 }
 
- void	execute_with_redirect(t_token *cmd_tokens, char **ft_env,
+void	execute_with_redirect(t_token *cmd_tokens, char **ft_env,
 		t_env *env, int fd)
 {
 	if (dup2(fd, STDOUT_FILENO) == -1)

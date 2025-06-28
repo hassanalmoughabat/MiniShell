@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredocs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:56:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/25 22:45:58 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/28 13:25:25 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ char *get_delimeter(t_token *tk)
     }
     return (NULL);
 }
+
 char *find_command_around_heredoc(t_token *tk, char *delimiter)
 {
     t_token *curr = tk;

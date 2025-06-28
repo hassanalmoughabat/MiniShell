@@ -57,6 +57,7 @@ int	open_output_file(char *filename, int flags)
 	}
 	return (NULL);
 }
+
 t_token *copy_tokens_before_redirect(t_token *tk, t_token *redirect_token)
 {
     t_token *cmd_tokens = NULL;

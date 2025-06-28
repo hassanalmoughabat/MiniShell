@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/27 23:54:34 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/28 13:14:40 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,13 @@ int	ft_pwd(t_token *tk)
 	}
 }
 
-void	ft_print_env(t_env *env)
+void	ft_print_env(t_env *env, char **envp)
 {
 	t_env	*ev;
 
 	ev = env;
+	if (!env)
+		g_minishell.env = initialize_env_list(envp);
 	while (ev)
 	{
 		ft_putstr_fd(ev->line, 1);
@@ -65,7 +67,7 @@ void	handle_builtin(t_token *tk, char **ft_env, t_env **env)
 		return ;
 	remove_added_quotes(&tk->cmd);
 	if (!ft_strcmp(tk->cmd, "env"))
-		ft_print_env(g_minishell.env);
+		ft_print_env(g_minishell.env, ft_env);
 	else if (!ft_strcmp(tk->cmd, "pwd"))
 		ft_pwd(tk);
 	else if (!ft_strcmp(tk->cmd, "cd"))

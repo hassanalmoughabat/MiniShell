@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:33:51 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/20 21:14:18 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/28 16:48:55 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ void	update_shlvl_in_env(t_env **env, int new_shlvl)
 	char	*new_value;
 	char	*new_line;
 
+	if (env)
+		return ;
 	curr = *env;
 	while (curr && ft_strncmp(curr->line, "SHLVL=", 6))
 		curr = curr->next;

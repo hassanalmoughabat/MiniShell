@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_path_handling.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/25 22:54:04 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/28 14:15:25 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,10 +218,7 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 	if (contain_char(input, '|'))
 		pipe = 1;
 	if (curr->type == T_PIPE || pipe == 1)
-	{
-		
 		handle_pipe(tk, ft_env, *env, input);
-	}
 	else if (contain_list("<<", tk) || contain_list(">>", tk)
 		|| contain_list("<", tk) || contain_list(">", tk))
 		handle_redirection(tk, ft_env, *env);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/26 17:04:02 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/28 16:45:57 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	detect_key(t_token *tk, t_env **env)
 	{
 		key = get_var(curr->cmd);
 		current = *env;
+		if (ft_strcmp(curr->cmd, "_") == 1)
+			return ;
 		if (key)
 		{
 			while (current)
@@ -82,7 +84,6 @@ void	ft_unset(t_token *token, t_env **env, t_env **copy)
 	current = token;
 	while (current)
 	{
-		
 		if (current->cmd)
 		{
 			detect_key(token, env);

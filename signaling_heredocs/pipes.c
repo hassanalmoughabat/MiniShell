@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 14:36:57 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/25 22:52:34 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/28 14:43:35 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
+
 int has_heredoc(t_token *lst)
 {
     int i;
@@ -415,6 +416,33 @@ static int create_pipes(int ***pipes, int pipe_count)
     return (0);
 }
 
+int	valid_pipe(t_token *tk)
+{
+	if (tk && tk->type == T_PIPE)
+	{
+	ft_putstr_fd("bash: syntax error near `|'\n", 2);
+	g_minishell.env->exit_status = 1;
+	return (0);
+	}
+	while (tk)
+	{
+		if (tk->type == T_PIPE)
+		{
+			if (!tk->next || !tk->next->cmd || (tk->next->type == T_PIPE && tk->next->next->type == T_PIPE))
+			{
+				ft_putstr_fd("bash: syntax error near unexpected token `", 2);
+				ft_putstr(tk->cmd);
+				ft_putstr("\'\n");
+				g_minishell.env->exit_status = 2;
+				return (0);
+			}
+		}
+		tk = tk->next;
+	}
+	return (1);
+}
+
+
 void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
 {
     int pipe_count;
@@ -430,7 +458,7 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
     int heredoc_fd;
     int is_first_with_heredoc;
 
-    if (!lst)
+    if (!lst || !valid_pipe(lst))
         return;
     if (has_heredoc(lst) && count_pipes(lst) == 1)
     {

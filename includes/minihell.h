@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/25 22:48:22 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/06/28 16:25:43 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,6 @@ extern t_shell	g_minishell;
 
 
 int is_delimeter_quoted(t_token *tk);
-
-
-
 int		is_quote_token(char *str);
 
 // --------------value getter setter----------------------------
@@ -114,14 +111,12 @@ void	ft_cd(t_token *tk, t_env *env, char **ft_env);
 void	ft_echo(t_token *tk);
 // --------------------export-------------------------------------
 int		has_equal(char *input);
-// int		check_valid_key(char *key, t_env *env);
 int		check_valid_key(t_token *tk, char *key, t_env *env);
 void	ft_export(t_token *token, t_env **copy);
 void	ft_add_key_to_env(t_env **copy, char *key);
 int		check_if_var_exist(t_env **env, char *key);
 char	*get_value_from_env(char *key, t_env *env);
 int		print_export_env( t_token *token, t_env *env);
-// int		check_key_after_expansion(char *key, t_env *env);
 char	*quotes_in_env(char *value, char *key, int flag);
 int		ft_update_env(char *key, char *value, t_env **env, t_env **copy);
 int		handle_export_quotes(char *temp, char *result, size_t *i, size_t *j);
@@ -137,7 +132,7 @@ void	ft_add_env(char *key, char *value, t_env **copy, int flag);
 int		ft_pwd(t_token *tk);
 // ----------------------helpers for builtins------------------------
 void	print_env(char **ftenv);
-void	ft_print_env(t_env *env);
+void	ft_print_env(t_env *env, char **envp);
 void	display_list(t_token *tk);
 int		ft_list_size(t_token *token);
 int		ft_strcmp(char *s1, char *s2);
@@ -212,14 +207,16 @@ void	ft_init_signals(void);
 void	ft_sigint_handler(int num);
 void	ft_sigquit_handler(int num);
 // ----------------------parsing-----------------------------------------
-int	ft_is_builtin(char *cmd);
+int		ft_is_builtin(char *cmd);
 int		is_a_path_command(char *cmd, char **ft_env);
 void	handle_path_command(t_token *tk, char *envp[], char *cmd);
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);
 // ----------------------Piping and Redirections-------------------------
+int		valid_pipe(t_token *tk);
+int redirect_count(t_token *tk);
 void	handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input);
+int		handle_several_redirection(t_token *tk, char **ft_env);
 int		handle_redirection(t_token *tk, char **ft_env, t_env *env);
-int		handle_dless(char *delimiter, t_env *env, int flag, int quote);
 int		handle_dless(char *delimiter, t_env *env, int flag, int quote);
 int		handle_great(char *filename, t_token *tk, char **ft_env, t_env *env);
 int		handle_dgreat(char *filename, t_token *tk, char **ft_env, t_env *env);
@@ -243,9 +240,10 @@ int		handle_redirect_fork(int fd, t_token *tk, t_token *redirect_token,
 			t_redir *params);
 //---------------------Handle redirection utils----------------------------
 int		handle_output_redirect(t_token *curr, t_token *tk,
-			char **ft_env, t_env *env);
+			char **ft_env);
 int		handle_input_redirect(t_token *curr, t_token *tk,
 			char **ft_env, t_env *env);	
+int		handle_less(char *filename, t_token *tk, char **ft_env, t_env *env);
 //----------------------------Heredoc--------------------------------------
 char	*get_delimeter(t_token *tk);
 int		contain_char(char *str, char c);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_great_main.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/18 17:07:46 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/28 16:37:38 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	handle_redirect_child(int fd, t_token *tk, t_token *redirect_token,
 		close(fd);
 		exit(EXIT_FAILURE);
 	}
+	ft_printf("it is passing the redirection \n");
 	execute_with_redirect(cmd_tokens, params->ft_env, params->env, fd);
 	return (0);
 }
