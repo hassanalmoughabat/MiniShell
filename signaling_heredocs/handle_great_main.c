@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/18 17:07:46 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/05 17:10:44 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	handle_redirect_fork(int fd, t_token *tk, t_token *redirect_token,
 	return (1);
 }
 
- t_redir	*init_redir_params(char **ft_env, t_env *env)
+t_redir	*init_redir_params(char **ft_env, t_env *env)
 {
 	t_redir		*params;
 

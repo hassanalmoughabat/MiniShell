@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 14:34:09 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/29 00:50:32 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/30 15:15:43 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ char *handle_dollar(char *key, int flag)
     i = 0;
     in_single_quotes = 0;
     in_double_quotes = 0;
-    expanded = ft_strdup("");
-    
+    expanded = ft_strdup(""); 
     while (key[i])
     {
         if (key[i] == '\'' && !escape(key, i) && !in_double_quotes)
@@ -99,10 +98,9 @@ char *handle_dollar(char *key, int flag)
             temp = ft_strjoin_char(expanded, key[i]);
             free(expanded);
             expanded = temp;
-        }
-        i++;
-    }
-    (void)flag;
-    return (expanded);
+		}
+	i++;
+	}
+	(void)flag;
+	return (expanded);
 }
-

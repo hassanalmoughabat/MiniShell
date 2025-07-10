@@ -6,11 +6,17 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 09:53:05 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/05/17 16:49:41 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/02 10:54:13 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
+
+void	ft_heredoc_sigint_handler(int signum)
+{
+	(void)signum;
+	exit(128 + SIGINT);
+}
 
 void	ft_sigint_handler(int num)
 {
@@ -27,6 +33,8 @@ void	ft_sigint_handler(int num)
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
+		if (g_minishell.env)
+			g_minishell.env->exit_status = 130;
 	}
 }
 

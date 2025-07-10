@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:33:51 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/17 15:08:36 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/03 11:18:20 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ void	update_shlvl_in_env(t_env **env, int new_shlvl)
 	char	*new_value;
 	char	*new_line;
 
+	if (!*env)
+		return ;
 	curr = *env;
 	while (curr && ft_strncmp(curr->line, "SHLVL=", 6))
 		curr = curr->next;
@@ -54,12 +56,4 @@ void	update_shlvl_in_env(t_env **env, int new_shlvl)
 	}
 	else
 		add_shell_level(&g_minishell.env, new_line);
-}
-
-void	shell_handling(t_token *tk)
-{
-	if (tk && !ft_strncmp(tk->cmd, "./minishell", 11))
-		update_shlvl_in_env(&g_minishell.env, g_minishell.shell_level);
-	else
-		return ;
 }

@@ -6,11 +6,11 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/27 18:16:46 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/09 11:14:42 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minihell.h"
+#include "../includes/minihell.h"
 t_shell	g_minishell;
 
 int	get_shell_level(t_env *shell)
@@ -60,11 +60,11 @@ void	print_welcome_message(void)
 	ft_putstr_fd("\n", 1);
 	ft_printf("%s#################################################%s\n",
 		red, reset);
-	ft_printf("%s#%s		%sWelcome To Minihell!%s	        %s#%s\n",
+	ft_printf("%s#%s		%sWelcome To MiniHell!%s	        %s#%s\n",
 		yellow, reset, cyan, reset, yellow, reset);
 	ft_printf("%s#%s						%s#%s\n",
 		yellow, reset, yellow, reset);
-	ft_printf("%s#%s       %sA Small Copy of Hell is With You!%s	%s#%s\n",
+	ft_printf("%s#%s       %sA Small Copy Of Hell Is With You!%s	%s#%s\n",
 		yellow, reset, cyan, reset, yellow, reset);
 	ft_printf("%s#%s						%s#%s\n",
 		yellow, reset, yellow, reset);
@@ -85,26 +85,24 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 		ft_init_signals();
 		input = readline("minishell:~$ ");
 		if (!input)
+		{
+			ft_putstr_fd("exit\n", 1);
 			break ;
+		}
 		else
 		{
 			inp = ft_tokenize(input);
-			shell_handling(inp);
 			if (*ftenv)
 				free_array(ftenv);
-			ftenv = transform(g_minishell.env);
+			ftenv = transform(env);
 			replace_dollar(&inp);
-			display_list(inp);
 			if (inp)
-				after_parsing(inp, ftenv, &env);
-			// display_list(inp);
-			// if (inp)
-			// 	free_token_list(inp);
+				after_parsing(inp, ftenv, &env, input);
 			add_history(input);
 			// free(input);
 		}
 	}
-	return (g_minishell.env->exit_status);
+	return (env->exit_status);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -124,7 +122,5 @@ int	main(int argc, char **argv, char **envp)
 	else
 		g_minishell.path = path;
 	ft_read(input, ft_transform, g_minishell.env);
-	// cleanup_minishell(&g_minishell, ft_transform, path);
-	ft_printf("exit \n");
 	return (g_minishell.env->exit_status);
 }

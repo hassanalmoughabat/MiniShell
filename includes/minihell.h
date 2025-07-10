@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/28 01:40:40 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/09 13:40:58 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "../tokenize/token.h"
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <linux/limits.h>
 # include <signal.h>
 # include <unistd.h>
@@ -59,7 +60,8 @@ typedef enum error_msg
 	ERROR_MESG_NO_FILE,
 	ERROR_MESG_PERMISSION_DENIED,
 	ERROR_MESG_TOO_MANY_ARGS,
-	ERROR_MESG_NUMERIC_REQUIRED
+	ERROR_MESG_NUMERIC_REQUIRED,
+	ERROR_MESG_NOT_DIR
 }	t_err_msg;
 
 typedef enum error_num
@@ -79,25 +81,26 @@ typedef struct s_err
 	t_err_num		error_num;
 }	t_error;
 
+typedef struct s_pip
+{
+    t_token *cmd;
+    t_token *context;
+    int     *pipes;
+    int     pipe_count;
+    int     cmd_index;
+} t_pip;
+
 extern t_shell	g_minishell;
 
-// typedef struct s_command
-// {
-// 	char				**args;
-// 	char				*infile;
-// 	char				*outfile;
-// 	int					append;
-// 	struct s_command	*next;
-// }	t_command;
-
+int		is_valid_filename(t_token *token);
+int		is_delimeter_quoted(t_token *tk);
+int		is_quote_token(char *str);
 // --------------value getter setter----------------------------
 char	*get_value(char *input, char quote, int flag);
-// char	*get_key(char *input, t_env *env, char *quote, int *ind);
+char	*get_key(t_token *tk, char *input, t_env *env, char *quote, int *ind);
 void	set_value(char **value, char quote, char *input, int flag);
 void	set_key(char *input, char **result, char *quote, int *flag);
-// int		set_key_value(char *input, char **key, char **value, t_env *env);
 int		set_key_value(t_token *tk, char **key, char **value, t_env *env);
-char	*get_key(t_token *tk, char *input, t_env *env, char *quote, int *ind);
 // --------------------cd----------------------------------------
 char	*ft_get_pwd(void);
 int		ft_find_old_pwd(char *str);
@@ -105,23 +108,19 @@ char	*ft_get_old_pwd(t_env *env);
 void	ft_cd(t_token *tk, t_env *env, char **ft_env);
 // --------------------echo---------------------------------------
 void	ft_echo(t_token *tk);
-int		is_quote_token(char *str);
 // --------------------export-------------------------------------
 int		has_equal(char *input);
-// int		check_valid_key(char *key, t_env *env);
 int		check_valid_key(t_token *tk, char *key, t_env *env);
 void	ft_export(t_token *token, t_env **copy);
 void	ft_add_key_to_env(t_env **copy, char *key);
 int		check_if_var_exist(t_env **env, char *key);
 char	*get_value_from_env(char *key, t_env *env);
-int		print_export_env( t_token *token, t_env *env);
-int		check_key_after_expansion(char *key, t_env *env, t_token *tk);
+int		print_export_env( t_token *token, t_env *env, int flag);
 char	*quotes_in_env(char *value, char *key, int flag);
 int		ft_update_env(char *key, char *value, t_env **env, t_env **copy);
 int		handle_export_quotes(char *temp, char *result, size_t *i, size_t *j);
-// int		equal_handler_export(char *input, char **key, char **value, t_env *env);
-int	equal_handler_export(t_token *tk, char *input, char **key,
-		char **value, t_env *env);
+int		equal_handler_export(t_token *tk, char *input, char **key,
+				char **value, t_env *env);
 // ---------------------env------------------------------------------
 char	*get_var(char *input);
 size_t	extract_key_env(char *line);
@@ -132,7 +131,7 @@ void	ft_add_env(char *key, char *value, t_env **copy, int flag);
 int		ft_pwd(t_token *tk);
 // ----------------------helpers for builtins------------------------
 void	print_env(char **ftenv);
-void	ft_print_env(t_env *env);
+void	ft_print_env(t_env *env, char **envp);
 void	display_list(t_token *tk);
 int		ft_list_size(t_token *token);
 int		ft_strcmp(char *s1, char *s2);
@@ -159,9 +158,8 @@ void	free_token_list(t_token *head);
 void	cleanup_minishell(t_shell *shell, char **transform_result, char *input);
 // ----------------------error messages--------------------------------
 int		ft_err_msg(t_error err);
-// int		ft_error_message_quotes(char c);
+int		ft_error_message_quotes(char c);
 void	error_message_export(char **str);
-void	error_validity_export(char *input, t_token *tk);
 void	error_validity_export(char *input, t_token *tk);
 // ----------------------expansion-------------------------------------
 int		ft_has_dollar(char *str);
@@ -175,7 +173,6 @@ void	handle_value(char *value, char **result);
 int		ft_check_exceptions(char *str, int index);
 char	*extract_dollar_var(char *key, int *index);
 char	*join_env_value(char *expanded, char *value);
-// int		check_key_after_expansion(char *key, t_env *env);
 int		check_key_after_expansion(char *key, t_env *env, t_token *tk);
 void	get_dollar_val(char *key, int *i, char **expanded);
 int		dollar_cases(char *key, int *index, char **expanded);
@@ -184,7 +181,6 @@ void	handle_exit_code(t_token *curr);
 void	ft_exit(t_token *tk, t_env **copy);
 // -----------------------shell level-----------------------------------
 void	decrement(t_shell *shell);
-void	shell_handling(t_token *tk);
 void	add_shell_level(t_env **env, char *new_line);
 void	update_shlvl_in_env(t_env **env, int new_shlvl);
 // -----------------------quotes----------------------------------------
@@ -194,34 +190,38 @@ int		has_equal_in_quote(char *input, char *quote);
 char	*extract_quoted_substring(char *input, int *i);
 char	*extract_unquoted_substring(char *input, int *i, int *flag);
 // -----------------------unset------------------------------------------
-void	update_env_value(t_env *head, const char *target,
-			const char *new_value);
+void	update_env_value(t_env **head, const char *target, const char *new_value);
 void	ft_unset(t_token *token, t_env **env, t_env **copy);
 // -----------------------heredoc----------------------------------------
+int		has_quotes(char *str);
 char	*get_delimeter(t_token *tk);
 int		contain_char(char *str, char c);
 int		validate_delimiter(const char *delimiter);
 char	*cut_from_op(char op, char *str, t_env *env);
-char	*find_command_around_heredoc(t_token *tk, char *delimiter);
+// char	*find_command_around_heredoc(t_token *tk);
 char	*replace_variable(char *line, char *var_name, char *new_val);
 //-----------------------signaling---------------------------------------
 void	ft_init_signals(void);
 void	ft_sigint_handler(int num);
 void	ft_sigquit_handler(int num);
+void	ft_heredoc_sigint_handler(int signum);
 // ----------------------parsing-----------------------------------------
 int		ft_is_builtin(char *cmd);
 int		is_a_path_command(char *cmd, char **ft_env);
 void	handle_path_command(t_token *tk, char *envp[], char *cmd);
-void	after_parsing(t_token *tk, char **ft_env, t_env **env);
+void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);
 // ----------------------Piping and Redirections-------------------------
-void	handle_pipe(t_token *lst, char **ft_env, t_env *env);
-int		handle_redirection(t_token *tk, char **ft_env, t_env *env);
-int		handle_dless(char *delimiter, t_env *env, int flag, int quote);
+int		valid_pipe(t_token *tk, char *input);
+int		redirect_count(t_token *tk);
+void	handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input);
+int		handle_several_redirection(t_token *tk, char **ft_env);
+int 	handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input);
 int		handle_dless(char *delimiter, t_env *env, int flag, int quote);
 int		handle_great(char *filename, t_token *tk, char **ft_env, t_env *env);
 int		handle_dgreat(char *filename, t_token *tk, char **ft_env, t_env *env);
 //-----------------------Redirection_utils--------------------------------
 int		count_tokens(t_token *tokens);
+int 	ft_index(char *str, char c);
 void	print_cmd_error(char *cmd, char *msg);
 char	**build_args_array(t_token *cmd_tokens);
 int		open_output_file(char *filename, int flags);
@@ -240,21 +240,19 @@ int		handle_redirect_fork(int fd, t_token *tk, t_token *redirect_token,
 			t_redir *params);
 //---------------------Handle redirection utils----------------------------
 int		handle_output_redirect(t_token *curr, t_token *tk,
-			char **ft_env, t_env *env);
+			char **ft_env);
 int		handle_input_redirect(t_token *curr, t_token *tk,
 			char **ft_env, t_env *env);	
 int		handle_less(char *filename, t_token *tk, char **ft_env, t_env *env);
 //----------------------------Heredoc--------------------------------------
 char	*get_delimeter(t_token *tk);
-int		contain_char(char *str, char c);
 char	*extract_variable(const char *line);
 int		contain_list(char *str, t_token *tk);
 int		validate_delimiter(const char *delimiter);
 char	*cut_from_op(char op, char *str, t_env *env);
 char	*ft_strsub(char const *s, unsigned int start, size_t len);
-char	*find_command_around_heredoc(t_token *tk, char *delimiter);
 void	handle_heredoc(char **ft_env, t_env *env, t_token *tk);
 char	*extract_content_without_quotes(char *str, char quote_type);
 char	*replace_variable(char *line, char *var_name, char *new_val);
-
+char *find_command_around_heredoc(t_token *tk, char *delimiter);
 #endif

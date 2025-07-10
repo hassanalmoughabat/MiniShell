@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:31:49 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/28 01:41:33 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/04 16:18:03 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	set_value(char **value, char quote, char *input, int flag)
 	char	*equal_pos;
 	char	*first_quote;
 	char	*new_value;
-	size_t 	len;
+	size_t	len;
 
 	len = 0;
 	equal_pos = ft_strchr(input, '=');
@@ -71,6 +71,8 @@ int	set_key_value(t_token *tk, char **key, char **value, t_env *env)
 	char	*input;
 
 	input = tk->cmd;
+	if (!input || input[0] == '\0' || !ft_strcmp(tk->cmd, ""))
+		return (*key = NULL, 1);
 	if (has_equal(input) && ft_strlen(input) > 1)
 	{
 		if (equal_handler_export(tk, input, key, value, env) == -1)

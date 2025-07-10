@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   free_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 12:50:35 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/19 00:12:05 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/07 14:42:36 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minihell.h"
+#include "../includes/minihell.h"
 
 void	free_token_list(t_token *head)
 {

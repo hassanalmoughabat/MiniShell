@@ -6,36 +6,36 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/18 00:03:19 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/09 13:40:27 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-void	update_env_value(t_env *head, const char *target, const char *new_value)
+void	update_env_value(t_env **head, const char *target, const char *new_value)
 {
 	char	*updated_value;
 	size_t	len;
 
 	len = ft_strlen(new_value);
 	updated_value = NULL;
-	if (!head || !target || !new_value)
+	if (!*head || !target || !new_value)
 		return ;
-	while (head)
+	while (*head)
 	{
-		if (head->line
-			&& ft_strncmp(head->line, target, ft_strlen(target)) == 0)
+		if ((*head)->line
+			&& ft_strncmp((*head)->line, target, ft_strlen(target)) == 0)
 		{
 			updated_value = malloc(ft_strlen(target) + len + 1);
 			if (!updated_value)
 				return ;
 			strcpy(updated_value, target);
 			strcat(updated_value, new_value);
-			free(head->line);
-			head->line = updated_value;
+			free((*head)->line);
+			(*head)->line = updated_value;
 			return ;
 		}
-		head = head->next;
+		(*head) = (*head)->next;
 	}
 	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:15:55 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/29 00:50:44 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/08 23:11:58 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,11 @@ void	replace_dollar(t_token **t_list)
 	curr = *t_list;
 	while (curr)
 	{
+		if (curr->prev && ft_strcmp(curr->prev->cmd, "<<") == 0)
+		{
+			curr = curr->next;
+			continue;
+		}
 		if (ft_has_dollar(curr->cmd))
 		{
 			if (!should_expand_dollar(curr->cmd))
@@ -152,7 +157,7 @@ int	expand_helper(char **substr, int flag)
 				free(*substr);
 				*substr = temp;
 			}
-		}			
+		}
 	}
 	else if (quote_type(*substr) == 0 || quote_type(*substr) == 2 || quote_type(*substr) == 3)
 	{

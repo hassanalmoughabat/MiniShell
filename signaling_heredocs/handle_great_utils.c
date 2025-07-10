@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/28 01:42:36 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/02 16:45:47 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ char	**build_args_array(t_token *cmd_tokens)
 	curr = cmd_tokens;
 	while (curr)
 	{
+		remove_added_quotes(&curr->cmd);
 		args[i] = ft_strdup(curr->cmd);
 		if (!args[i])
 		{
@@ -79,9 +80,9 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
 		free_token_list(cmd_tokens);
 		exit(EXIT_FAILURE);
 	}
+	free_token_list(cmd_tokens);
 	if (execve(path, args, ft_env) == -1)
 	{
-		print_cmd_error(args[0], strerror(errno));
 		ft_free_tab(args);
 		free(path);
 		free_token_list(cmd_tokens);
@@ -89,7 +90,7 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
 	}
 }
 
- void	execute_with_redirect(t_token *cmd_tokens, char **ft_env,
+void	execute_with_redirect(t_token *cmd_tokens, char **ft_env,
 		t_env *env, int fd)
 {
 	if (dup2(fd, STDOUT_FILENO) == -1)

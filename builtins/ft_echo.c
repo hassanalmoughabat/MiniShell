@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:24:32 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/27 17:22:34 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/04 17:59:59 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,6 @@ void	ft_echo(t_token *tk)
 	int		flag = 0;
 	char	*temp, *content;
 
-	display_list(tk);
 	if (curr && !ft_strcmp(curr->cmd, "echo"))
 		curr = curr->next;
 	while (curr)
@@ -192,13 +191,6 @@ void	ft_echo(t_token *tk)
 	{
 		if (!curr->cmd)
 			return ;
-		if (is_quote_token(curr->cmd))
-		{
-			ft_putstr_fd(curr->cmd, 1);
-			ft_putstr_fd(" ", 1);
-			curr = curr->next;
-			continue ;
-		}
 		temp = ft_strdup(curr->cmd);
 		if (temp && ft_strcmp(temp, " "))
 		{
@@ -210,8 +202,6 @@ void	ft_echo(t_token *tk)
 			}
 		}
 		free(temp);
-		if (!ft_strcmp(curr->cmd, "new_line"))
-			return ;
 		curr = curr->next;
 	}
 	if (!flag)

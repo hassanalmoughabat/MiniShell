@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 23:34:20 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/16 17:43:30 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/30 17:52:00 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ t_env	*new_env_node(char *key_value)
 {
 	t_env	*node;
 
+	if (!key_value)
+		return (NULL);
 	node = malloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
@@ -60,8 +62,11 @@ t_env	*copy_env(t_env *envp)
 		equal_ptr = ft_strchr(current->line, '=');
 		key = ft_substr(current->line, 0, equal_ptr - current->line);
 		equal_ptr ++;
-		value = ft_strdup(equal_ptr);
+		if (equal_ptr)
+			value = ft_strdup(equal_ptr);
 		temp = quotes_in_env(value, key, 0);
+		if (!temp)
+			return (ft_free_env(head), NULL);
 		new_node = new_env_node(temp);
 		if (!new_node)
 			return (ft_free_env(head), NULL);

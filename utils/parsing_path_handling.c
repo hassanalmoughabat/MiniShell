@@ -6,11 +6,11 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/29 00:06:45 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/04 22:01:47 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minihell.h"
+#include "../includes/minihell.h"
 
 int		contains_symbols(char *tk, int flag)
 {
@@ -21,8 +21,7 @@ int		contains_symbols(char *tk, int flag)
 	{
 		while (tk[i])
 		{
-			if ((tk[i] == '/' && !tk[i + 1])
-				|| (tk[i] == '/' && !ft_isalpha(tk[i + 1])))
+			if ((tk[i] == '/'))
 				return (1);
 			i ++;
 		}
@@ -38,7 +37,6 @@ int		contains_symbols(char *tk, int flag)
 	}
 	return (0);
 }
-
 int	count_total_args(t_token *tk)
 {
 	t_token	*curr;
@@ -99,7 +97,6 @@ char	**build_argv_from_tokens(t_token *tk)
 				while (split[j] && i < count)
 				{
 					argv[i] = ft_strdup(split[j]);
-					remove_added_quotes(&argv[i]);
 					if (!argv[i])
 					{
 						while (--i >= 0)
@@ -133,36 +130,51 @@ char	**build_argv_from_tokens(t_token *tk)
 	return (argv);
 }
 
+
+void free_shell_args(char **args)
+{
+    int i = 0;
+    if (!args) return;
+    while (args[i]) free(args[i++]);
+    free(args);
+}
+
+void print_double_string(char **arr)
+{
+    int i = 0;
+    if (!arr)
+    {
+        printf("(null)\n");
+        return;
+    }
+    while (arr[i])
+    {
+        printf("[%d]: %s\n", i, arr[i]);
+        i++;
+    }
+}
+
 void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 {
 	char	**argv;
 	char	*path;
 	pid_t	pid;
 	int		status;
+	struct stat sb;
 
 	if (!cmd || !tk)
 		return ;
-	display_list(tk);
-	if (contains_symbols(cmd, 1))
-	{
-		g_minishell.env->exit_status = 127;
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(" Is a directory \n", 2);
-		return ;
-	}
-	if (!ft_strncmp(cmd, ".//", 2) && access(cmd, X_OK))
+	if (!ft_strcmp(tk->cmd, "\"\"") || !ft_strcmp(tk->cmd, "''"))
 	{
 		g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
-				ERROR_MESG_PERMISSION_DENIED, ENU_CMD_CANT_EXECUTE});
+				ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
 		return ;
 	}
 	argv = build_argv_from_tokens(tk);
-	if (!argv || !argv[0])
+	if (!argv || !argv[0] || !argv[0][0] )
 	{
-		remove_added_quotes(&cmd);
 		if (argv)
-			ft_free_tab(argv);
+			free_shell_args(argv);
 		g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
 				ERROR, ENU_GENEREAL_FAILURE});
 		return ;
@@ -177,6 +189,7 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 	}
 	if (pid == 0)
 	{
+		signal(SIGQUIT, SIG_DFL);
 		path = get_path(argv[0], envp);
 		if (!path)
 		{
@@ -184,6 +197,35 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 					ERROR_MESG_NO_FILE, ENU_CMD_NOT_FOUND});
 			ft_free_tab(argv);
 			exit (127);
+		}
+		if (contains_symbols(cmd, 1))
+		{
+			if(stat(path, &sb) == 0)
+			{
+				if (S_ISDIR(sb.st_mode))
+				{
+					g_minishell.env->exit_status = 126;
+					ft_putstr_fd("minishell: ", 2);
+					ft_putstr_fd(cmd, 2);
+					ft_putstr_fd(" Is a directory \n", 2);
+					exit(126);
+				}
+				else if (access(path, X_OK) != 0) {
+					g_minishell.env->exit_status = 126;
+					ft_putstr_fd("minishell: ", 2);
+					ft_putstr_fd(cmd, 2);
+					ft_putstr_fd(": Permission denied\n", 2);
+					exit(126);
+				}
+			}
+			else
+			{
+				g_minishell.env->exit_status = 127;
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(cmd, 2);
+				ft_putstr_fd(" No such file or directory \n", 2);
+				exit (127);
+			}
 		}
 		if (execve(path, argv, envp) == -1)
 		{
@@ -199,7 +241,9 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 	else
 	{
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
+		if (WIFSIGNALED(status))
+			g_minishell.env->exit_status = 128 + WTERMSIG(status);
+		else if (WIFEXITED(status))
 			g_minishell.env->exit_status = WEXITSTATUS(status);
 		else
 			g_minishell.env->exit_status = 0;
@@ -207,18 +251,49 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 	}
 }
 
-void	after_parsing(t_token *tk, char **ft_env, t_env **env)
+void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 {
 	t_token	*curr;
+	int		pipe;
+	int		status;
+	pid_t	pid;
 
 	if (!tk)
 		return ;
 	curr = tk;
-	if (curr->type == T_PIPE)
+	if (!ft_strcmp(tk->cmd, ":") || !ft_strcmp(tk->cmd, "!"))
 		return ;
+	if (!ft_strncmp(tk->cmd, ";",1))
+	{
+		ft_putstr_fd("bash: syntax error near unexpected token `", 2);
+		if(tk->cmd[1] == ';')
+			ft_putstr_fd(";;'", 2);
+		else
+			ft_putstr_fd(";'", 2);
+		ft_putstr_fd("\n",2);
+		(*env)->exit_status = 2;
+		return ;
+	}
+	if (contain_list("|", tk))
+		handle_pipe(tk, ft_env, *env, input);
 	else if (contain_list("<<", tk) || contain_list(">>", tk)
 		|| contain_list("<", tk) || contain_list(">", tk))
-		handle_redirection(tk, ft_env, *env);
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			handle_redirection(tk, ft_env, *env, input);
+			exit((*env)->exit_status);
+		}
+		else if (pid > 0)
+		{
+			waitpid(pid, &status, 0);
+			if (WIFSIGNALED(status))
+				(*env)->exit_status = 128 + WTERMSIG(status);
+			else if (WIFEXITED(status))
+				(*env)->exit_status = WEXITSTATUS(status);
+		}
+	}
 	else
 	{
 		if (ft_is_builtin(curr->cmd))

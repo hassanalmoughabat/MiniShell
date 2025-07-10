@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:55 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/29 00:41:43 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/04 16:37:41 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 int	ft_err_msg(t_error err)
 {
-	if (err.error_msg == ERROR_MESG_CMD_NOT_FOUND)
+	if (err.error_msg == ERROR_MESG_NOT_DIR)
+		return (ft_putstr_fd("minishell: ", 2), ft_putstr_fd(err.cmd, 2),
+			ft_putstr_fd(": Not a directory \n", 2), err.error_num);
+	else if (err.error_msg == ERROR_MESG_CMD_NOT_FOUND)
 		return (ft_putstr_fd("minishell: ", 2), ft_putstr_fd(err.cmd, 2),
 			ft_putstr_fd(": command not found\n", 2), err.error_num);
 	else if (err.error_msg == ERROR_MESG_NO_FILE)
@@ -53,14 +56,14 @@ void	error_validity_export(char *input, t_token *tk)
 {
 	if (input[0] == '-')
 	{
-		ft_putstr_fd("bash export: ", 2);
+		ft_putstr_fd("minishell export: ", 2);
 		ft_putchar_fd('-', 2);
-		ft_putchar_fd(input[0], 2);
+		ft_putchar_fd(input[1], 2);
 		ft_putstr_fd(": invalid option\n", 2);
 		return ;
 	}
 	remove_added_quotes(&tk->cmd);
-	ft_putstr_fd("bash export: ", 2);
+	ft_putstr_fd("minishell export: ", 2);
 	ft_putchar_fd('`', 2);
 	ft_putstr_fd(tk->cmd, 2);
 	ft_putchar_fd('\'', 2);

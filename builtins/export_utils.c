@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/16 17:43:39 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/04 16:13:28 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,21 +48,23 @@ void	sort_env_list(t_env *env)
 	}
 }
 
-int	print_export_env( t_token *token, t_env *env)
+int	print_export_env( t_token *token, t_env *env , int flag)
 {
 	t_token	*curr;
 
 	curr = token;
-	if (ft_list_size(token) == 1 && curr->cmd
-		&& !ft_strcmp(curr->cmd, "export"))
+	if ((ft_list_size(token) == 1 && curr->cmd
+			&& !ft_strcmp(curr->cmd, "export"))
+		|| flag)
 	{
 		sort_env_list(env);
 		while (env)
 		{
-			ft_printf("declare -x %s\n", env->line);
+			ft_putstr_fd("declare -x ", 1);
+			ft_putstr_fd(env->line, 1);
+			ft_putstr_fd("\n", 1);
 			env = env->next;
 		}
-		free_env_list(env);
 		g_minishell.env->exit_status = ENU_SUCCESS;
 		return (1);
 	}

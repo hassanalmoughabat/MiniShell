@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 20:40:13 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/05/18 17:10:51 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/04 10:53:19 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int validate_delimiter(const char *delimiter)
     return 1;
 }
 
- int contain_char(char *str, char c)
+int contain_char(char *str, char c)
 {
     int i;
 
@@ -45,7 +45,7 @@ int ft_index(char *str, char c)
 			return (i);
 		i++;
 	}
-	return 0;
+	return (0);
 }
 
 char *cut_from_op(char op, char *str, t_env *env)
@@ -103,8 +103,6 @@ char *cut_from_op(char op, char *str, t_env *env)
     ft_strcpy(new_line + before_len + new_val_len, pos + var_name_len);
     return (new_line);
 }
-
-
 
 char *extract_variable(const char *line)
 {

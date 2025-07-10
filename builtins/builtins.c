@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/27 23:54:34 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/04 18:56:14 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,14 @@ int	ft_pwd(t_token *tk)
 		curr = curr->next;
 	if (curr->cmd[0] == '-')
 	{
-		ft_putstr_fd("bash pwd: -", 2);
-		ft_putchar_fd(curr->cmd[1], 2);
-		ft_putstr_fd(": invalid option\n", 2);
-		g_minishell.env->exit_status = 1;
-		return (1);
+		if (curr->cmd[1] != '-' || curr->cmd[2])
+		{
+			ft_putstr_fd("bash pwd: -", 2);
+			ft_putchar_fd(curr->cmd[1], 2);
+			ft_putstr_fd(": invalid option\n", 2);
+			g_minishell.env->exit_status = 1;
+			return (1);
+		}
 	}
 	if (getcwd(cwd, PATH_MAX))
 	{
@@ -41,11 +44,13 @@ int	ft_pwd(t_token *tk)
 	}
 }
 
-void	ft_print_env(t_env *env)
+void	ft_print_env(t_env *env, char **envp)
 {
 	t_env	*ev;
 
 	ev = env;
+	if (!env)
+		g_minishell.env = initialize_env_list(envp);
 	while (ev)
 	{
 		ft_putstr_fd(ev->line, 1);
@@ -65,7 +70,7 @@ void	handle_builtin(t_token *tk, char **ft_env, t_env **env)
 		return ;
 	remove_added_quotes(&tk->cmd);
 	if (!ft_strcmp(tk->cmd, "env"))
-		ft_print_env(g_minishell.env);
+		ft_print_env(g_minishell.env, ft_env);
 	else if (!ft_strcmp(tk->cmd, "pwd"))
 		ft_pwd(tk);
 	else if (!ft_strcmp(tk->cmd, "cd"))

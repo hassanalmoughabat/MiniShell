@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/01 00:08:49 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/02 17:13:38 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,17 @@ void	detect_key(t_token *tk, t_env **env)
 	{
 		key = get_var(curr->cmd);
 		current = *env;
+		if (!ft_strcmp(curr->cmd, "_"))
+			return ;
 		if (key)
 		{
 			while (current)
 			{
+				if (ft_strcmp(current->line, "_=/usr/bin/env") == 0)
+				{
+					current = current->next;
+					continue ;
+				}
 				if (extract_key_env(current->line) == ft_strlen(key)
 					&& !ft_strncmp(current->line, key, ft_strlen(key)))
 				{

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:04:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/28 23:48:39 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/03 18:16:51 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,23 +37,19 @@ bool	ft_isnum(char *str)
 
 void	decrement(t_shell *shell)
 {
-	if (shell->shell_level > 2)
+	if (shell->shell_level > 3)
 		shell->shell_level --;
 	else
 		return ;
 }
 
-#include <limits.h>
-#include <stdbool.h>
-
 bool	ft_atoll_safe(const char *str, long long *result)
 {
-	int				sign = 1;
+	int					sign = 1;
 	unsigned long long	num = 0;
 	unsigned long long	limit = LLONG_MAX;
-	
-	*result = 0;
 
+	*result = 0;
 	while (*str == ' ' || (*str >= 9 && *str <= 13))
 		str++;
 	if (*str == '-' || *str == '+')
@@ -69,14 +65,14 @@ bool	ft_atoll_safe(const char *str, long long *result)
 	{
 		int digit = *str - '0';
 		if (num > (limit - digit) / 10)
-			return false;
+			return (false);
 		num = num * 10 + digit;
 		str++;
 	}
 	if (*str != '\0')
-		return false;
+		return (false);
 	*result = (long long)(sign * num);
-	return true;
+	return (true);
 }
 
 void	handle_exit_code(t_token *curr)

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/28 01:34:37 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/04 17:53:40 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,50 @@ void	respective_addition(t_env **copy, char *key, char *value, int flag)
 	}
 }
 
+bool contains_quote(const char *str)
+{
+    if (!str)
+        return false;
+    while (*str)
+    {
+        if (*str == '\'' || *str == '"')
+            return true;
+        str++;
+    }
+    return false;
+}
+
+char *escape_all_quotes(const char *input)
+{
+	size_t len = ft_strlen(input);
+    size_t quote_count = 0;
+	size_t	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+    if (!input)
+        return (NULL);
+    while (i< len)
+    {
+        if ((input[i] == '\'' || input[i] == '"') && !escape(input, i))
+            quote_count++;
+		i ++;
+    }
+	i = 0;
+    char *escaped = malloc(len + quote_count + 1);
+    if (!escaped)
+        return (NULL);
+    while (i< len)
+    {
+        if (input[i] == '\'' || input[i] == '"')
+            escaped[j++] = '\\';
+        escaped[j++] = input[i++];
+    }
+    escaped[j] = '\0';
+    return (escaped);
+}
+
 void	ft_export(t_token *token, t_env **copy)
 {
 	t_token	*curr;
@@ -88,21 +132,24 @@ void	ft_export(t_token *token, t_env **copy)
 	curr = token;
 	key = NULL;
 	value = NULL;
-	if (print_export_env(token, *copy))
+	if (print_export_env(token, *copy, 0))
 		return ;
 	curr = curr->next;
 	while (curr && curr->cmd)
 	{
 		i = set_key_value(curr, &key, &value, *copy);
-		if (i == 1)
+		if (contains_quote(value))
+			value = escape_all_quotes(value);
+		if ((!key || key[0] == '\0' || !ft_strcmp(key, ""))
+			&& !curr->next && i == 1)
+			print_export_env(token, *copy, 1);
+		else if (i == 1)
 		{
 			if (has_equal(curr->cmd))
 				respective_addition(copy, key, value, 1);
 			else
 				respective_addition(copy, key, value, 2);
 		}
-		if (i == 2 || !ft_strcmp(curr->cmd, "new_line"))
-			return ;
 		curr = curr->next;
 	}
 }

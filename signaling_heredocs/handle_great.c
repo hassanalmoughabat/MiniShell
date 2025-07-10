@@ -28,7 +28,7 @@ int	open_output_file(char *filename, int flags)
 	return (fd);
 }
 
- int	handle_standalone_redirect(char *filename, t_token *tk, int flags)
+int	handle_standalone_redirect(char *filename, t_token *tk, int flags)
 {
 	int	fd;
 
@@ -44,7 +44,7 @@ int	open_output_file(char *filename, int flags)
 	return (-1);
 }
 
- t_token	*find_redirect_token(t_token *tk, char *redirect_op)
+t_token	*find_redirect_token(t_token *tk, char *redirect_op)
 {
 	t_token	*curr;
 
@@ -58,32 +58,34 @@ int	open_output_file(char *filename, int flags)
 	return (NULL);
 }
 
- t_token	*copy_tokens_before_redirect(t_token *tk, t_token *redirect_token)
+t_token *copy_tokens_before_redirect(t_token *tk, t_token *redirect_token)
 {
-	t_token	*cmd_tokens;
-	t_token	*current;
-	t_token	*last_cmd;
-	t_token	*new_token;
+    t_token *cmd_tokens = NULL;
+    t_token *current = tk;
+    t_token *last_cmd = NULL;
+    t_token *new_token;
 
-	cmd_tokens = NULL;
-	current = tk;
-	last_cmd = NULL;
-	while (current && current != redirect_token)
-	{
-		new_token = malloc(sizeof(t_token));
-		if (!new_token)
-			return (free_token_list(cmd_tokens), NULL);
-		new_token->cmd = ft_strdup(current->cmd);
-		new_token->type = current->type;
-		new_token->next = NULL;
-		if (!cmd_tokens)
-			cmd_tokens = new_token;
-		else
-			last_cmd->next = new_token;
-		last_cmd = new_token;
-		current = current->next;
-	}
-	return (cmd_tokens);
+    while (current && current != redirect_token)
+    {
+        new_token = malloc(sizeof(t_token));
+        if (!new_token)
+        {
+            free_token_list(cmd_tokens);  // ❌ This might be causing issues
+            return NULL;
+        }
+        new_token->cmd = ft_strdup(current->cmd);  // ✅ Good - copies string
+        new_token->type = current->type;
+        new_token->next = NULL;
+        new_token->prev = NULL;  // ❌ Add this
+        
+        if (!cmd_tokens)
+            cmd_tokens = new_token;
+        else
+            last_cmd->next = new_token;
+        last_cmd = new_token;
+        current = current->next;
+    }
+    return cmd_tokens;
 }
 
 void	execute_builtin_redirect(t_token *cmd_tokens, char **ft_env,

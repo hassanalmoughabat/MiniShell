@@ -6,16 +6,11 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/27 23:48:53 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/30 17:32:40 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minihell.h"
-
-// void	handle_pipe(t_token *lst, char **ft_env, t_env * env)
-// {
-// 	ft_printf("hey");
-// }
+#include "../includes/minihell.h"
 
 int	ft_is_builtin(char *cmd)
 {

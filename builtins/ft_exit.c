@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:22:18 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/28 23:34:37 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/30 15:11:59 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ void	ft_exit(t_token *tk, t_env **copy)
 		else
 			handle_exit_code(curr);
 	}
-	// free_shell(&g_minishell);
-	// free_token_list(tk);
 	free_env_list(*copy);
 	exit(g_minishell.env->exit_status);
 }

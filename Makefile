@@ -5,7 +5,7 @@ LIBFT_PATH	:= "includes/libft"
 PRINTF		:= libftprintf.a
 PRINTF_PATH	:= "includes/ft_printf"
 CC			:= cc
-CFLAGS		:= -Wall -Werror -Wextra -g
+CFLAGS		:= -Wall  -Wextra -g
 
 BUILTINS	:=	builtins/builtins_utils.c \
 				builtins/builtins.c \
@@ -42,11 +42,11 @@ SIGNALING	:=	signaling_heredocs/ft_signal.c \
 				signaling_heredocs/ft_heredocs.c \
 				signaling_heredocs/handle_great_main.c \
 				signaling_heredocs/heredoc_helper.c \
-				signaling_heredocs/heredoc_utils.c \
 				signaling_heredocs/handle_great_utils.c \
 				signaling_heredocs/handle_great.c \
 				signaling_heredocs/handle_redirection.c \
-				signaling_heredocs/handle_input_redirect.c
+				signaling_heredocs/handle_input_redirect.c \
+				signaling_heredocs/pipes.c  
 
 TOKENIZE	:= 	tokenize/ft_error_handler.c \
 				tokenize/ft_list_functions.c \
@@ -56,13 +56,18 @@ TOKENIZE	:= 	tokenize/ft_error_handler.c \
 				tokenize/ft_special_char_handler.c \
 				tokenize/ft_tokenize.c
 
+UTILS		:= 	utils/free_functions.c \
+				utils/minihell.c \
+				utils/parsing_path_handling.c \
+				utils/parsing.c
+
 SRCS		:=	$(BUILTINS)\
 				$(EXPANSION)\
 				$(SHELL_LVL)\
 				$(SIGNALING)\
 				$(TOKENIZE)\
-				free_functions.c minihell.c parsing_path_handling.c parsing.c
-
+				$(UTILS)\
+				
 OBJS		:= $(SRCS:.c=.o)
 
 READLINE	:= -lreadline
