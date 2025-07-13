@@ -38,7 +38,6 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-
 typedef struct s_redir
 {
 	char	**ft_env;
@@ -83,17 +82,45 @@ typedef struct s_err
 
 typedef struct s_pip
 {
-    t_token *cmd;
-    t_token *context;
-    int     *pipes;
-    int     pipe_count;
-    int     cmd_index;
-} t_pip;
+	t_token	*cmd;
+	t_token	*context;
+	int		*pipes;
+	int		pipe_count;
+	int		cmd_index;
+}	t_pip;
+
+typedef struct s_heredoc_info
+{
+	int		fd;
+	t_token	*position;
+}	t_heredoc_info;
+
+typedef struct s_pipe_data
+{
+	t_token			*lst;
+	char			**ft_env;
+	t_env			*env;
+	int				**pipes;
+	int				pipe_count;
+	t_heredoc_info	*heredocs;
+	int				hd_count;
+}	t_pipe_data;
+
+typedef struct s_pipe_child_data
+{
+	t_token	*cmd_segment;
+	char	**ft_env;
+	t_env	*env;
+	int		i;
+	int		**pipes;
+	int		pipe_count;
+	int		heredoc_fd;
+	int		is_first_with_heredoc;
+}	t_pipe_child_data;
 
 extern t_shell	g_minishell;
 
-
-int is_delimeter_quoted(t_token *tk);
+int	is_delimeter_quoted(t_token *tk);
 int		is_quote_token(char *str);
 
 // --------------value getter setter----------------------------
@@ -120,8 +147,8 @@ int		print_export_env( t_token *token, t_env *env);
 char	*quotes_in_env(char *value, char *key, int flag);
 int		ft_update_env(char *key, char *value, t_env **env, t_env **copy);
 int		handle_export_quotes(char *temp, char *result, size_t *i, size_t *j);
-int	equal_handler_export(t_token *tk, char *input, char **key,
-		char **value, t_env *env);
+int		equal_handler_export(t_token *tk, char *input, char **key,
+			char **value, t_env *env);
 // ---------------------env------------------------------------------
 char	*get_var(char *input);
 size_t	extract_key_env(char *line);
@@ -193,7 +220,7 @@ char	*extract_quoted_substring(char *input, int *i);
 char	*extract_unquoted_substring(char *input, int *i, int *flag);
 // -----------------------unset------------------------------------------
 void	update_env_value(t_env *head, const char *target,
-			const char *new_value);
+		const char *new_value);
 void	ft_unset(t_token *token, t_env **env, t_env **copy);
 // -----------------------heredoc----------------------------------------
 char	*get_delimeter(t_token *tk);
@@ -213,7 +240,7 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd);
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input);
 // ----------------------Piping and Redirections-------------------------
 int		valid_pipe(t_token *tk);
-int redirect_count(t_token *tk);
+int		redirect_count(t_token *tk);
 void	handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input);
 int		handle_several_redirection(t_token *tk, char **ft_env);
 int		handle_redirection(t_token *tk, char **ft_env, t_env *env);
@@ -231,18 +258,18 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env);
 int		handle_standalone_redirect(char *filename, t_token *tk, int flags);
 t_token	*copy_tokens_before_redirect(t_token *tk, t_token *redirect_token);
 void	execute_builtin_redirect(t_token *cmd_tokens, char **ft_env,
-			t_env *env);
+		t_env *env);
 void	execute_with_redirect(t_token *cmd_tokens, char **ft_env,
-			t_env *env, int fd);
+		t_env *env, int fd);
 int		handle_redirect_child(int fd, t_token *tk, t_token *redirect_token,
-			t_redir *params);
+		t_redir *params);
 int		handle_redirect_fork(int fd, t_token *tk, t_token *redirect_token,
-			t_redir *params);
+		t_redir *params);
 //---------------------Handle redirection utils----------------------------
 int		handle_output_redirect(t_token *curr, t_token *tk,
-			char **ft_env);
+		char **ft_env);
 int		handle_input_redirect(t_token *curr, t_token *tk,
-			char **ft_env, t_env *env);	
+		char **ft_env, t_env *env);	
 int		handle_less(char *filename, t_token *tk, char **ft_env, t_env *env);
 //----------------------------Heredoc--------------------------------------
 char	*get_delimeter(t_token *tk);

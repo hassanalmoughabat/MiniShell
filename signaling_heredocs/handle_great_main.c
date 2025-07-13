@@ -52,7 +52,7 @@ int	handle_redirect_fork(int fd, t_token *tk, t_token *redirect_token,
 	return (1);
 }
 
- t_redir	*init_redir_params(char **ft_env, t_env *env)
+t_redir	*init_redir_params(char **ft_env, t_env *env)
 {
 	t_redir		*params;
 

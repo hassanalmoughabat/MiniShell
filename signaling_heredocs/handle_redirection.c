@@ -32,10 +32,11 @@ int	is_valid_filename(t_token *token)
 		return (0);
 	if (token->type != T_IDENTIFIER)
 		return (0);
-	if (ft_strcmp(token->cmd, ">") == 0 || ft_strcmp(token->cmd, ">>") == 0 ||
-		ft_strcmp(token->cmd, "<") == 0 || ft_strcmp(token->cmd, "<<") == 0)
+	if (ft_strcmp(token->cmd, ">") == 0 || ft_strcmp(token->cmd, ">>") == 0
+		|| ft_strcmp(token->cmd, "<") == 0 || ft_strcmp(token->cmd, "<<") == 0)
 		return (0);
-	if (ft_isalnum(token->cmd[0]) || token->cmd[0] == '.' || token->cmd[0] == '_' || token->cmd[0] == '/')
+	if (ft_isalnum(token->cmd[0]) || token->cmd[0] == '.'
+		|| token->cmd[0] == '_' || token->cmd[0] == '/')
 		return (1);
 	return (0);
 }
@@ -47,9 +48,11 @@ int	handle_output_redirect(t_token *curr, t_token *tk,
 	{
 		g_minishell.env->exit_status = 0;
 		if (curr->type == T_DGREAT)
-			return (handle_dgreat(curr->next->cmd, tk, ft_env, g_minishell.env));
+			return (handle_dgreat(curr->next->cmd, tk, ft_env,
+					g_minishell.env));
 		else
-			return (handle_great(curr->next->cmd, tk, ft_env,  g_minishell.env));
+			return (handle_great(curr->next->cmd, tk, ft_env,
+					g_minishell.env));
 	}
 	return (0);
 }
@@ -100,7 +103,7 @@ int	check_redirect_syntax(t_token *tk)
 	return (0);
 }
 
-int handle_redirection(t_token *tk, char **ft_env, t_env *env)
+int	handle_redirection(t_token *tk, char **ft_env, t_env *env)
 {
 	t_token	*curr;
 	int		syntax_check;

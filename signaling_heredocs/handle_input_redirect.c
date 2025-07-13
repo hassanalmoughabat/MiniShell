@@ -105,9 +105,12 @@ int	handle_less_fork(int fd, t_token *tk, t_token *redirect_token,
 	t_token	*cmd_tokens;
 
 	cmd_tokens = copy_tokens_before_redirect(tk, redirect_token);
-	if (cmd_tokens && cmd_tokens->cmd && ft_strcmp(cmd_tokens->cmd, "exit") == 0)
+	if (cmd_tokens && cmd_tokens->cmd && ft_strcmp(cmd_tokens->cmd,
+			"exit") == 0)
 	{
-		int stdin_backup = dup(STDIN_FILENO);
+		int	stdin_backup;
+
+		stdin_backup = dup(STDIN_FILENO);
 		if (dup2(fd, STDIN_FILENO) == -1)
 		{
 			ft_putstr_fd("minishell: dup2: ", 2);

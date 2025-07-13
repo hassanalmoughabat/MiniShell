@@ -12,7 +12,7 @@
 
 #include "../includes/minihell.h"
 
-int		count_tokens(t_token *tokens)
+int	count_tokens(t_token *tokens)
 {
 	int		count;
 	t_token	*curr;
@@ -83,7 +83,6 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
 	if (execve(path, args, ft_env) == -1)
 	{
 		printf("i am leaking  and getting out\n");
-		// print_cmd_error(args[0], strerror(errno));
 		ft_free_tab(args);
 		free(path);
 		free_token_list(cmd_tokens);

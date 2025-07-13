@@ -207,6 +207,29 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 	}
 }
 
+static int	pipes_in_quote(t_token *tk)
+{
+	t_token	*curr;
+	int		in_quotes;
+
+	curr = tk;
+	in_quotes = 0;
+	while (curr)
+	{
+		if (contain_char(curr->cmd, '"') || contain_char(curr->cmd, '\''))
+		{
+			if (in_quotes == 0)
+				in_quotes = 1;
+			else
+				in_quotes = 0;
+		}
+		if (ft_strcmp(curr->cmd, "|") == 0 && in_quotes == 1)
+			return (1);
+		curr = curr->next;
+	}
+	return (0);
+}
+
 void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 {
 	t_token	*curr;
@@ -217,7 +240,9 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 	curr = tk;
 	if (contain_char(input, '|'))
 		pipe = 1;
-	if (curr->type == T_PIPE || pipe == 1)
+	if (pipes_in_quote(tk) == 1)
+		pipe = 0;
+	if (pipe == 1)
 		handle_pipe(tk, ft_env, *env, input);
 	else if (contain_list("<<", tk) || contain_list(">>", tk)
 		|| contain_list("<", tk) || contain_list(">", tk))
@@ -231,3 +256,4 @@ void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
 	}
 	return ;
 }
+

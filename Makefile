@@ -46,8 +46,20 @@ SIGNALING	:=	signaling_heredocs/ft_signal.c \
 				signaling_heredocs/handle_great_utils.c \
 				signaling_heredocs/handle_great.c \
 				signaling_heredocs/handle_redirection.c \
-				signaling_heredocs/handle_input_redirect.c \
-				signaling_heredocs/pipes.c  
+				signaling_heredocs/handle_input_redirect.c
+
+PIPES		:=	pipes/pipes_utils.c \
+				pipes/pipes_heredoc.c \
+				pipes/pipes_segment.c \
+				pipes/pipes_segment_utils.c \
+				pipes/pipes_segment_utils2.c \
+				pipes/pipes_redirect.c \
+				pipes/pipes_main.c \
+				pipes/pipes_heredoc_utils.c \
+				pipes/pipes_heredoc_utils2.c \
+				pipes/pipes_utils2.c \
+				pipes/pipes_utils3.c 
+
 
 TOKENIZE	:= 	tokenize/ft_error_handler.c \
 				tokenize/ft_list_functions.c \
@@ -66,6 +78,7 @@ SRCS		:=	$(BUILTINS)\
 				$(EXPANSION)\
 				$(SHELL_LVL)\
 				$(SIGNALING)\
+				$(PIPES)\
 				$(TOKENIZE)\
 				$(UTILS)\
 				
