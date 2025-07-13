@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/30 17:58:36 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/13 21:18:57 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ t_env	*create_env_node(char *envp)
 		return (NULL);
 	new_node->line = ft_strdup(envp);
 	new_node->exit_status = ENU_SUCCESS;
-	new_node->safe_quotes = false;
 	if (!new_node->line)
 	{
 		free(new_node);
@@ -81,16 +80,6 @@ t_env	*initialize_env_list(char **envp)
 		current = new_node;
 		i++;
 	}
-	new_node = create_env_node("_=/usr/bin/env");
-	if (!new_node)
-	{
-		free_my_env(head);
-		return (NULL);
-	}
-	if (!head)
-		head = new_node;
-	else
-		current->next = new_node;
 	return (head);
 }
 

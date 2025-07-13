@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/09 11:14:42 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/13 21:23:12 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,32 @@ static void	init_shell(t_shell *shell, char **envp)
 {
 	shell->env = initialize_env_list(envp);
 	shell->path = NULL;
-	shell->shell_level = get_shell_level(shell->env);
-	update_shlvl_in_env(&shell->env, shell->shell_level);
-	if (!(shell->env))
+	if (!shell->env)
 	{
-		ft_putstr_fd("failed\n", 1);
-		exit(1);
+		char *pwd = ft_get_pwd();
+		if (pwd)
+			ft_add_env("PWD", pwd, &shell->env, 0);
+		ft_add_env("SHLVL", "1", &shell->env, 0);
+		ft_add_env("_", "/usr/bin/env", &shell->env, 0);
+		shell->shell_level = get_shell_level(shell->env);
+		return ;
 	}
+	else
+	{
+		char *pwd_value = get_value_from_env("PWD", shell->env);
+		if (!pwd_value || !ft_strcmp(pwd_value, ""))
+		{
+			char *pwd = ft_get_pwd();
+			if (pwd)
+			{
+				ft_add_env("PWD", pwd, &shell->env, 0);
+				free(pwd);
+			}
+		}
+		free(pwd_value);
+	}
+	update_env_value(&(shell->env), "_=", "/usr/bin/env");
+	shell->shell_level = get_shell_level(shell->env);
 }
 
 void	print_welcome_message(void)
@@ -99,7 +118,6 @@ int	ft_read(char *input, char **ftenv, t_env *env)
 			if (inp)
 				after_parsing(inp, ftenv, &env, input);
 			add_history(input);
-			// free(input);
 		}
 	}
 	return (env->exit_status);

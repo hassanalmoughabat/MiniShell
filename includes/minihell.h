@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/09 13:40:58 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/13 19:57:52 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ typedef struct s_env
 {
 	char			*line;
 	int				exit_status;
-	bool			safe_quotes;
 	struct s_env	*next;
 }	t_env;
 
@@ -190,7 +189,7 @@ int		has_equal_in_quote(char *input, char *quote);
 char	*extract_quoted_substring(char *input, int *i);
 char	*extract_unquoted_substring(char *input, int *i, int *flag);
 // -----------------------unset------------------------------------------
-void	update_env_value(t_env **head, const char *target, const char *new_value);
+void	update_env_value(t_env **head, char *target, char *new_value);
 void	ft_unset(t_token *token, t_env **env, t_env **copy);
 // -----------------------heredoc----------------------------------------
 int		has_quotes(char *str);

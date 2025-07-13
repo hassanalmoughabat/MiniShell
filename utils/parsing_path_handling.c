@@ -6,13 +6,13 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/04 22:01:47 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/13 20:18:02 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-int		contains_symbols(char *tk, int flag)
+int	contains_symbols(char *tk, int flag)
 {
 	int		i;
 
@@ -37,6 +37,7 @@ int		contains_symbols(char *tk, int flag)
 	}
 	return (0);
 }
+
 int	count_total_args(t_token *tk)
 {
 	t_token	*curr;
@@ -200,7 +201,7 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 		}
 		if (contains_symbols(cmd, 1))
 		{
-			if(stat(path, &sb) == 0)
+			if(!stat(path, &sb))
 			{
 				if (S_ISDIR(sb.st_mode))
 				{

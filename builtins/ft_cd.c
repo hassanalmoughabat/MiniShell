@@ -6,36 +6,47 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/09 13:40:27 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/13 19:54:26 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-void	update_env_value(t_env **head, const char *target, const char *new_value)
+void	update_env_value(t_env **head, char *target, char *new_value)
 {
 	char	*updated_value;
 	size_t	len;
+	t_env	*current;
 
 	len = ft_strlen(new_value);
 	updated_value = NULL;
 	if (!*head || !target || !new_value)
 		return ;
-	while (*head)
+	current = *head;
+	while (current)
 	{
-		if ((*head)->line
-			&& ft_strncmp((*head)->line, target, ft_strlen(target)) == 0)
+		if (current->line
+			&& ft_strncmp(current->line, target, ft_strlen(target)) == 0)
 		{
 			updated_value = malloc(ft_strlen(target) + len + 1);
 			if (!updated_value)
 				return ;
-			strcpy(updated_value, target);
-			strcat(updated_value, new_value);
-			free((*head)->line);
-			(*head)->line = updated_value;
+			ft_strcpy(updated_value, target);
+			ft_strcat(updated_value, new_value);
+			free(current->line);
+			current->line = updated_value;
 			return ;
 		}
-		(*head) = (*head)->next;
+		current = current->next;
+	}
+	if (!ft_strcmp(target, "OLDPWD="))
+	{
+		updated_value = ft_strjoin(target, new_value);
+		if (updated_value)
+		{
+			ft_add_key_to_env(head, updated_value);
+			free(updated_value);
+		}
 	}
 	return ;
 }
