@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/08 18:26:28 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 21:30:43 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,57 +30,34 @@ int	is_valid_filename(t_token *token)
 {
 	if (!token || !token->cmd)
 		return (0);
-	// if (token->type != T_IDENTIFIER)
-	// 	return (0);
-	// if (ft_strcmp(token->cmd, ">") == 0 || ft_strcmp(token->cmd, ">>") == 0 ||
-	// 	ft_strcmp(token->cmd, "<") == 0 || ft_strcmp(token->cmd, "<<") == 0)
-	// 	return (0);
 	if (ft_isalnum(token->cmd[0]) || token->cmd[0] == '.'
 		|| token->cmd[0] == '_' || token->cmd[0] == '/')
 		return (1);
 	return (1);
 }
 
-int	handle_output_redirect(t_token *curr, t_token *tk,
-		char **ft_env)
+int	handle_input_redirect(t_token *curr, t_shell *shell)
 {
-	if (curr->next && is_valid_filename(curr->next))
-	{
-		g_minishell.env->exit_status = 0;
-		if (curr->type == T_DGREAT)
-			return (handle_dgreat(curr->next->cmd, tk,
-					ft_env, g_minishell.env));
-		else
-			return (handle_great(curr->next->cmd, tk,
-					ft_env, g_minishell.env));
-	}
-	return (0);
-}
-
-int	handle_input_redirect(t_token *curr, t_token *tk,
-		char **ft_env, t_env *env)
-{
-	display_list(tk);
 	if (curr->next && is_valid_filename(curr->next))
 	{
 		if (curr->type == T_DLESS)
 		{
-			g_minishell.signint_child = true;
-			handle_heredoc(ft_env, env, tk);
+			// g_signal.signint_child = true;
+			handle_heredoc(shell);
 		}
 		else
-			return (handle_less(curr->next->cmd, tk, ft_env, env));
+			return (handle_less(curr->next->cmd, shell));
 	}
 	return (0);
 }
 
-int	check_redirect_syntax(t_token *tk, char *input)
+int	check_redirect_syntax(t_shell *shell, char *input)
 {
 	t_token	*curr;
 
 	if (!input)
 		return (0);
-	curr = tk;
+	curr = shell->tk;
 	while (curr)
 	{
 		if (curr->type == T_GREAT || curr->type == T_DGREAT
@@ -90,7 +67,7 @@ int	check_redirect_syntax(t_token *tk, char *input)
 			{
 				ft_putstr_fd("minishell: syntax error", 2);
 				ft_putendl_fd(" near unexpected token `newline'", 2);
-				g_minishell.env->exit_status = 2;
+				shell->env->exit_status = 2;
 				return (2);
 			}
 			else if (curr->next && curr->next->type != T_IDENTIFIER)
@@ -100,7 +77,7 @@ int	check_redirect_syntax(t_token *tk, char *input)
 					ft_putendl_fd(curr->next->cmd, 2);
 				else
 					ft_putendl_fd("newline", 2);
-				return (g_minishell.env->exit_status = 2, 2);
+				return (shell->env->exit_status = 2, 2);
 			}
 		}
 		curr = curr->next;
@@ -108,19 +85,21 @@ int	check_redirect_syntax(t_token *tk, char *input)
 	return (0);
 }
 
-int handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input)
+int handle_redirection(t_token *tk, t_shell *shell, char *input)
 {
+
 	t_token *curr;
 	t_token *last_out = NULL;
 	int fd = -1;
-	int syntax_check = check_redirect_syntax(tk, input);
+	int syntax_check = check_redirect_syntax(shell, input);
 	if (syntax_check)
 		return (syntax_check);
-	curr = tk;
+	curr = shell->tk;
 	while (curr)
 	{
 		if ((curr->type == T_GREAT || curr->type == T_DGREAT) && curr->next && is_valid_filename(curr->next))
 		{
+			remove_added_quotes(&curr->next->cmd);
 			int flags = (curr->type == T_GREAT) ? (O_WRONLY | O_CREAT | O_TRUNC) : (O_WRONLY | O_CREAT | O_APPEND);
 			int tmp_fd = open(curr->next->cmd, flags, 0644);
 			if (tmp_fd == -1)
@@ -129,7 +108,7 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input)
 				ft_putstr_fd(curr->next->cmd, 2);
 				ft_putstr_fd(": ", 2);
 				ft_putendl_fd(strerror(errno), 2);
-				g_minishell.env->exit_status = 1;
+				shell->env->exit_status = 1;
 				return (1);
 			}
 			close(tmp_fd);
@@ -137,6 +116,7 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input)
 		}
 		else if (curr->type == T_LESS && curr->next && is_valid_filename(curr->next))
 		{
+			remove_added_quotes(&curr->next->cmd);
 			int test_fd = open(curr->next->cmd, O_RDONLY);
 			if (test_fd == -1)
 			{
@@ -144,7 +124,7 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input)
 				ft_putstr_fd(curr->next->cmd, 2);
 				ft_putstr_fd(": ", 2);
 				ft_putendl_fd(strerror(errno), 2);
-				g_minishell.env->exit_status = 1;
+				shell->env->exit_status = 1;
 				return (1);
 			}
 			close(test_fd);
@@ -153,6 +133,7 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input)
 	}
 	if (last_out)
 	{
+		remove_added_quotes(&last_out->next->cmd);
 		int flags = (last_out->type == T_GREAT) ? (O_WRONLY | O_CREAT | O_TRUNC) : (O_WRONLY | O_CREAT | O_APPEND);
 		fd = open(last_out->next->cmd, flags, 0644);
 		if (fd == -1)
@@ -161,22 +142,22 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input)
 			ft_putstr_fd(last_out->next->cmd, 2);
 			ft_putstr_fd(": ", 2);
 			ft_putendl_fd(strerror(errno), 2);
-			g_minishell.env->exit_status = 1;
+			shell->env->exit_status = 1;
 			return (1);
 		}
 		if (dup2(fd, STDOUT_FILENO) == -1)
 		{
 			close(fd);
-			g_minishell.env->exit_status = 1;
+			shell->env->exit_status = 1;
 			return (1);
 		}
 		close(fd);
 	}
-	curr = tk;
+	curr = shell->tk;
 	while (curr)
 	{
 		if (curr->type == T_DLESS || curr->type == T_LESS)
-			return (handle_input_redirect(curr, tk, ft_env, env));
+			return (handle_input_redirect(curr, shell));
 		curr = curr->next;
 	}
 	t_token *curr2 = tk;
@@ -184,8 +165,8 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input)
 	t_token *last_cmd = NULL;
 	while (curr2) 
 	{
-		if (curr2->type == T_GREAT || curr2->type == T_DGREAT ||
-			curr2->type == T_LESS || curr2->type == T_DLESS)
+		if (curr2->type == T_GREAT || curr2->type == T_DGREAT
+			|| curr2->type == T_LESS || curr2->type == T_DLESS)
 			{
 				curr2 = curr2->next;
 				if (curr2) curr2 = curr2->next;
@@ -203,12 +184,15 @@ int handle_redirection(t_token *tk, char **ft_env, t_env *env, char *input)
 		last_cmd = new_token;
 		curr2 = curr2->next;
 }
-if (cmd_tokens && cmd_tokens->cmd) {
-    if (ft_is_builtin(cmd_tokens->cmd))
-        handle_builtin(cmd_tokens, ft_env, &env);
-    else
-        handle_path_command(cmd_tokens, ft_env, cmd_tokens->cmd);
-    free_token_list(cmd_tokens);
+	if (cmd_tokens && cmd_tokens->cmd)
+	{
+		shell->tk = cmd_tokens;
+		remove_added_quotes(&cmd_tokens->cmd);
+		if (ft_is_builtin(cmd_tokens->cmd))
+			handle_builtin(shell, cmd_tokens->cmd);
+		else
+			handle_path_command(shell, cmd_tokens->cmd);
+		free_token_list(cmd_tokens);
 }
 	return (1);
 }

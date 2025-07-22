@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 14:34:09 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/06/30 15:15:43 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/21 21:06:43 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	handle_standalone_dollar(char *key, int i)
 	return (0);
 }
 
-char *handle_dollar(char *key, int flag) 
+char *handle_dollar(char *key, int , t_shell *shell) 
 {
     int     i;
     char    *value;
@@ -63,7 +63,7 @@ char *handle_dollar(char *key, int flag)
                     continue;
                 }
                 i++;
-                if (dollar_cases(key, &i, &expanded))
+                if (dollar_cases(key, &i, &expanded, shell))
                     continue;
                 else if (key[i] && !ft_check_space(key[i]) 
                     && !ft_check_exceptions(key, i))
@@ -74,12 +74,11 @@ char *handle_dollar(char *key, int flag)
                         free(var_name);
                         continue;
                     }
-                    value = get_value_from_env(var_name, g_minishell.env);
+                    value = get_value_from_env(var_name, shell->env);
                     free(var_name);
                     if (value)
                     {
                         temp = ft_strjoin(expanded, value);
-                        g_minishell.env->safe_quotes = true;
                         free(expanded);
                         expanded = temp;
                         free(value);
@@ -101,6 +100,5 @@ char *handle_dollar(char *key, int flag)
 		}
 	i++;
 	}
-	(void)flag;
 	return (expanded);
 }

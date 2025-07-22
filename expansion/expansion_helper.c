@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:20:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/09 12:08:10 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/21 21:07:09 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*extract_value(char *str, int *index)
 	return (result);
 }
 
-int	dollar_cases(char *key, int *index, char **expanded)
+int	dollar_cases(char *key, int *index, char **expanded, t_shell *shell)
 {
 	int		entrance;
 	char	*temp;
@@ -73,7 +73,7 @@ int	dollar_cases(char *key, int *index, char **expanded)
 	else if (key[*index] == '?')
 	{
 		(*index)++;
-		temp = ft_itoa(g_minishell.env->exit_status);
+		temp = ft_itoa(shell->env->exit_status);
 		*expanded = ft_strjoin(*expanded, temp);
 		return (free(temp), 1);
 	}

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:56:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/09 23:25:04 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 11:26:19 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,6 @@ char *dollar_delimeter(const char *delimeter)
             new_del[j++] = delimeter[i++];
     }
     new_del[j] = '\0';
-    ft_printf("this is the new delimeter %s \n", new_del);
     return new_del;
 }
 char *get_delimeter(t_token *tk)
@@ -336,13 +335,12 @@ char *expand_variables(char *line, t_env *env, int quote)
     return (result);
 }
 
-int handle_dless(char *delimiter, t_env *env, int flag, int quote)
+int handle_dless(char *delimiter, t_shell *shell, int quote)
 {
     int pipefd[2];
     size_t total_written = 0;
     char *line;
     char *expanded_line;
-    (void)flag;
     
     signal(SIGINT, ft_heredoc_sigint_handler);
     if (!validate_delimiter(delimiter) || pipe(pipefd) == -1)
@@ -356,7 +354,7 @@ int handle_dless(char *delimiter, t_env *env, int flag, int quote)
                 free(line);
             break;
         }
-        expanded_line = expand_variables(line, env, quote);
+        expanded_line = expand_variables(line, shell->env, quote);
         if (!expanded_line)
             expanded_line = ft_strdup(line);
         size_t line_len = ft_strlen(expanded_line);
@@ -393,7 +391,7 @@ int has_quotes(char *str)
     }
     return (0);
 }
-void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
+void handle_heredoc(t_shell *shell)
 {
     t_token *curr;
     int read_fd;
@@ -404,8 +402,8 @@ void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
     char *delimiter;
     int quote;
 
-    curr = tk;
-    display_list(tk);
+    curr = shell->tk;
+    display_list(shell->tk);
     while (curr)
     {
         if (curr->cmd && ft_strcmp(curr->cmd, "<<") == 0 && curr->next)
@@ -415,8 +413,8 @@ void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
                 return ;
             quote = has_quotes(delimiter);
             remove_added_quotes(&delimiter);
-            cmd = find_command_around_heredoc(tk, delimiter);
-            g_minishell.signint_child = true;
+            cmd = find_command_around_heredoc(shell->tk, delimiter);
+            // g_signal.signint_child = true;
             pid = fork();
             if (pid == -1)
             {
@@ -430,8 +428,8 @@ void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
                 if (cmd)
                 {
                     char *args[] = {cmd, NULL};
-                    path = get_path(cmd, ft_env);
-                    read_fd = handle_dless(delimiter, env, 1, quote);
+                    path = get_path(cmd, shell->ft_env);
+                    read_fd = handle_dless(delimiter, shell, quote);
                     if (read_fd < 0)
                     {
                         free(delimiter);
@@ -439,12 +437,12 @@ void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
                     }
                     dup2(read_fd, STDIN_FILENO);
                     close(read_fd);
-                    execve(path, args, ft_env);
+                    execve(path, args, shell->ft_env);
                     exit(EXIT_FAILURE);
                 }
                 else
                 {
-                    read_fd = handle_dless(delimiter, env, 0, quote);
+                    read_fd = handle_dless(delimiter, shell, quote);
                     if (read_fd < 0)
                     {
                         free(delimiter);
@@ -458,18 +456,18 @@ void handle_heredoc(char **ft_env, t_env *env, t_token *tk)
             {
                 free(delimiter);
                 waitpid(pid, &status, 0);
-                g_minishell.signint_child = false;
+                g_signal.signint_child = false;
                 if (WIFSIGNALED(status))
                 {
-                    env->exit_status = 128 + WTERMSIG(status);
+                    shell->env->exit_status = 128 + WTERMSIG(status);
                     if (WTERMSIG(status) == SIGINT)
                     {
-                        g_minishell.heredoc_sigint = true;
+                        g_signal.heredoc_sigint = true;
                         return; 
                     }
                 }
                 else
-                    env->exit_status = WEXITSTATUS(status);
+                    shell->env->exit_status = WEXITSTATUS(status);
                 curr = curr->next->next;
                 continue;
             }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 16:07:13 by hal-moug          #+#    #+#             */
-/*   Updated: 2024/06/30 16:07:15 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/07/16 22:30:11 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <stdarg.h>
 # include <unistd.h>
 
-int	ft_printf(const char *format, ...);
 int	ft_putchar(char c);
 int	ft_putstr(char *str);
 int	ft_putnbr(int nb);

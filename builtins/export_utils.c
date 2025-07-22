@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:34:50 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/04 16:13:28 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 14:20:35 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	sort_env_list(t_env *env)
 		ptr = env;
 		while (ptr->next != last)
 		{
-			if (strcmp(ptr->line, ptr->next->line) > 0)
+			if (ft_strcmp(ptr->line, ptr->next->line) > 0)
 			{
 				swap_env_nodes(ptr, ptr->next);
 				swapped = 1;
@@ -48,24 +48,24 @@ void	sort_env_list(t_env *env)
 	}
 }
 
-int	print_export_env( t_token *token, t_env *env , int flag)
+int	print_export_env( t_shell *shell, int flag, t_env *copy)
 {
 	t_token	*curr;
 
-	curr = token;
-	if ((ft_list_size(token) == 1 && curr->cmd
+	curr = shell->tk;
+	if ((ft_list_size(shell->tk) == 1 && curr->cmd
 			&& !ft_strcmp(curr->cmd, "export"))
 		|| flag)
 	{
-		sort_env_list(env);
-		while (env)
+		sort_env_list(copy);
+		while (copy)
 		{
 			ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(env->line, 1);
+			ft_putstr_fd(copy->line, 1);
 			ft_putstr_fd("\n", 1);
-			env = env->next;
+			copy = copy->next;
 		}
-		g_minishell.env->exit_status = ENU_SUCCESS;
+		shell->env->exit_status = ENU_SUCCESS;
 		return (1);
 	}
 	return (0);

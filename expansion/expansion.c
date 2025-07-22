@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:15:55 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/08 23:11:58 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/21 21:08:21 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int should_expand_dollar(char *str) {
     }
     return (0);
 }
+
 int is_dollar_inside_single_quotes(char *str, int dollar_pos)
 {
 	int i = 0;
@@ -84,7 +85,7 @@ char	*skip_dollars_before_quotes(char *str)
 	return (result);
 }
 
-void	replace_dollar(t_token **t_list)
+void	replace_dollar(t_token **t_list, t_shell *shell)
 {
 	t_token		*curr;
 	char		*temp;
@@ -98,14 +99,14 @@ void	replace_dollar(t_token **t_list)
 		if (curr->prev && ft_strcmp(curr->prev->cmd, "<<") == 0)
 		{
 			curr = curr->next;
-			continue;
+			continue ;
 		}
 		if (ft_has_dollar(curr->cmd))
 		{
 			if (!should_expand_dollar(curr->cmd))
 				temp = skip_dollars_before_quotes(curr->cmd);
 			else
-				handle_value(curr->cmd, &temp);
+				handle_value(curr->cmd, &temp, shell);
 			if (temp)
 			{
 				free(curr->cmd);
@@ -138,7 +139,7 @@ int	find_dollar_index(const char *str)
 	return (-1);
 }
 
-int	expand_helper(char **substr, int flag)
+int	expand_helper(char **substr, int flag, t_shell *shell)
 {
 	int		dollar_index;
 	char	*temp;
@@ -153,7 +154,7 @@ int	expand_helper(char **substr, int flag)
 			}
 			else
 			{
-				temp = handle_dollar(*substr, flag);
+				temp = handle_dollar(*substr, flag, shell);
 				free(*substr);
 				*substr = temp;
 			}
@@ -171,7 +172,7 @@ int	expand_helper(char **substr, int flag)
 			}
 			else
 			{
-				temp = handle_dollar(*substr, flag);
+				temp = handle_dollar(*substr, flag, shell);
 				free(*substr);
 				*substr = temp;
 			}

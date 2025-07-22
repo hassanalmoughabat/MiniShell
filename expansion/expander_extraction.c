@@ -6,13 +6,13 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 21:15:45 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/28 17:18:40 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/21 21:01:35 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-char	*extract_and_expand(char *input)
+char	*extract_and_expand(char *input, t_shell *shell)
 {
 	int		i;
 	int		flag;
@@ -30,19 +30,19 @@ char	*extract_and_expand(char *input)
 			substr = extract_unquoted_substring(input, &i, &flag);
 		if (!substr)
 			continue ;
-		expand_helper(&substr, flag);
+		expand_helper(&substr, flag, shell);
 		expanded = ft_strjoin(expanded, substr);
 		free(substr);
 	}
 	return (expanded);
 }
 
-void	handle_value(char *value, char **result)
+void	handle_value(char *value, char **result, t_shell *shell)
 {
 	char	*temp;
 
 	temp = NULL;
-	temp = extract_and_expand(value);
+	temp = extract_and_expand(value, shell);
 	if (temp)
 	{
 		*result = ft_strdup(temp);

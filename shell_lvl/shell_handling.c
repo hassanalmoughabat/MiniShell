@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:33:51 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/03 11:18:20 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/21 21:13:47 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,5 @@ void	update_shlvl_in_env(t_env **env, int new_shlvl)
 		curr->line = new_line;
 	}
 	else
-		add_shell_level(&g_minishell.env, new_line);
+		add_shell_level(env, new_line);
 }

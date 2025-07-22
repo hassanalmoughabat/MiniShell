@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 14:36:57 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/09 12:01:02 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 21:47:53 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ typedef struct s_heredoc_info
     t_token *position;
 } t_heredoc_info;
 
-static t_heredoc_info *process_heredocs_before_pipes(t_token *lst, t_env *env, int *hd_count)
+static t_heredoc_info *process_heredocs_before_pipes(t_token *lst, t_shell *shell, int *hd_count)
 {
     t_token *curr;
     t_heredoc_info *heredocs;
@@ -102,7 +102,7 @@ static t_heredoc_info *process_heredocs_before_pipes(t_token *lst, t_env *env, i
             }
             quote = has_quotes(delimiter);
             remove_added_quotes(&delimiter);
-            heredocs[i].fd = handle_dless(delimiter, env, 0, quote);
+            heredocs[i].fd = handle_dless(delimiter, shell, quote);
             heredocs[i].position = curr;
             free(delimiter);
             
@@ -117,7 +117,6 @@ static t_heredoc_info *process_heredocs_before_pipes(t_token *lst, t_env *env, i
         }
         curr = curr->next;
     }
-    
     return heredocs;
 }
 
@@ -236,9 +235,9 @@ static void	setup_pipe_redirects(int i, int **pipes, int pipe_count,
 	}
 	close_all_pipes(pipes, pipe_count);
 }
-static void	handle_pipe_child(t_token *cmd_segment, char **ft_env,
-							   t_env *env, int i, int **pipes, int pipe_count,
-							   int heredoc_fd, int is_first_with_heredoc)
+static void	handle_pipe_child(t_token *cmd_segment, t_shell *shell,
+    int i, int **pipes, int pipe_count,
+	int heredoc_fd, int is_first_with_heredoc)
 {
 	setup_pipe_redirects(i, pipes, pipe_count, heredoc_fd, is_first_with_heredoc);
 	for (t_token *cur = cmd_segment; cur; )
@@ -260,19 +259,19 @@ static void	handle_pipe_child(t_token *cmd_segment, char **ft_env,
 	if (contain_list(">>", cmd_segment) || contain_list(">", cmd_segment)
 		|| contain_list("<",  cmd_segment))
 	{
-		handle_redirection(cmd_segment, ft_env, env, NULL);
-		exit(env->exit_status);
+		handle_redirection(cmd_segment, shell, NULL);
+		exit(shell->env->exit_status);
 	}
 	if (ft_pipe_builtin(cmd_segment))
 	{
-		handle_builtin(cmd_segment, ft_env, &env);
+		handle_builtin(shell, cmd_segment->cmd);
 		free_token_list(cmd_segment);
 		exit(EXIT_SUCCESS);
 	}
-	execute_external_cmd(cmd_segment, ft_env);
+	execute_external_cmd(cmd_segment, shell->ft_env);
 }
 
-static int handle_heredoc_pipe_redirect(t_token *lst, char **ft_env, t_env *env)
+static int handle_heredoc_pipe_redirect(t_token *lst, t_shell *shell)
 {
     t_token *heredoc_token = NULL;
     t_token *pipe_token = NULL;
@@ -315,9 +314,9 @@ static int handle_heredoc_pipe_redirect(t_token *lst, char **ft_env, t_env *env)
     }
     if (pid1 == 0)
     {
-        g_minishell.signint_child = true;
+        // g_signal.signint_child = true;
         close(pipefd[0]); 
-        heredoc_fd = handle_dless(delimiter, env, 1, quote);
+        heredoc_fd = handle_dless(delimiter, shell, quote);
         if (heredoc_fd < 0)
         {
             close(pipefd[1]);
@@ -328,7 +327,7 @@ static int handle_heredoc_pipe_redirect(t_token *lst, char **ft_env, t_env *env)
 		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);
 		char *args[] = {"cat", NULL};
-		execve("/bin/cat", args, ft_env);
+		execve("/bin/cat", args, shell->ft_env);
 		exit(127);
 	}
 	pid2 = fork();
@@ -359,7 +358,7 @@ static int handle_heredoc_pipe_redirect(t_token *lst, char **ft_env, t_env *env)
 		dup2(out_fd, STDOUT_FILENO);
 		close(out_fd);
 		char *args[] = {"cat", NULL};
-		execve("/bin/cat", args, ft_env);
+		execve("/bin/cat", args, shell->ft_env);
 		exit(127);
 	}
 	close(pipefd[0]);
@@ -368,9 +367,9 @@ static int handle_heredoc_pipe_redirect(t_token *lst, char **ft_env, t_env *env)
 	waitpid(pid1, &status, 0);
 	waitpid(pid2, &status, 0);
 	if (WIFEXITED(status))
-		env->exit_status = WEXITSTATUS(status);
+		shell->env->exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-		env->exit_status = 128 + WTERMSIG(status);
+		shell->env->exit_status = 128 + WTERMSIG(status);
 	return (1);
 }
 
@@ -404,8 +403,11 @@ static int create_pipes(int ***pipes, int pipe_count)
     return (0);
 }
 
-int	valid_pipe(t_token *tk, char *input)
+int	valid_pipe(t_shell *shell, char *input)
 {
+    t_token *tk;
+
+    tk =shell->tk;
 	while (tk)
 	{
 		if (tk->type == T_PIPE)
@@ -415,7 +417,7 @@ int	valid_pipe(t_token *tk, char *input)
                 ft_putstr_fd("bash: syntax error near unexpected token `", 2);
                 ft_putstr_fd(tk->cmd, 2);
                 ft_putstr_fd("\'\n", 2);
-				g_minishell.env->exit_status = 2;
+				shell->env->exit_status = 2;
                 return (0);
             }
 			else if (tk->next && (tk->next->type == T_PIPE || tk->next->type != T_IDENTIFIER))
@@ -446,7 +448,7 @@ int	valid_pipe(t_token *tk, char *input)
                         ft_putstr_fd(tk->cmd, 2);
                 }
 				ft_putstr_fd("\'\n", 2);
-				g_minishell.env->exit_status = 2;
+				shell->env->exit_status = 2;
                 return (0);
 			}
             else if (tk->next)
@@ -456,7 +458,7 @@ int	valid_pipe(t_token *tk, char *input)
                      ft_putstr_fd("bash: syntax error near unexpected token `", 2);
                      ft_putstr_fd(tk->cmd, 2);
                      ft_putstr_fd("\'\n", 2);
-                    g_minishell.env->exit_status = 2;
+                    shell->env->exit_status = 2;
                     return (0);
                 }
                 if (tk->next->type == T_IDENTIFIER && tk->prev->type != T_IDENTIFIER)
@@ -464,7 +466,7 @@ int	valid_pipe(t_token *tk, char *input)
                     ft_putstr_fd("bash: syntax error near unexpected token `", 2);
                      ft_putstr_fd(tk->cmd, 2);
                      ft_putstr_fd("\'\n", 2);
-                    g_minishell.env->exit_status = 2;
+                    shell->env->exit_status = 2;
                     return (0);
                 }   
             }
@@ -474,7 +476,7 @@ int	valid_pipe(t_token *tk, char *input)
 	return (1);
 }
 
-void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
+void handle_pipe(t_token *lst, t_shell *shell, char *input)
 {
     int pipe_count;
     int **pipes;
@@ -489,8 +491,8 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
     int heredoc_fd;
     int is_first_with_heredoc;
 
-    if (!lst)
-        return;
+    if (!lst || !valid_pipe(shell, input))
+        return ;
     if (has_heredoc(lst) && count_pipes(lst) == 1)
     {
         curr = lst;
@@ -517,7 +519,7 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
         }
         if (has_heredoc_before_pipe && has_redirect_after_pipe)
         {
-            if (handle_heredoc_pipe_redirect(lst, ft_env, env))
+            if (handle_heredoc_pipe_redirect(lst, shell))
                 return;
         }
     }
@@ -525,12 +527,12 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
     if (pipe_count == 0)
     {
         if (has_heredoc(lst))
-            handle_heredoc(ft_env, env, lst);
+            handle_heredoc(shell);
         else
-            after_parsing(lst, ft_env, &env, input);
+            after_parsing(shell, input);
         return;
     }
-    heredocs = process_heredocs_before_pipes(lst, env, &hd_count);
+    heredocs = process_heredocs_before_pipes(lst, shell, &hd_count);
     if (create_pipes(&pipes, pipe_count) == -1)
     {
         if (heredocs)
@@ -545,7 +547,6 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
     curr = next_pipe(start);
     i = 0;
     is_first_with_heredoc = 0;
-    
     while (1)
     {
         heredoc_fd = -1;
@@ -592,7 +593,7 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
                         close(heredocs[j].fd);
                 }
             }
-            handle_pipe_child(cmd_segment, ft_env, env, i, pipes, pipe_count,
+            handle_pipe_child(cmd_segment,shell,i, pipes, pipe_count,
                             heredoc_fd, is_first_with_heredoc);
             exit(EXIT_FAILURE);
         }
@@ -630,9 +631,9 @@ void handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
     }
     while (wait(&status) > 0);
     if (WIFEXITED(status))
-        env->exit_status = WEXITSTATUS(status);
+        shell->env->exit_status = WEXITSTATUS(status);
     else if (WIFSIGNALED(status))
-        env->exit_status = 128 + WTERMSIG(status);
+        shell->env->exit_status = 128 + WTERMSIG(status);
     for (i = 0; i < pipe_count; i++)
         free(pipes[i]);
     free(pipes);

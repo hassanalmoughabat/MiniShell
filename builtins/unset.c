@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/02 17:13:38 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 14:33:26 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,23 +75,23 @@ void	detect_key(t_token *tk, t_env **env)
 	return ;
 }
 
-void	ft_unset(t_token *token, t_env **env, t_env **copy)
+void	ft_unset(t_shell *shell, t_env **copy)
 {
 	t_token	*current;
 
-	if (!token || !(*env) || !env)
+	if (!shell->tk || !shell->env || !*copy)
 		return ;
-	current = token;
+	current = shell->tk;
 	while (current)
 	{
 		if (current->cmd)
 		{
-			detect_key(token, env);
-			detect_key(token, copy);
+			detect_key(shell->tk, &(shell->env));
+			detect_key(shell->tk, copy);
 		}
 		if (!ft_strcmp(current->cmd, "new_line"))
 			return ;
 		current = current->next;
 	}
-	g_minishell.env->exit_status = 0;
+	shell->env->exit_status = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:24:32 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/04 17:59:59 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/21 20:41:56 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,9 +155,9 @@ int	is_quote_token(char *str)
 			(ft_strlen(str) == 3 && str[0] == '\'' && str[1] == '"' && str[2] == '\''));
 }
 
-void	ft_echo(t_token *tk)
+void	ft_echo(t_shell *shell)
 {
-	t_token	*curr = tk;
+	t_token	*curr = shell->tk;
 	int		flag = 0;
 	char	*temp, *content;
 
@@ -206,5 +206,5 @@ void	ft_echo(t_token *tk)
 	}
 	if (!flag)
 		ft_putstr_fd("\n", 1);
-	g_minishell.env->exit_status = 0;
+	shell->env->exit_status = 0;
 }

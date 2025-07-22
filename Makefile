@@ -1,5 +1,4 @@
 NAME		:= minishell
-
 LIBFT		:= libft.a
 LIBFT_PATH	:= "includes/libft"
 PRINTF		:= libftprintf.a

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:55 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/04 16:37:41 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 11:17:26 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	ft_error_message_quotes(char c)
 	ft_putstr_fd("Error unclosed quotes, close your ", 2);
 	ft_putchar_fd(c, 2);
 	ft_putstr_fd("\n", 2);
-	g_minishell.env->exit_status = ENU_GENEREAL_FAILURE;
+	// g_signal.env->exit_status = ENU_GENEREAL_FAILURE;
 	return (-1);
 }
 

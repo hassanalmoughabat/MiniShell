@@ -6,13 +6,13 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/02 16:45:47 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 20:07:14 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-int		count_tokens(t_token *tokens)
+int	count_tokens(t_token *tokens)
 {
 	int		count;
 	t_token	*curr;
@@ -90,19 +90,3 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
 	}
 }
 
-void	execute_with_redirect(t_token *cmd_tokens, char **ft_env,
-		t_env *env, int fd)
-{
-	if (dup2(fd, STDOUT_FILENO) == -1)
-	{
-		ft_putstr_fd("minishell: dup2: ", 2);
-		ft_putendl_fd(strerror(errno), 2);
-		close(fd);
-		exit(EXIT_FAILURE);
-	}
-	close(fd);
-	if (ft_is_builtin(cmd_tokens->cmd))
-		execute_builtin_redirect(cmd_tokens, ft_env, env);
-	else
-		execute_external_cmd(cmd_tokens, ft_env);
-}

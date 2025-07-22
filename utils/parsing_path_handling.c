@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/13 20:18:02 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 21:48:56 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,22 +140,7 @@ void free_shell_args(char **args)
     free(args);
 }
 
-void print_double_string(char **arr)
-{
-    int i = 0;
-    if (!arr)
-    {
-        printf("(null)\n");
-        return;
-    }
-    while (arr[i])
-    {
-        printf("[%d]: %s\n", i, arr[i]);
-        i++;
-    }
-}
-
-void	handle_path_command(t_token *tk, char *envp[], char *cmd)
+void	handle_path_command(t_shell *shell, char *cmd)
 {
 	char	**argv;
 	char	*path;
@@ -163,20 +148,21 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 	int		status;
 	struct stat sb;
 
-	if (!cmd || !tk)
+	if (!cmd || !shell->tk)
 		return ;
-	if (!ft_strcmp(tk->cmd, "\"\"") || !ft_strcmp(tk->cmd, "''"))
+	remove_added_quotes(&cmd);
+	if (!ft_strcmp(cmd, "\"\"") || !ft_strcmp(cmd, "''"))
 	{
-		g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
+		shell->env->exit_status = ft_err_msg((t_error){(cmd),
 				ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
 		return ;
 	}
-	argv = build_argv_from_tokens(tk);
-	if (!argv || !argv[0] || !argv[0][0] )
+	argv = build_argv_from_tokens(shell->tk);
+	if (!argv || !argv[0] || !argv[0][0])
 	{
 		if (argv)
 			free_shell_args(argv);
-		g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
+		shell->env->exit_status = ft_err_msg((t_error){(cmd),
 				ERROR, ENU_GENEREAL_FAILURE});
 		return ;
 	}
@@ -184,35 +170,36 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 	if (pid == -1)
 	{
 		ft_free_tab(argv);
-		g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
+		shell->env->exit_status = ft_err_msg((t_error){(cmd),
 				ERROR, ENU_GENEREAL_FAILURE});
 		return ;
 	}
 	if (pid == 0)
 	{
 		signal(SIGQUIT, SIG_DFL);
-		path = get_path(argv[0], envp);
+		path = get_path(argv[0], shell->ft_env);
 		if (!path)
 		{
-			g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
+			shell->env->exit_status = ft_err_msg((t_error){(cmd),
 					ERROR_MESG_NO_FILE, ENU_CMD_NOT_FOUND});
 			ft_free_tab(argv);
 			exit (127);
 		}
 		if (contains_symbols(cmd, 1))
 		{
-			if(!stat(path, &sb))
+			if (!stat(path, &sb))
 			{
 				if (S_ISDIR(sb.st_mode))
 				{
-					g_minishell.env->exit_status = 126;
+					shell->env->exit_status = 126;
 					ft_putstr_fd("minishell: ", 2);
 					ft_putstr_fd(cmd, 2);
 					ft_putstr_fd(" Is a directory \n", 2);
 					exit(126);
 				}
-				else if (access(path, X_OK) != 0) {
-					g_minishell.env->exit_status = 126;
+				else if (access(path, X_OK) != 0)
+				{
+					shell->env->exit_status = 126;
 					ft_putstr_fd("minishell: ", 2);
 					ft_putstr_fd(cmd, 2);
 					ft_putstr_fd(": Permission denied\n", 2);
@@ -221,17 +208,17 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 			}
 			else
 			{
-				g_minishell.env->exit_status = 127;
+				shell->env->exit_status = 127;
 				ft_putstr_fd("minishell: ", 2);
 				ft_putstr_fd(cmd, 2);
 				ft_putstr_fd(" No such file or directory \n", 2);
 				exit (127);
 			}
 		}
-		if (execve(path, argv, envp) == -1)
+		if (execve(path, argv, shell->ft_env) == -1)
 		{
 			remove_added_quotes(&cmd);
-			g_minishell.env->exit_status = ft_err_msg((t_error){(cmd),
+			shell->env->exit_status = ft_err_msg((t_error){(cmd),
 					ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
 			if (path)
 				free(path);
@@ -243,64 +230,63 @@ void	handle_path_command(t_token *tk, char *envp[], char *cmd)
 	{
 		waitpid(pid, &status, 0);
 		if (WIFSIGNALED(status))
-			g_minishell.env->exit_status = 128 + WTERMSIG(status);
+			shell->env->exit_status = 128 + WTERMSIG(status);
 		else if (WIFEXITED(status))
-			g_minishell.env->exit_status = WEXITSTATUS(status);
+			shell->env->exit_status = WEXITSTATUS(status);
 		else
-			g_minishell.env->exit_status = 0;
+			shell->env->exit_status = 0;
 		ft_free_tab(argv);
 	}
 }
 
-void	after_parsing(t_token *tk, char **ft_env, t_env **env, char *input)
+void	after_parsing(t_shell *shell, char *input)
 {
 	t_token	*curr;
-	int		pipe;
 	int		status;
 	pid_t	pid;
 
-	if (!tk)
+	if (!shell->tk)
 		return ;
-	curr = tk;
-	if (!ft_strcmp(tk->cmd, ":") || !ft_strcmp(tk->cmd, "!"))
+	curr = shell->tk;
+	if (!ft_strcmp(curr->cmd, ":") || !ft_strcmp(curr->cmd, "!"))
 		return ;
-	if (!ft_strncmp(tk->cmd, ";",1))
+	if (!ft_strncmp(curr->cmd, ";", 1))
 	{
 		ft_putstr_fd("bash: syntax error near unexpected token `", 2);
-		if(tk->cmd[1] == ';')
+		if (curr->cmd[1] == ';')
 			ft_putstr_fd(";;'", 2);
 		else
 			ft_putstr_fd(";'", 2);
-		ft_putstr_fd("\n",2);
-		(*env)->exit_status = 2;
+		ft_putstr_fd("\n", 2);
+		shell->env->exit_status = 2;
 		return ;
 	}
-	if (contain_list("|", tk))
-		handle_pipe(tk, ft_env, *env, input);
-	else if (contain_list("<<", tk) || contain_list(">>", tk)
-		|| contain_list("<", tk) || contain_list(">", tk))
+	if (contain_list("|", curr))
+		handle_pipe(curr, shell, input);
+	else if (contain_list("<<", curr) || contain_list(">>", curr)
+		|| contain_list("<", curr) || contain_list(">", curr))
 	{
 		pid = fork();
 		if (pid == 0)
 		{
-			handle_redirection(tk, ft_env, *env, input);
-			exit((*env)->exit_status);
+			handle_redirection(curr, shell, input);
+			exit(shell->env->exit_status);
 		}
 		else if (pid > 0)
 		{
 			waitpid(pid, &status, 0);
 			if (WIFSIGNALED(status))
-				(*env)->exit_status = 128 + WTERMSIG(status);
+				shell->env->exit_status = 128 + WTERMSIG(status);
 			else if (WIFEXITED(status))
-				(*env)->exit_status = WEXITSTATUS(status);
+				shell->env->exit_status = WEXITSTATUS(status);
 		}
 	}
 	else
 	{
 		if (ft_is_builtin(curr->cmd))
-			handle_builtin(tk, ft_env, env);
+			handle_builtin(shell, curr->cmd);
 		else
-			handle_path_command(tk, ft_env, curr->cmd);
+			handle_path_command(shell, curr->cmd);
 	}
 	return ;
 }

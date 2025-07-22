@@ -6,39 +6,17 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/13 19:54:26 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/16 22:38:24 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-void	update_env_value(t_env **head, char *target, char *new_value)
+void	add_old_pwd_var(char *target, char *new_value, t_env **head)
 {
 	char	*updated_value;
-	size_t	len;
-	t_env	*current;
 
-	len = ft_strlen(new_value);
 	updated_value = NULL;
-	if (!*head || !target || !new_value)
-		return ;
-	current = *head;
-	while (current)
-	{
-		if (current->line
-			&& ft_strncmp(current->line, target, ft_strlen(target)) == 0)
-		{
-			updated_value = malloc(ft_strlen(target) + len + 1);
-			if (!updated_value)
-				return ;
-			ft_strcpy(updated_value, target);
-			ft_strcat(updated_value, new_value);
-			free(current->line);
-			current->line = updated_value;
-			return ;
-		}
-		current = current->next;
-	}
 	if (!ft_strcmp(target, "OLDPWD="))
 	{
 		updated_value = ft_strjoin(target, new_value);
@@ -49,6 +27,35 @@ void	update_env_value(t_env **head, char *target, char *new_value)
 		}
 	}
 	return ;
+}
+
+void	update_env_value(t_env **head, char *target, char *new_value)
+{
+	char	*updated_value;
+	size_t	len;
+	t_env	*current;
+
+	len = ft_strlen(new_value);
+	if (!*head || !target || !new_value)
+		return ;
+	updated_value = malloc(ft_strlen(target) + len + 1);
+	if (!updated_value)
+		return ;
+	current = *head;
+	while (current)
+	{
+		if (current->line
+			&& ft_strncmp(current->line, target, ft_strlen(target)) == 0)
+		{
+			ft_strcpy(updated_value, target);
+			ft_strcat(updated_value, new_value);
+			free(current->line);
+			current->line = updated_value;
+			return ;
+		}
+		current = current->next;
+	}
+	add_old_pwd_var(target, new_value, head);
 }
 
 char	*ft_get_pwd(void)
