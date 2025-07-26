@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:20:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/21 21:07:09 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/26 15:00:34 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,35 +47,41 @@ char	*extract_value(char *str, int *index)
 	return (result);
 }
 
-int	dollar_cases(char *key, int *index, char **expanded, t_shell *shell)
+static int	handle_special_char(char *key, int *i, char **expanded)
 {
-	int		entrance;
-	char	*temp;
-
-	entrance = 0;
-	if (ft_check_space(key[*index]))
+	if (ft_check_space(key[*i]))
 	{
 		*expanded = ft_strjoin_char(*expanded, '$');
-		(*index)++ ;
-		entrance = 1;
+		(*i)++;
+		return (1);
 	}
-	else if (ft_isdigit(key[*index]))
+	if (ft_isdigit(key[*i]))
 	{
-		(*index)++ ;
-		entrance = 1;
+		(*i)++;
+		return (1);
 	}
-	else if (ft_check_exceptions(key, *index))
+	if (ft_check_exceptions(key, *i))
 	{
-		(*index)++ ;
+		(*i)++;
 		*expanded = ft_strjoin(*expanded, "\\$\\\\");
-		entrance = 1;
+		return (1);
 	}
-	else if (key[*index] == '?')
+	return (0);
+}
+
+int	dollar_cases(char *key, int *index, char **expanded, t_shell *shell)
+{
+	char	*temp;
+
+	if (handle_special_char(key, index, expanded))
+		return (1);
+	if (key[*index] == '?')
 	{
 		(*index)++;
 		temp = ft_itoa(shell->env->exit_status);
 		*expanded = ft_strjoin(*expanded, temp);
-		return (free(temp), 1);
+		free(temp);
+		return (1);
 	}
-	return (entrance);
+	return (0);
 }

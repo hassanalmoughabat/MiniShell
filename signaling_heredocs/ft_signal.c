@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 09:53:05 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/07/22 11:24:59 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/23 13:43:44 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	ft_heredoc_sigint_handler(int signum)
 {
 	(void)signum;
+	g_signal.sig_status = 128 + SIGINT;
 	exit(128 + SIGINT);
 }
 
@@ -34,6 +35,7 @@ void	ft_sigint_handler(int num)
 		rl_on_new_line();
 		rl_redisplay();
 	}
+	g_signal.sig_status = 130;
 }
 
 void	ft_sigquit_handler(int num)

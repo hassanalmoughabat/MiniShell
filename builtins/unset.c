@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:40:11 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/22 14:33:26 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/26 13:08:16 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,37 +39,41 @@ void	delete_env_node(t_env **env, char *target)
 	}
 }
 
+void	remove_matching_env(t_env **env, char *key)
+{
+	t_env	*current;
+
+	current = *env;
+	while (current)
+	{
+		if (ft_strcmp(current->line, "_=/usr/bin/env") == 0)
+		{
+			current = current->next;
+			continue ;
+		}
+		if (extract_key_env(current->line) == ft_strlen(key)
+			&& !ft_strncmp(current->line, key, ft_strlen(key)))
+		{
+			delete_env_node(env, key);
+			break ;
+		}
+		current = current->next;
+	}
+}
+
 void	detect_key(t_token *tk, t_env **env)
 {
 	t_token		*curr;
-	t_env		*current;
 	char		*key;
 
 	curr = tk;
 	while (curr)
 	{
 		key = get_var(curr->cmd);
-		current = *env;
 		if (!ft_strcmp(curr->cmd, "_"))
 			return ;
 		if (key)
-		{
-			while (current)
-			{
-				if (ft_strcmp(current->line, "_=/usr/bin/env") == 0)
-				{
-					current = current->next;
-					continue ;
-				}
-				if (extract_key_env(current->line) == ft_strlen(key)
-					&& !ft_strncmp(current->line, key, ft_strlen(key)))
-				{
-					delete_env_node(env, key);
-					break ;
-				}
-				current = current->next;
-			}
-		}
+			remove_matching_env(env, key);
 		curr = curr->next;
 	}
 	return ;

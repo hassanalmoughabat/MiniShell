@@ -5,97 +5,79 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/13 13:09:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/16 22:38:24 by njoudieh42       ###   ########.fr       */
+/*   Created: 2025/07/24 18:39:38 by njoudieh42        #+#    #+#             */
+/*   Updated: 2025/07/24 19:53:30 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-void	add_old_pwd_var(char *target, char *new_value, t_env **head)
+void	handle_empty_dir(t_shell *shell, char *home)
 {
-	char	*updated_value;
-
-	updated_value = NULL;
-	if (!ft_strcmp(target, "OLDPWD="))
+	if (!home)
 	{
-		updated_value = ft_strjoin(target, new_value);
-		if (updated_value)
-		{
-			ft_add_key_to_env(head, updated_value);
-			free(updated_value);
-		}
+		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+		shell->env->exit_status = 1;
+		return ;
 	}
-	return ;
+	if (ft_strcmp(home, "") && chdir(home))
+	{
+		shell->env->exit_status = ft_err_msg((t_error){home,
+				ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
+		return ;
+	}
 }
 
-void	update_env_value(t_env **head, char *target, char *new_value)
+void	set_env_pwd(char **home, char **dir, t_shell *shell)
 {
-	char	*updated_value;
-	size_t	len;
-	t_env	*current;
+	*home = my_getenv("HOME", shell->ft_env);
+	*dir = find_dir_in_list(shell->tk);
+	remove_added_quotes(dir);
+	remove_added_quotes(home);
+}
 
-	len = ft_strlen(new_value);
-	if (!*head || !target || !new_value)
-		return ;
-	updated_value = malloc(ft_strlen(target) + len + 1);
-	if (!updated_value)
-		return ;
-	current = *head;
-	while (current)
+int	fix_home(char **dir, char *home, int flag, t_shell *shell)
+{
+	if (flag == 1)
 	{
-		if (current->line
-			&& ft_strncmp(current->line, target, ft_strlen(target)) == 0)
-		{
-			ft_strcpy(updated_value, target);
-			ft_strcat(updated_value, new_value);
-			free(current->line);
-			current->line = updated_value;
+		free(*dir);
+		*dir = ft_strdup(home);
+		return (1);
+	}
+	else if (flag == 2)
+	{
+		if ((!*dir && ft_list_size(shell->tk) == 1)
+			|| (*dir && (!ft_strcmp(*dir, "--") || !ft_strcmp(*dir, ""))))
+			return (2);
+	}
+	return (0);
+}
+
+void	ft_cd(t_shell *shell)
+{
+	char	*dir;
+	char	*current_pwd;
+	char	*old_pwd;
+	char	*home;
+
+	if (ft_list_size(shell->tk) > 2)
+		return ((void)(error_env(shell, 2)));
+	current_pwd = ft_get_cd_pwd();
+	if (!current_pwd)
+		current_pwd = set_curr_pwd(shell);
+	old_pwd = ft_strdup(current_pwd);
+	set_env_pwd(&home, &dir, shell);
+	if (dir && !ft_strcmp(dir, "-"))
+		return ((void)retrieve_dir(shell, old_pwd));
+	if (dir && home && (!ft_strcmp(dir, "~") || !ft_strcmp(dir, "~/")))
+		fix_home(&dir, home, 1, shell);
+	if (fix_home(&dir, home, 2, shell) == 2)
+		return ((void)handle_empty_dir(shell, home));
+	else if (dir)
+	{
+		if (change_dir(dir, shell))
 			return ;
-		}
-		current = current->next;
+		update_env_values(shell, old_pwd);
 	}
-	add_old_pwd_var(target, new_value, head);
-}
-
-char	*ft_get_pwd(void)
-{
-	char	*cwd;
-
-	cwd = malloc(PATH_MAX);
-	if (!cwd)
-		return (NULL);
-	if (getcwd(cwd, PATH_MAX))
-		return (cwd);
-	free(cwd);
-	return (NULL);
-}
-
-int	ft_find_old_pwd(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i + 5])
-	{
-		if (ft_strncmp(str, "OLDPWD=", 7) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-char	*ft_get_old_pwd(t_env *env)
-{
-	t_env	*current;
-
-	current = env;
-	while (current)
-	{
-		if (ft_find_old_pwd(current->line) == 1)
-			return (current->line);
-		else
-			current = current->next;
-	}
-	return (0);
+	free(old_pwd);
 }

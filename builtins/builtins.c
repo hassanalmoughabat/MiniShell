@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/22 15:44:27 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/25 13:41:26 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,48 +57,6 @@ int	ft_pwd(t_shell *shell)
 	return (0);
 }
 
-void	print_helper(t_env *env)
-{
-	char	*pwd;
-	char	*pwd_env;
-
-	ft_putstr_fd(get_value_from_env("_=", env), 1);
-	ft_putstr_fd("\n", 1);
-	pwd = ft_get_pwd();
-	if (pwd)
-	{
-		pwd_env = ft_strjoin("PWD=", pwd);
-		if (pwd_env)
-		{
-			ft_putstr_fd(pwd_env, 1);
-			ft_putstr_fd("\n", 1);
-			free(pwd_env);
-		}
-		free(pwd);
-	}
-	ft_putstr_fd("SHLVL=1\n", 1);
-	ft_putstr_fd("_=\n", 1);
-}
-
-void	ft_print_env(t_env *env)
-{
-	t_env	*ev;
-
-	ev = env;
-	if (!ev)
-		print_helper(env);
-	else
-	{
-		while (ev)
-		{
-			ft_putstr_fd(ev->line, 1);
-			ft_putstr_fd("\n", 1);
-			ev = ev->next;
-		}
-	}
-	env->exit_status = ENU_SUCCESS;
-}
-
 t_env	*ft_copy(t_env *envp)
 {
 	t_env	*head;
@@ -137,6 +95,7 @@ void	handle_builtin(t_shell *shell, char *cmd)
 	if (!copy)
 		return ;
 	remove_added_quotes(&cmd);
+	remove_added_quotes(&shell->tk->cmd);
 	if (!ft_strcmp(cmd, "env"))
 		ft_print_env(shell->env);
 	else if (!ft_strcmp(cmd, "pwd"))

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:31:49 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/22 11:08:48 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/24 21:06:57 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,9 @@ void	set_key(char *input, char **result, char *quote, int *flag)
 
 int	set_key_value(t_token *tk, char **key, char **value, t_shell *shell)
 {
-	shell->curr_cmd = tk->cmd; 
-	if (!shell->curr_cmd || shell->curr_cmd[0] == '\0' || !ft_strcmp(tk->cmd, ""))
+	shell->curr_cmd = tk->cmd;
+	if (!shell->curr_cmd || shell->curr_cmd[0] == '\0'
+		|| !ft_strcmp(tk->cmd, ""))
 		return (*key = NULL, 1);
 	if (has_equal(shell->curr_cmd) && ft_strlen(shell->curr_cmd) > 1)
 	{

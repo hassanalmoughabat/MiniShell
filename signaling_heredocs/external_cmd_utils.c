@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_great_utils.c                               :+:      :+:    :+:   */
+/*   external_cmd_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/22 20:07:14 by njoudieh42       ###   ########.fr       */
+/*   Created: 2025/07/27 00:44:35 by njoudieh42        #+#    #+#             */
+/*   Updated: 2025/07/27 00:45:32 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,29 +64,16 @@ void	print_cmd_error(char *cmd, char *msg)
 	ft_putendl_fd(msg, 2);
 }
 
-void	execute_external_cmd(t_token *cmd_tokens, char **ft_env)
+int	symbols(char *tk)
 {
-	char	**args;
-	char	*path;
+	int		i;
 
-	args = build_args_array(cmd_tokens);
-	if (!args)
-		exit(EXIT_FAILURE);
-	path = get_path(args[0], ft_env);
-	if (!path)
+	i = 0;
+	while (tk[i])
 	{
-		print_cmd_error(args[0], "command not found");
-		ft_free_tab(args);
-		free_token_list(cmd_tokens);
-		exit(EXIT_FAILURE);
+		if ((tk[i] == '/'))
+			return (1);
+		i ++;
 	}
-	free_token_list(cmd_tokens);
-	if (execve(path, args, ft_env) == -1)
-	{
-		ft_free_tab(args);
-		free(path);
-		free_token_list(cmd_tokens);
-		exit(EXIT_FAILURE);
-	}
+	return (0);
 }
-

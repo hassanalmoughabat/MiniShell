@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 01:26:28 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/18 00:42:42 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/26 18:25:44 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,37 +52,45 @@ int	ft_find_next_quote(char *line, size_t *i)
 	return (0);
 }
 
+int	parse_until_delim(char *temp, size_t *i)
+{
+	while (temp[*i] && !ft_delimeter(temp + *i))
+	{
+		if (ft_check_quotes(temp[*i]))
+		{
+			if (!escape(temp, *i))
+			{
+				if (!ft_find_next_quote(temp, i))
+				{
+					ft_error_message_quotes(temp[*i]);
+					return (0);
+				}
+			}
+			else
+				(*i)++;
+		}
+		else
+			(*i)++;
+	}
+	return (1);
+}
+
 int	ft_handle_quotes(char **input, t_token **token_list)
 {
 	size_t	i;
-	char	*temp;
 	char	*cmd;
 	t_token	*new_token;
 
-	temp = *input;
-	cmd = NULL;
 	i = 0;
-	while (temp[i] && !ft_delimeter(temp + i))
-	{
-		if (ft_check_quotes(temp[i]))
-		{
-			if (!escape(temp, i))
-			{
-				if (!ft_find_next_quote(temp, &i))
-					return (ft_error_message_quotes(temp[i]), 0);
-			}
-			else
-				i ++;
-		}
-		else
-			i++;
-	}
-	cmd = ft_substr(temp, 0, i);
+	if (!parse_until_delim(*input, &i))
+		return (0);
+	cmd = ft_substr(*input, 0, i);
 	if (!cmd)
 		return (0);
 	new_token = create_token (cmd, T_IDENTIFIER);
 	if (!new_token)
 		return (free(cmd), 0);
 	*input += i;
-	return ((ft_add_token_last(token_list, new_token), 1));
+	ft_add_token_last(token_list, new_token);
+	return (1);
 }

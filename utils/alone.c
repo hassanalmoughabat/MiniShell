@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_great_main.c                                :+:      :+:    :+:   */
+/*   alone.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/22 20:12:42 by njoudieh42       ###   ########.fr       */
+/*   Created: 2025/07/27 01:56:00 by njoudieh42        #+#    #+#             */
+/*   Updated: 2025/07/27 01:56:19 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-// t_redir	*init_redir_params(char **ft_env, t_env *env)
-// {
-// 	t_redir		*params;
-
-// 	params = malloc(sizeof(t_redir));
-// 	if (!params)
-// 		return (NULL);
-// 	params->ft_env = ft_env;
-// 	params->env = env;
-// 	return (params);
-// }
+void	cleanup_minishell(t_shell *shell, char **transform_result, char *input)
+{
+	if (input)
+		free(input);
+	if (transform_result)
+		free_array(transform_result);
+	if (shell)
+	{
+		if (shell->path)
+			free(shell->path);
+		if (shell->env)
+			free_env_list(shell->env);
+	}
+}
