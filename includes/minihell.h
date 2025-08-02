@@ -317,6 +317,9 @@ void	exec_filtered_cmd(t_shell *shell, t_token *cmd_tokens);
 //----------------------------Heredoc--------------------------------------
 char	*get_delimeter(t_token *tk);
 void	handle_heredoc(t_shell *shell);
+void	ft_handle_heredoc_child(t_shell *shell,
+			char *delimiter, char *cmd, int quote);
+void	ft_handle_heredoc_parent(t_shell *shell, pid_t pid, int status);
 int		contain_list(char *str, t_token *tk);
 int		validate_delimiter(const char *delimiter);
 char	*cut_from_op(char op, char *str, t_env *env);

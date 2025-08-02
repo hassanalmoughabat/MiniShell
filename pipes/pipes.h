@@ -124,4 +124,10 @@ int				check_special_heredoc_pipe(t_token *lst, t_shell *shell);
 void			execute_pipe_commands(t_pipe_data *data, t_shell *shell);
 void			handle_pipe(t_token *lst, t_shell *shell, char *input);
 
+// From pipes_utils4.c
+void			pipe_error_message(char *input, t_token *tk);
+
+// From pipes_utils2.c  
+void			pipe_syntax_error(char *msg, t_shell *shell);
+
 #endif

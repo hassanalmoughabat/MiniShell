@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minihell.h"
+#include "ft_heredoc.h"
 
 int	get_exit_code(int status)
 {
