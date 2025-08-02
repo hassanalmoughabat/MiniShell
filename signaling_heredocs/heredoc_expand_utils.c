@@ -22,7 +22,7 @@ static int	ft_process_dollar_expansion(t_expansion_params *params)
 	dollar_params.result_len = params->result_len;
 	dollar_params.buffer_size = params->buffer_size;
 	dollar_params.result = params->result;
-	return (ft_handle_dollar_expansion(&dollar_params));
+	return (ft_handle_dollar_expansion(&dollar_params) != NULL);
 }
 
 static int	ft_process_regular_char(t_expansion_params *params)

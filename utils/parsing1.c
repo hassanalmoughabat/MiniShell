@@ -68,7 +68,7 @@ void	handle_redirections(t_shell *shell, t_token *curr, char *input)
 
 	pid = fork();
 	if (pid == 0)
-	{
+	{	
 		handle_redirection(curr, shell, input);
 		exit(shell->env->exit_status);
 	}
