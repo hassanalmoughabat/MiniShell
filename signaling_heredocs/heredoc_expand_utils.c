@@ -57,26 +57,6 @@ char	*ft_process_expansion_loop(t_expansion_params *params)
 	return (*(params->dst) = '\0',*(params->result));
 }
 
-int	ft_setup_heredoc_params(t_heredoc_params *params)
-{
-	*(params->delimiter) = get_delimeter(params->curr);
-	if (!*(params->delimiter))
-		return (-1);
-	*(params->quote) = has_quotes(*(params->delimiter));
-	remove_added_quotes(params->delimiter);
-	*(params->cmd) = find_command_around_heredoc(params->shell->tk,
-			*(params->delimiter));
-	return (0);
-}
-
-int	ft_setup_heredoc_pipe(char *delimiter, int *pipefd)
-{
-	signal(SIGINT, ft_heredoc_sigint_handler);
-	if (!validate_delimiter(delimiter) || pipe(pipefd) == -1)
-		return (-1);
-	return (0);
-}
-
 int	ft_fork_and_execute_heredoc(t_shell *shell, char *delimiter,
 		char *cmd, int quote)
 {

@@ -52,6 +52,7 @@ SIGNALING	:=	signaling_heredocs/ft_signal.c \
 				signaling_heredocs/ft_heredoc1.c \
 				signaling_heredocs/ft_heredoc_helper.c \
 				signaling_heredocs/ft_heredoc_utils.c \
+				signaling_heredocs/ft_heredoc_utils2.c \
 				signaling_heredocs/ft_heredoc_expand.c \
 				signaling_heredocs/heredoc_expand_utils.c \
 				signaling_heredocs/heredoc_expand_utils2.c \

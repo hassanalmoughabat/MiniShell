@@ -69,3 +69,11 @@ char	*ft_strsub(char const *s, unsigned int start, size_t len)
 	str[i] = '\0';
 	return (str);
 }
+
+int	ft_setup_heredoc_pipe(char *delimiter, int *pipefd)
+{
+	signal(SIGINT, ft_heredoc_sigint_handler);
+	if (!validate_delimiter(delimiter) || pipe(pipefd) == -1)
+		return (-1);
+	return (0);
+}

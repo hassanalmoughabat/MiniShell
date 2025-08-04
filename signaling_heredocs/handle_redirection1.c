@@ -43,6 +43,7 @@ int	handle_input_redirect(t_token *curr, t_shell *shell)
 		if (curr->type == T_DLESS)
 		{
 			g_signal.signint_child = true;
+			g_signal.heredoc_sigint = false;
 			handle_heredoc(shell);
 		}
 		else
@@ -81,8 +82,11 @@ int	check_redirect_syntax(t_shell *shell, char *input)
 		if (curr->type == T_GREAT || curr->type == T_DGREAT
 			|| curr->type == T_LESS || curr->type == T_DLESS)
 		{
-			syntax_error_msg(curr);
-			return (shell->env->exit_status = 2, 2);
+			if (!curr->next || !is_valid_filename(curr->next))
+			{
+				syntax_error_msg(curr);
+				return (shell->env->exit_status = 2, 2);
+			}
 		}
 		curr = curr->next;
 	}

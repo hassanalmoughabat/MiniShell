@@ -72,3 +72,24 @@ void	ft_handle_heredoc_parent(t_shell *shell, pid_t pid, int status)
 	else
 		shell->env->exit_status = WEXITSTATUS(status);
 }
+
+char	*cut_from_op(char op, char *str, t_env *env)
+{
+	int		pos;
+	int		count;
+	char	*value;
+	char	*result;
+
+	pos = ft_index(str, op) + 1;
+	count = count_var_chars(str, pos - 1);
+	value = (char *)malloc(sizeof(char) * (count + 1));
+	if (!value)
+		return (NULL);
+	count = 0;
+	while (str[pos] && str[pos] != ' ' && str[pos] != '\t')
+		value[count++] = str[pos++];
+	value[count] = '\0';
+	result = find_env_value(value, env);
+	free(value);
+	return (result);
+}

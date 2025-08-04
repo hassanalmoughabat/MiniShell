@@ -13,7 +13,6 @@
 #include "../includes/minihell.h"
 #include "pipes.h"
 
-
 void	pipe_error_message(char *input, t_token *tk)
 {
 	if (!tk->prev && tk->next)

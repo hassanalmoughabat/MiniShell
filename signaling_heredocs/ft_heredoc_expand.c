@@ -14,12 +14,23 @@
 
 static char	*ft_get_var_value(char *var_name, t_env *env)
 {
-	char	*value;
+	t_env	*current;
+	char	*equals_pos;
+	int		name_len;
 
-	value = my_getenv(var_name, transform(env));
-	if (!value)
-		value = "";
-	return (value);
+	name_len = ft_strlen(var_name);
+	current = env;
+	while (current)
+	{
+		if (current->line && ft_strncmp(current->line, var_name, name_len) == 0)
+		{
+			equals_pos = ft_strchr(current->line, '=');
+			if (equals_pos && equals_pos == current->line + name_len)
+				return (equals_pos + 1);
+		}
+		current = current->next;
+	}
+	return ("");
 }
 
 static int	ft_resize_buffer_if_needed(t_expand_vars *vars, int value_len)

@@ -1,59 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_heredoc_utils.c                                 :+:      :+:    :+:   */
+/*   external_cmd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/27 02:30:00 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/27 02:30:00 by njoudieh42       ###   ########.fr       */
+/*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
+/*   Updated: 2025/07/27 00:47:37 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minihell.h"
 #include "ft_heredoc.h"
-
-char	*ft_realloc_buffer(char *old_buf, int new_size,
-		char **dst, int result_len)
-{
-	char	*new_buf;
-
-	new_buf = malloc(new_size);
-	if (!new_buf)
-	{
-		free(old_buf);
-		return (NULL);
-	}
-	ft_memcpy(new_buf, old_buf, result_len);
-	free(old_buf);
-	*dst = new_buf + result_len;
-	return (new_buf);
-}
-
-int	ft_check_heredoc_size(size_t total_written, char *expanded_line,
-		int *pipefd)
-{
-	size_t	line_len;
-
-	line_len = ft_strlen(expanded_line);
-	if (total_written + line_len + 1 > MAX_HEREDOC_SIZE)
-	{
-		close(pipefd[0]);
-		close(pipefd[1]);
-		return (-1);
-	}
-	return (0);
-}
-
-void	ft_write_heredoc_line(int fd, char *expanded_line,
-		size_t *total_written)
-{
-	size_t	line_len;
-
-	line_len = ft_strlen(expanded_line);
-	write(fd, expanded_line, line_len);
-	write(fd, "\n", 1);
-	*total_written += line_len + 1;
-}
 
 char	*ft_init_expansion_buffer(char *line, char **src, char **dst)
 {
@@ -67,6 +25,69 @@ char	*ft_init_expansion_buffer(char *line, char **src, char **dst)
 	return (result);
 }
 
+char	*get_env_value_safe(char *var_name, t_env *env)
+{
+	t_env	*current;
+	char	*equals_pos;
+	int		name_len;
+
+	name_len = ft_strlen(var_name);
+	current = env;
+	while (current)
+	{
+		if (current->line && ft_strncmp(current->line, var_name, name_len) == 0)
+		{
+			equals_pos = ft_strchr(current->line, '=');
+			if (equals_pos && equals_pos == current->line + name_len)
+				return (equals_pos + 1);
+		}
+		current = current->next;
+	}
+	return ("");
+}
+
+static void	expand_variable(char *src, int *i, char **dst, t_env *env)
+{
+	char	var_name[256];
+	char	*value;
+	int		j;
+
+	(*i)++;
+	j = 0;
+	while (src[*i] && (ft_isalnum(src[*i]) || src[*i] == '_') && j < 255)
+		var_name[j++] = src[(*i)++];
+	var_name[j] = '\0';
+	value = get_env_value_safe(var_name, env);
+	if (value && *value)
+	{
+		ft_strcpy(*dst, value);
+		*dst += ft_strlen(value);
+	}
+}
+
+char	*expand_variables_safe(char *line, t_env *env)
+{
+	char	*result;
+	char	*dst;
+	int		i;
+
+	result = malloc(ft_strlen(line) * 4 + 1);
+	if (!result)
+		return (ft_strdup(line));
+	dst = result;
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '$' && line[i + 1]
+			&& (ft_isalpha(line[i + 1]) || line[i + 1] == '_'))
+			expand_variable(line, &i, &dst, env);
+		else
+			*dst++ = line[i++];
+	}
+	*dst = '\0';
+	return (result);
+}
+
 int	ft_process_heredoc_line(char *line, t_heredoc_data *data)
 {
 	char	*expanded_line;
@@ -77,9 +98,10 @@ int	ft_process_heredoc_line(char *line, t_heredoc_data *data)
 			free(line);
 		return (1);
 	}
-	expanded_line = expand_variables(line, data->shell->env, data->quote);
-	if (!expanded_line)
+	if (data->quote == 1 || !line || !ft_strchr(line, '$'))
 		expanded_line = ft_strdup(line);
+	else
+		expanded_line = expand_variables_safe(line, data->shell->env);
 	if (ft_check_heredoc_size(*(data->total_written), expanded_line,
 			data->pipefd) == -1)
 	{
