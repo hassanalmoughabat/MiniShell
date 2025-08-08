@@ -1,0 +1,59 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shell_handling.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/05 12:33:51 by njoudieh42        #+#    #+#             */
+/*   Updated: 2025/07/22 22:55:41 by njoudieh42       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minihell.h"
+
+void	add_shell_level(t_env **env, char *new_line)
+{
+	t_env	*curr;
+	t_env	*new_node;
+
+	curr = *env;
+	new_node = create_env_node(new_line);
+	if (!new_node)
+		return ;
+	while (curr && ft_strncmp(curr->line, "DISPLAY=", 8))
+		curr = curr->next;
+	if (curr)
+	{
+		new_node->next = curr->next;
+		curr->next = new_node;
+	}
+	else
+	{
+		new_node->next = *env;
+		*env = new_node;
+	}
+}
+
+void	update_shlvl_in_env(t_env **env, int new_shlvl)
+{
+	t_env	*curr;
+	char	*new_value;
+	char	*new_line;
+
+	if (!*env)
+		return ;
+	curr = *env;
+	while (curr && ft_strncmp(curr->line, "SHLVL=", 6))
+		curr = curr->next;
+	new_value = ft_itoa(new_shlvl);
+	new_line = ft_strjoin("SHLVL=", new_value);
+	free(new_value);
+	if (curr)
+	{
+		free(curr->line);
+		curr->line = new_line;
+	}
+	else
+		add_shell_level(env, new_line);
+}
