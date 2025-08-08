@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_great_main.c                                :+:      :+:    :+:   */
+/*   pipes_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/28 16:37:38 by njoudieh         ###   ########.fr       */
+/*   Updated: 2025/07/26 17:07:55 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	close_parent_pipes(t_pipe_data *data, int current_cmd)
 }
 
 void	execute_single_command(t_pipe_data *data, t_token *start,
-			t_token *curr, int i)
+			t_token *curr, int i, t_shell *shell)
 {
 	t_token					*cmd_segment;
 	t_pipe_child_data		child_data;
@@ -30,7 +30,7 @@ void	execute_single_command(t_pipe_data *data, t_token *start,
 	pid_t					pid;
 	int						heredoc_fd;
 
-	heredoc_fd = setup_heredoc_for_command(data, start, curr, i);
+	heredoc_fd = setup_heredoc_for_command(data, start, curr);
 	cmd_segment = extract_command_segment(start, curr);
 	if (!cmd_segment)
 		return ;
@@ -42,14 +42,14 @@ void	execute_single_command(t_pipe_data *data, t_token *start,
 		setup_params.i = i;
 		setup_params.heredoc_fd = heredoc_fd;
 		setup_child_data(&child_data, data, &setup_params);
-		handle_pipe_child(&child_data);
+		handle_pipe_child(&child_data, shell);
 		exit(EXIT_FAILURE);
 	}
 	close_parent_pipes(data, i);
 	free_token_list(cmd_segment);
 }
 
-void	execute_pipe_commands(t_pipe_data *data)
+void	execute_pipe_commands(t_pipe_data *data, t_shell *shell)
 {
 	t_token	*curr;
 	t_token	*start;
@@ -60,7 +60,7 @@ void	execute_pipe_commands(t_pipe_data *data)
 	i = 0;
 	while (1)
 	{
-		execute_single_command(data, start, curr, i);
+		execute_single_command(data, start, curr, i, shell);
 		if (!curr)
 			break ;
 		start = curr->next;
@@ -71,48 +71,26 @@ void	execute_pipe_commands(t_pipe_data *data)
 	wait_for_children(data);
 }
 
-void	setup_pipe_data(t_pipe_data *data, t_token *lst, char **ft_env,
-			t_env *env)
+void	setup_pipe_data(t_pipe_data *data, t_token *lst, t_shell *shell)
 {
 	int				pipe_count;
 	t_heredoc_info	*heredocs;
 	int				hd_count;
 
 	pipe_count = count_pipes(lst);
-	heredocs = process_heredocs_before_pipes(lst, env, &hd_count);
+	heredocs = process_heredocs_before_pipes(lst, shell, &hd_count);
 	data->lst = lst;
-	data->ft_env = ft_env;
-	data->env = env;
+	data->ft_env = shell->ft_env;
+	data->env = shell->env;
 	data->pipe_count = pipe_count;
 	data->heredocs = heredocs;
 	data->hd_count = hd_count;
 }
 
-void	handle_pipe(t_token *lst, char **ft_env, t_env *env, char *input)
+void	pipe_syntax_error(char *msg, t_shell *shell)
 {
-	int			**pipes;
-	t_pipe_data	data;
-	int			i;
-
-	if (!lst || !valid_pipe(lst))
-		return ;
-	if (has_heredoc(lst) && count_pipes(lst) == 1)
-	{
-		if (check_special_heredoc_pipe(lst, ft_env, env))
-			return ;
-	}
-	setup_pipe_data(&data, lst, ft_env, env);
-	if (create_pipes(&pipes, data.pipe_count) == -1)
-	{
-		if (data.heredocs)
-		{
-			i = -1;
-			while (++i < data.hd_count)
-				close(data.heredocs[i].fd);
-			free(data.heredocs);
-		}
-		return ;
-	}
-	data.pipes = pipes;
-	execute_pipe_commands(&data);
+	ft_putstr_fd("bash: syntax error near unexpected token `", 2);
+	ft_putstr_fd(msg, 2);
+	ft_putstr_fd("'\n", 2);
+	shell->env->exit_status = 2;
 }

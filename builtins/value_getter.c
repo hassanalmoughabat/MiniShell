@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:16:46 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/28 01:37:56 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 22:50:58 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	has_equal_in_quote(char *input, char *quote)
 	return (0);
 }
 
-char	*get_value(char *input, char quote, int flag)
+char	*get_value(char *input, char quote, int flag, t_shell *shell)
 {
 	char	*value;
 	char	*result;
@@ -48,27 +48,27 @@ char	*get_value(char *input, char quote, int flag)
 	set_value(&value, quote, input, flag);
 	if (!value)
 		return (NULL);
-	handle_value(value, &result);
+	handle_value(value, &result, shell);
 	if (remove_added_quotes(&result) == -1)
 		return (free(value), NULL);
 	return (result);
 }
 
-char	*get_key(t_token *tk, char *input, t_env *env, char *quote, int *ind)
+char	*get_key(t_token *tk, t_shell *shell, char *quote, int *ind)
 {
 	char	*result;
 	char	*key;
 
 	result = ft_strdup("");
-	if (!input)
+	if (!shell->curr_cmd)
 		return (NULL);
-	set_key(input, &key, quote, ind);
-	if (!check_valid_key(tk, key, env))
+	set_key(shell->curr_cmd, &key, quote, ind);
+	if (!check_valid_key(tk, key, shell->env))
 		return (free(key), free(result), NULL);
-	handle_value(key, &result);
+	handle_value(key, &result, shell);
 	if (remove_added_quotes(&result) == -1)
 		return (free(key), free(result), NULL);
-	if (!check_key_after_expansion(result, env, tk))
+	if (!check_key_after_expansion(result, shell->env, tk))
 		return (error_message_export(&result), NULL);
 	return (result);
 }

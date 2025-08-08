@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 23:34:20 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/16 17:43:30 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 22:43:59 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ t_env	*new_env_node(char *key_value)
 {
 	t_env	*node;
 
+	if (!key_value)
+		return (NULL);
 	node = malloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
@@ -42,13 +44,29 @@ t_env	*new_env_node(char *key_value)
 	return (node);
 }
 
-t_env	*copy_env(t_env *envp)
+char	*copy_env_node(t_env *env)
 {
-	t_env	*head;
+	char	*equal_ptr;
 	char	*key;
 	char	*value;
 	char	*temp;
-	char	*equal_ptr;
+
+	equal_ptr = ft_strchr(env->line, '=');
+	key = ft_substr(env->line, 0, equal_ptr - env->line);
+	equal_ptr ++;
+	if (equal_ptr)
+		value = ft_strdup(equal_ptr);
+	temp = quotes_in_env(value, key, 0);
+	free(key);
+	free(value);
+	if (!temp)
+		return (NULL);
+	return (temp);
+}
+
+t_env	*copy_env(t_env *envp)
+{
+	t_env	*head;
 	t_env	*curr1;
 	t_env	*new_node;
 	t_env	*current;
@@ -57,12 +75,7 @@ t_env	*copy_env(t_env *envp)
 	current = envp;
 	while (current)
 	{
-		equal_ptr = ft_strchr(current->line, '=');
-		key = ft_substr(current->line, 0, equal_ptr - current->line);
-		equal_ptr ++;
-		value = ft_strdup(equal_ptr);
-		temp = quotes_in_env(value, key, 0);
-		new_node = new_env_node(temp);
+		new_node = new_env_node(copy_env_node(current));
 		if (!new_node)
 			return (ft_free_env(head), NULL);
 		if (!head)
@@ -84,7 +97,8 @@ void	print_env_list(t_env *env_list)
 {
 	while (env_list)
 	{
-		ft_printf("%s\n", env_list->line);
+		ft_putstr(env_list->line);
+		ft_putstr("\n");
 		env_list = env_list->next;
 	}
 }

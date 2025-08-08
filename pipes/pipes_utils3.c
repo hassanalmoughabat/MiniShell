@@ -1,46 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_great_main.c                                :+:      :+:    :+:   */
+/*   pipes_utils3.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/28 16:37:38 by njoudieh         ###   ########.fr       */
+/*   Updated: 2025/07/26 17:26:34 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 #include "pipes.h"
-
-int	valid_pipe(t_token *tk)
-{
-	if (tk && tk->type == T_PIPE)
-	{
-		ft_putstr_fd("bash: syntax error near `|'\n", 2);
-		return ((g_minishell.env->exit_status = 1), (0));
-	}
-	while (tk)
-	{
-		if (tk->type == T_PIPE)
-		{
-			if (!tk->next || !tk->next->cmd)
-			{
-				ft_putstr_fd("bash: syntax error near unexpected token `", 2);
-				ft_putstr(tk->cmd);
-				ft_putstr("\'\n");
-				return ((g_minishell.env->exit_status = 2), (0));
-			}
-			if (tk->next->type == T_PIPE)
-			{
-				ft_putstr_fd("syntax error near unexpected token `|'\n", 2);
-				return ((g_minishell.env->exit_status = 2), (0));
-			}
-		}
-		tk = tk->next;
-	}
-	return (1);
-}
 
 void	setup_pipe_redirects(t_pipe_redirect_params *params)
 {
@@ -88,7 +59,7 @@ t_token	*extract_command_segment(t_token *start, t_token *end)
 	return (new_list);
 }
 
-void	handle_pipe_child(t_pipe_child_data *child_data)
+void	handle_pipe_child(t_pipe_child_data *child_data, t_shell *shell)
 {
 	t_pipe_redirect_params	params;
 
@@ -99,5 +70,5 @@ void	handle_pipe_child(t_pipe_child_data *child_data)
 	params.is_first_with_heredoc = child_data->is_first_with_heredoc;
 	setup_pipe_redirects(&params);
 	remove_heredoc_tokens(child_data);
-	handle_redirections_and_execute(child_data);
+	handle_redirections_and_execute(child_data, shell);
 }

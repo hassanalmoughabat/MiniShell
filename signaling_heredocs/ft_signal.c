@@ -3,23 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_signal.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 09:53:05 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/06/25 22:23:11 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/07/23 13:43:44 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
+void	ft_heredoc_sigint_handler(int signum)
+{
+	(void)signum;
+	g_signal.sig_status = 128 + SIGINT;
+	exit(128 + SIGINT);
+}
+
 void	ft_sigint_handler(int num)
 {
 	(void)num;
-	if (g_minishell.signint_child)
+	if (g_signal.signint_child)
 	{
 		ft_putstr_fd("\n", 1);
-		g_minishell.signint_child = false;
-		g_minishell.heredoc_sigint = true;
+		g_signal.signint_child = false;
+		g_signal.heredoc_sigint = true;
 	}
 	else
 	{
@@ -28,6 +35,7 @@ void	ft_sigint_handler(int num)
 		rl_on_new_line();
 		rl_redisplay();
 	}
+	g_signal.sig_status = 130;
 }
 
 void	ft_sigquit_handler(int num)
@@ -38,8 +46,8 @@ void	ft_sigquit_handler(int num)
 
 void	ft_init_signals(void)
 {
-	g_minishell.heredoc_sigint = false;
-	g_minishell.signint_child = false;
+	g_signal.heredoc_sigint = false;
+	g_signal.signint_child = false;
 	signal(SIGINT, ft_sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }

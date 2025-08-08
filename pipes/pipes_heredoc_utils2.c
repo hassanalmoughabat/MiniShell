@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_great_main.c                                :+:      :+:    :+:   */
+/*   pipes_heredoc_utils2.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/28 16:37:38 by njoudieh         ###   ########.fr       */
+/*   Updated: 2025/07/26 17:25:50 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@ int	close_files(int fd1, int fd2)
 {
 	close(fd1);
 	close(fd2);
+	return (0);
 }
 
-int	handle_heredoc_pipe_redirect(t_token *lst, char **ft_env, t_env *env)
+int	handle_heredoc_pipe_redirect(t_token *lst, t_shell *shell)
 {
 	int						pipefd[2];
 	pid_t					pid1;
@@ -49,17 +50,18 @@ int	handle_heredoc_pipe_redirect(t_token *lst, char **ft_env, t_env *env)
 	t_heredoc_pipe_params	pipe_params;
 	t_heredoc_child_params	child_params;
 
-	if (!setup_heredoc_pipe(lst, ft_env, env, &pipe_params))
+	if (!setup_heredoc_pipe(lst, shell->ft_env, shell->env, &pipe_params))
 		return (0);
-	quote = is_delimeter_quoted(lst);
+	quote = has_quotes(pipe_params.delimiter);
+	remove_added_quotes(&pipe_params.delimiter);
 	if (pipe(pipefd) == -1)
 		return ((free(pipe_params.delimiter), 0));
 	child_params.pipefd = pipefd;
 	child_params.delimiter = pipe_params.delimiter;
-	child_params.env = env;
-	child_params.ft_env = ft_env;
+	child_params.env = shell->env;
+	child_params.ft_env = shell->ft_env;
 	child_params.quote = quote;
-	pid1 = create_heredoc_child(&child_params);
+	pid1 = create_heredoc_child(&child_params, shell);
 	if (pid1 == -1)
 	{
 		close_files(pipefd[0], pipefd[1]);

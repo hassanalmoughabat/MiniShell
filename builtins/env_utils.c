@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:24:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/26 17:00:07 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/07/22 22:44:47 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ t_env	*create_env_node(char *envp)
 		return (NULL);
 	new_node->line = ft_strdup(envp);
 	new_node->exit_status = ENU_SUCCESS;
-	new_node->safe_quotes = false;
 	if (!new_node->line)
 	{
 		free(new_node);
@@ -81,16 +80,6 @@ t_env	*initialize_env_list(char **envp)
 		current = new_node;
 		i++;
 	}
-	new_node = create_env_node("_=/usr/bin/env");
-	if (!new_node)
-	{
-		free_my_env(head);
-		return (NULL);
-	}
-	if (!head)
-		head = new_node;
-	else
-		current->next = new_node;
 	return (head);
 }
 
@@ -113,11 +102,7 @@ char	*get_path(char *cmd, char *envp[])
 		exec = ft_strjoin(path_part, s_cmd[0]);
 		free(path_part);
 		if (access(exec, F_OK | X_OK) == 0)
-		{
-			ft_free_tab(allpath);
-			ft_free_tab(s_cmd);
-			return (exec);
-		}
+			return (ft_free_tab(s_cmd), ft_free_tab(allpath), exec);
 		free(exec);
 		i++;
 	}

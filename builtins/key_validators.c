@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:36:24 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/29 00:52:10 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 22:49:57 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,14 @@ int	check_valid_key(t_token *tk, char *key, t_env *env)
 	i = 1;
 	temp = ft_strdup(key);
 	remove_added_quotes(&temp);
-	if (!key || !key[0])
-		return (0);
 	if (key[0] == '#')
 		return (2);
-	if (!ft_strcmp(temp, ""))
-		return (env->exit_status = 1, error_validity_export(key, tk), 0);
-	if (!ft_isalpha(key[0]) && key[0] != '_' && !ft_check_quotes(key[0])
-		&& key[0] != '\\')
-		return (env->exit_status = 1, error_validity_export(key, tk), 0);
+	if (!ft_strcmp(temp, "") || (!ft_isalpha(key[0]) && key[0] != '_'
+			&& !ft_check_quotes(key[0]) && key[0] != '\\'))
+	{
+		env->exit_status = 1;
+		return (error_validity_export(key, tk), 0);
+	}
 	while (key[i])
 	{
 		if (!ft_isalnum(key[i]) && key[i] != '_' && !ft_check_quotes(key[i]))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_heredoc.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/07/06 00:00:00 by claude           ###   ########.fr       */
+/*   Updated: 2025/07/24 12:23:08 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	cleanup_heredocs(t_heredoc_info *heredocs, int count)
 }
 
 int	process_single_heredoc(t_token *curr, t_heredoc_info *heredocs,
-			t_env *env, int i)
+			t_shell *shell, int i)
 {
 	char	*delimiter;
 	int		quote;
@@ -36,8 +36,9 @@ int	process_single_heredoc(t_token *curr, t_heredoc_info *heredocs,
 	delimiter = get_delimeter(curr);
 	if (!delimiter)
 		return (-1);
-	quote = is_delimeter_quoted(curr);
-	heredocs[i].fd = handle_dless(delimiter, env, 0, quote);
+	quote = has_quotes(delimiter);
+	remove_added_quotes(&delimiter);
+	heredocs[i].fd = handle_dless(delimiter, shell, quote);
 	heredocs[i].position = curr;
 	free(delimiter);
 	if (heredocs[i].fd < 0)
@@ -46,7 +47,7 @@ int	process_single_heredoc(t_token *curr, t_heredoc_info *heredocs,
 }
 
 t_heredoc_info	*process_heredocs_before_pipes(t_token *lst,
-				t_env *env, int *hd_count)
+		t_shell *shell, int *hd_count)
 {
 	t_token			*curr;
 	t_heredoc_info	*heredocs;
@@ -66,7 +67,7 @@ t_heredoc_info	*process_heredocs_before_pipes(t_token *lst,
 	{
 		if (curr->type == T_DLESS && curr->next)
 		{
-			if (process_single_heredoc(curr, heredocs, env, i) == -1)
+			if (process_single_heredoc(curr, heredocs, shell, i) == -1)
 				return (cleanup_heredocs(heredocs, i), (NULL));
 			i++;
 		}
@@ -97,7 +98,7 @@ void	find_tokens(t_token *lst, t_token **heredoc_token,
 	}
 }
 
-pid_t	create_heredoc_child(t_heredoc_child_params *params)
+pid_t	create_heredoc_child(t_heredoc_child_params *params, t_shell *shell)
 {
 	pid_t	pid1;
 	int		heredoc_fd;
@@ -108,8 +109,7 @@ pid_t	create_heredoc_child(t_heredoc_child_params *params)
 	if (pid1 == 0)
 	{
 		close(params->pipefd[0]);
-		heredoc_fd = handle_dless(params->delimiter, params->env, 1,
-				params->quote);
+		heredoc_fd = handle_dless(params->delimiter, shell, params->quote);
 		if (heredoc_fd < 0)
 		{
 			close(params->pipefd[1]);
@@ -120,6 +120,7 @@ pid_t	create_heredoc_child(t_heredoc_child_params *params)
 		dup2(params->pipefd[1], STDOUT_FILENO);
 		close(params->pipefd[1]);
 		execve("/bin/cat", (char *[]){"cat", NULL}, params->ft_env);
+		shell->env->exit_status = 127;
 		exit(127);
 	}
 	return (pid1);

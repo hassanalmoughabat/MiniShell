@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 11:58:43 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/05/17 14:59:58 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 23:11:49 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_token	*ft_check_string(char *input)
 	while (*input)
 	{
 		if (error_flag)
-			return (ft_free_token_list(&token_list), NULL);
+			return (NULL);
 		if (ft_check_space(*input))
 			ft_skip_added_spaces(&input);
 		else if (ft_check_special_char(input))

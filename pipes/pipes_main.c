@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/07/06 00:00:00 by claude           ###   ########.fr       */
+/*   Updated: 2025/07/23 11:52:23 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	wait_for_children(t_pipe_data *data)
 }
 
 int	setup_heredoc_for_command(t_pipe_data *data, t_token *start,
-			t_token *curr, int i)
+			t_token *curr)
 {
 	int	heredoc_fd;
 

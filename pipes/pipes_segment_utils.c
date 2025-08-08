@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipes_redirect.c                                   :+:      :+:    :+:   */
+/*   pipes_segment_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/07/06 00:00:00 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/07/26 16:47:05 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ t_token	*remove_redirection_tokens(t_token *cmd_segment)
 	return (cmd_segment);
 }
 
-void	handle_redirections_and_execute(t_pipe_child_data *child_data)
+void	handle_redirections_and_execute(t_pipe_child_data *child_data,
+		t_shell *shell)
 {
 	int	has_redirection;
 
@@ -55,12 +56,12 @@ void	handle_redirections_and_execute(t_pipe_child_data *child_data)
 	}
 	if (ft_pipe_builtin(child_data->cmd_segment))
 	{
-		handle_builtin(child_data->cmd_segment, child_data->ft_env,
-			&child_data->env);
+		shell->tk = child_data->cmd_segment;
+		handle_builtin(shell, child_data->cmd_segment->cmd);
 		free_token_list(child_data->cmd_segment);
 		exit(EXIT_SUCCESS);
 	}
-	execute_external_cmd(child_data->cmd_segment, child_data->ft_env);
+	execute_external_cmd(child_data->cmd_segment, child_data->ft_env, shell);
 }
 
 void	setup_input_redirection(t_pipe_child_data *child_data)

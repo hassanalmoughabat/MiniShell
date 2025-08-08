@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 14:34:09 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/29 00:50:32 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/26 14:53:26 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,87 +22,54 @@ int	handle_standalone_dollar(char *key, int i)
 	return (0);
 }
 
-char *handle_dollar(char *key, int flag) 
+void	update_quotes(int *s_quotes, int *d_quotes, char *key, int i)
 {
-    int     i;
-    char    *value;
-    char    *temp;
-    char    *expanded;
-    char    *var_name;
-    int     in_single_quotes;
-    int     in_double_quotes;
-
-    i = 0;
-    in_single_quotes = 0;
-    in_double_quotes = 0;
-    expanded = ft_strdup("");
-    
-    while (key[i])
-    {
-        if (key[i] == '\'' && !escape(key, i) && !in_double_quotes)
-            in_single_quotes = !in_single_quotes;
-        else if (key[i] == '"' && !escape(key, i) && !in_single_quotes)
-            in_double_quotes = !in_double_quotes;
-        if (key[i] == '$' && !escape(key, i))
-        {
-            if (in_single_quotes && !escape(key, i - 1))
-            {
-                temp = ft_strjoin_char(expanded, key[i]);
-                free(expanded);
-                expanded = temp;
-                i++;
-                continue;
-            }
-            if (!in_single_quotes)
-            {
-                if (handle_standalone_dollar(key, i + 1))
-                {
-                    temp = ft_strjoin_char(expanded, '$');
-                    free(expanded);
-                    expanded = temp;
-                    i++;
-                    continue;
-                }
-                i++;
-                if (dollar_cases(key, &i, &expanded))
-                    continue;
-                else if (key[i] && !ft_check_space(key[i]) 
-                    && !ft_check_exceptions(key, i))
-                {
-                    var_name = extract_dollar_var(key, &i);
-                    if (!var_name)
-                    {
-                        free(var_name);
-                        continue;
-                    }
-                    value = get_value_from_env(var_name, g_minishell.env);
-                    free(var_name);
-                    if (value)
-                    {
-                        temp = ft_strjoin(expanded, value);
-                        g_minishell.env->safe_quotes = true;
-                        free(expanded);
-                        expanded = temp;
-                        free(value);
-                    }
-                }
-            }
-            else
-            {
-                temp = ft_strjoin_char(expanded, key[i]);
-                free(expanded);
-                expanded = temp;
-            }
-        }
-        else
-        {
-            temp = ft_strjoin_char(expanded, key[i]);
-            free(expanded);
-            expanded = temp;
-        }
-        i++;
-    }
-    (void)flag;
-    return (expanded);
+	if (key[i] == '\'' && !escape(key, i) && !*d_quotes)
+		*s_quotes = !*s_quotes;
+	else if (key[i] == '"' && !escape(key, i) && !*s_quotes)
+		*d_quotes = !*d_quotes;
+	return ;
 }
 
+void	append_value(char **expanded, char *value)
+{
+	char	*temp;
+
+	if (!value)
+		return ;
+	temp = ft_strjoin(*expanded, value);
+	free(*expanded);
+	*expanded = temp;
+	free(value);
+}
+
+int	process_var(char *key, int *i, char **expanded, t_shell *shell)
+{
+	char	*var_name;
+	char	*value;
+
+	var_name = extract_dollar_var(key, i);
+	if (!var_name)
+		return (0);
+	value = get_value_from_env(var_name, shell->env);
+	free(var_name);
+	if (value)
+		append_value(expanded, value);
+	return (1);
+}
+
+int	handle_dollar_core(char *key, int *i, char **expanded, t_shell *shell)
+{
+	if (handle_standalone_dollar(key, *i + 1))
+	{
+		*expanded = ft_strjoin_char(*expanded, '$');
+		(*i)++;
+		return (1);
+	}
+	(*i)++;
+	if (dollar_cases(key, i, expanded, shell))
+		return (1);
+	if (key[*i] && !ft_check_space(key[*i]) && !ft_check_exceptions(key, *i))
+		return (process_var(key, i, expanded, shell));
+	return (0);
+}

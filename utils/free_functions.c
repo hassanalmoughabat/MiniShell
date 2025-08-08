@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 12:50:35 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/06/07 14:42:36 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/07/27 01:55:35 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,22 @@ void	free_token_list(t_token *head)
 		free(head);
 		head = tmp;
 	}
-}			
+}
 
-void free_env_list(t_env *env)
+void	free_env_list(t_env *env)
 {
-    t_env *current;
-    t_env *next;
-    
-    current = env;
-    while (current != NULL)
-    {
-        next = current->next;
-        
-        if (current->line)
-            free(current->line);
-        free(current);
-        current = next;
-    }
+	t_env	*current;
+	t_env	*next;
+
+	current = env;
+	while (current != NULL)
+	{
+		next = current->next;
+		if (current->line)
+			free(current->line);
+		free(current);
+		current = next;
+	}
 }
 
 void	free_array(char **arr)
@@ -76,19 +75,4 @@ void	free_shell(t_shell *shell)
 	if (shell->path)
 		free(shell->path);
 	free(shell);
-}
-
-void	cleanup_minishell(t_shell *shell, char **transform_result, char *input)
-{
-	if (input)
-		free(input);
-	if (transform_result)
-		free_array(transform_result);
-	if (shell)
-	{
-		if (shell->path)
-			free(shell->path);
-		if (shell->env)
-			free_env_list(shell->env);
-	}
 }

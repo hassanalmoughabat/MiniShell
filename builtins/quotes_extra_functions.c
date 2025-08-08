@@ -6,13 +6,13 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:51:37 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/29 00:52:15 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 22:50:08 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-void	ft_add_env(char *key, char *value, t_env **copy, int flag)
+void	ft_add_env(t_env **copy, t_shell *shell, int flag)
 {
 	t_env	*new_node1;
 	t_env	*new_node2;
@@ -23,21 +23,21 @@ void	ft_add_env(char *key, char *value, t_env **copy, int flag)
 		new_node2 = (t_env *)malloc(sizeof(t_env));
 		if (!new_node1 || !new_node2)
 			return ;
-		if (value)
+		if (shell->value)
 		{
-			new_node1->line = quotes_in_env(value, key, 1);
+			new_node1->line = quotes_in_env(shell->value, shell->key, 1);
 			new_node1->next = NULL;
-			ft_push_to_env(&g_minishell.env, new_node1);
+			ft_push_to_env(&(shell->env), new_node1);
 		}
-		new_node2->line = quotes_in_env(value, key, 0);
+		new_node2->line = quotes_in_env(shell->value, shell->key, 0);
 		new_node2->next = NULL;
 		ft_push_to_env(copy, new_node2);
 	}
 	else
 	{
-		new_node1->line = quotes_in_env(value, key, 1);
+		new_node1->line = quotes_in_env(shell->value, shell->key, 1);
 		new_node1->next = NULL;
-		ft_push_to_env(&g_minishell.env, new_node1);
+		ft_push_to_env(&(shell->env), new_node1);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:29 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/05/11 00:12:48 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/22 22:44:23 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	update_value(t_env **env, char *key, char *value, int flag)
 	}
 }
 
-void	update_copy_add_env(t_env **copy, char *key, char *value)
+void	update_copy_add_env(t_shell *shell, t_env **copy)
 {
 	char	*extract_key;
 	t_env	*curr1;
@@ -75,12 +75,12 @@ void	update_copy_add_env(t_env **copy, char *key, char *value)
 	while (curr1)
 	{
 		extract_key = get_var(curr1->line);
-		if (!ft_strcmp(extract_key, key)
-			&& ft_strlen(key) == ft_strlen(extract_key))
+		if (!ft_strcmp(extract_key, shell->key)
+			&& ft_strlen(shell->key) == ft_strlen(extract_key))
 		{
 			free(curr1->line);
-			curr1->line = quotes_in_env(value, key, 0);
-			ft_add_env(key, value, copy, 0);
+			curr1->line = quotes_in_env(shell->value, shell->key, 0);
+			ft_add_env(copy, shell, 0);
 			return ;
 		}
 		free(extract_key);
@@ -88,14 +88,16 @@ void	update_copy_add_env(t_env **copy, char *key, char *value)
 	}
 }
 
-int	ft_update_env(char *key, char *value, t_env **env, t_env **copy)
+int	ft_update_env(t_env **copy, t_shell *shell)
 {
-	if (check_if_var_exist(copy, key) && check_if_var_exist(env, key))
+	if (check_if_var_exist(copy, shell->key)
+		&& check_if_var_exist(&(shell->env), shell->key))
 	{
-		update_value(copy, key, value, 0);
-		update_value(env, key, value, 1);
+		update_value(copy, shell->key, shell->value, 0);
+		update_value(&(shell->env), shell->key, shell->value, 1);
 	}
-	else if (check_if_var_exist(copy, key) && !check_if_var_exist(env, key))
-		update_copy_add_env(copy, key, value);
+	else if (check_if_var_exist(copy, shell->key)
+		&& !check_if_var_exist(&(shell->env), shell->key))
+		update_copy_add_env(shell, copy);
 	return (0);
 }
