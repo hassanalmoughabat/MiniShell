@@ -51,6 +51,12 @@ SIGNALING	:=	signaling_heredocs/ft_signal.c \
 				signaling_heredocs/external_cmd_utils.c \
 				signaling_heredocs/ft_heredoc1.c \
 				signaling_heredocs/ft_heredoc_helper.c \
+				signaling_heredocs/ft_heredoc_utils.c \
+				signaling_heredocs/ft_heredoc_utils2.c \
+				signaling_heredocs/ft_heredoc_expand.c \
+				signaling_heredocs/heredoc_expand_utils.c \
+				signaling_heredocs/heredoc_expand_utils2.c \
+				signaling_heredocs/ft_heredoc_child.c \
 				signaling_heredocs/ft_heredoc2.c \
 				signaling_heredocs/ft_heredoc3.c \
 				signaling_heredocs/ft_heredoc4.c \
@@ -69,9 +75,9 @@ PIPES		:=	pipes/pipes_utils.c \
 				pipes/pipes_main.c \
 				pipes/pipes_heredoc_utils.c \
 				pipes/pipes_heredoc_utils2.c \
-				pipes/pipes_heredoc_util2.c \
 				pipes/pipes_utils2.c \
-				pipes/pipes_utils3.c 
+				pipes/pipes_utils3.c \
+				pipes/pipes_utils4.c
 
 
 TOKENIZE	:= 	tokenize/ft_error_handler.c \

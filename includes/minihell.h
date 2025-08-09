@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 02:39:24 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/27 01:49:06 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ typedef struct s_pipe_data
 	int				pipe_count;
 	t_heredoc_info	*heredocs;
 	int				hd_count;
-	pid_t			last_child_pid;
 }	t_pipe_data;
 
 typedef struct s_pipe_child_data
@@ -155,6 +154,7 @@ int		check_n_flags(char *str);
 char	*normalize_spaces(char *str);
 char	*extract_content_after_flags(char *str);
 void	handle_n_cases(t_token **tk, int *flag);
+
 // --------------------export-------------------------------------
 int		has_equal(char *input);
 void	ft_export(t_shell *shell, t_env **copy);
@@ -225,25 +225,19 @@ char	*extract_value(char *str, int *index);
 int		ft_check_dollar(char *value, int index);
 int		ft_check_exceptions(char *str, int index);
 char	*extract_dollar_var(char *key, int *index);
-char	*join_char_and_free(char *expanded, char c);
 char	*join_env_value(char *expanded, char *value);
 char	*expand_token_value(char *cmd, t_shell *shell);
 void	replace_dollar(t_token **t_list, t_shell *shell);
-int		handle_standalone_dollar_check(char *key, int i);
 void	update_quotes_state(char c, int *in_s, int *in_d);
 char	*handle_dollar(char *key, int flag, t_shell *shell);
 int		expand_helper(char **substr, int flag, t_shell *shell);
 void	handle_value(char *value, char **result, t_shell *shell);
 int		is_dollar_inside_single_quotes(char *str, int dollar_pos);
-void	process_dollar_char(char *key, int *i, char **expanded,
-			t_shell *shell);
-char	*handle_var_expansion(char *expanded, char *key, int *i,
-			t_shell *shell);
 void	update_quotes(int *s_quotes, int *d_quotes, char *key, int i);
 int		check_key_after_expansion(char *key, t_env *env, t_token *tk);
-int		handle_dollar_in_quotes(char *key, int i, int in_s);
 int		dollar_cases(char *key, int *index, char **expanded, t_shell *shell);
-int		handle_standalone_dollar(char *key, int i);
+int		handle_dollar_core(char *key, int *i, char **expanded, t_shell *shell);
+
 // -----------------------exit------------------------------------------
 void	ft_exit(t_shell *shell);
 void	handle_exit_code(t_token *curr, t_shell *shell);
@@ -254,7 +248,7 @@ void	decrement(t_shell **shell);
 void	add_shell_level(t_env **env, char *new_line);
 void	update_shlvl_in_env(t_env **env, int new_shlvl);
 
-// ------------------------quotes----------------------------------------
+// -----------------------quotes----------------------------------------
 int		quote_type(char *str);
 int		remove_added_quotes(char **value);
 int		has_equal_in_quote(char *input, char *quote);
@@ -274,12 +268,10 @@ char	*replace_variable(char *line, char *var_name, char *new_val);
 
 //-----------------------signaling---------------------------------------
 void	ft_init_signals(void);
-void	ft_set_child_signals(void);
 void	ft_sigint_handler(int num);
 void	ft_sigquit_handler(int num);
-void	ft_set_heredoc_signals(void);
-void	ft_restore_parent_signals(void);
 void	ft_heredoc_sigint_handler(int signum);
+
 // ----------------------parsing-----------------------------------------
 int		ft_is_builtin(char *cmd);
 int		count_total_args(t_token *tk);
@@ -325,6 +317,9 @@ void	exec_filtered_cmd(t_shell *shell, t_token *cmd_tokens);
 //----------------------------Heredoc--------------------------------------
 char	*get_delimeter(t_token *tk);
 void	handle_heredoc(t_shell *shell);
+void	ft_handle_heredoc_child(t_shell *shell,
+			char *delimiter, char *cmd, int quote);
+void	ft_handle_heredoc_parent(t_shell *shell, pid_t pid, int status);
 int		contain_list(char *str, t_token *tk);
 int		validate_delimiter(const char *delimiter);
 char	*cut_from_op(char op, char *str, t_env *env);
