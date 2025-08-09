@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 02:39:24 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/09 14:54:22 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,7 +300,7 @@ void	parent_wait_and_cleanup(t_shell *shell, pid_t pid, char **argv);
 // ----------------------Piping and Redirections-------------------------
 int		valid_pipe(t_shell *shell, char *input);
 int		handle_dless(char *delimiter, t_shell *shell, int quote);
-int		handle_redirection(t_token *tk, t_shell *shell, char *input);
+int		handle_redirection(t_token *tk, t_shell *shell);
 
 //-----------------------Redirection_utils--------------------------------
 int		symbols(char *tk);
@@ -316,7 +316,7 @@ int		open_file_input(t_token *curr, t_shell *shell);
 int		open_output_file(t_token *curr, t_shell *shell);
 void	handle_path_error(t_token *cmd, t_shell *shell);
 void	handle_no_such_file(t_token *cmd, t_shell *shell);
-int		check_redirect_syntax(t_shell *shell, char *input);
+int		check_redirect_syntax(t_shell *shell);
 int		handle_input_redirect(t_token *curr, t_shell *shell);
 void	handle_directory_error(t_token *cmd, t_shell *shell);
 void	handle_permission_error(t_token *cmd, t_shell *shell);

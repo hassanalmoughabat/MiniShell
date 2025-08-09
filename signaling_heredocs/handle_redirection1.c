@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirection1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 03:00:50 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/09 14:52:58 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	syntax_error_msg(t_token *curr)
 	return ;
 }
 
-int	check_redirect_syntax(t_shell *shell, char *input)
+int	check_redirect_syntax(t_shell *shell)
 {
 	t_token	*curr;
 
