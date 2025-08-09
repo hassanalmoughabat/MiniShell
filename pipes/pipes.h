@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/07/26 17:27:37 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/06 20:50:23 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void			setup_output_redirect_child(int *pipefd,
 pid_t			create_output_child(int *pipefd, t_token *redirect_token,
 					char **ft_env);
 void			cleanup_heredocs_after_exec(t_pipe_data *data);
-void			wait_for_children(t_pipe_data *data);
+void			wait_for_children(t_pipe_data *data, t_shell *shell);
 void			execute_single_command(t_pipe_data *data, t_token *start,
 					t_token *curr, int i, t_shell *shell);
 void			setup_pipe_data(t_pipe_data *data, t_token *lst,
@@ -107,7 +107,7 @@ int				segment_has_heredoc(t_token *start, t_token *end);
 int				get_heredoc_fd_for_segment(t_token *start, t_token *end,
 					t_heredoc_info *heredocs, int hd_count);
 int				handle_heredoc_pipe_redirect_part2(
-					t_heredoc_pipe_params *params);
+					t_heredoc_pipe_params *params, t_shell *shell);
 
 // From pipes_segment.c
 int				ft_pipe_builtin(t_token *tk);
@@ -123,11 +123,5 @@ int				check_special_heredoc_pipe(t_token *lst, t_shell *shell);
 // From pipes_main.c
 void			execute_pipe_commands(t_pipe_data *data, t_shell *shell);
 void			handle_pipe(t_token *lst, t_shell *shell, char *input);
-
-// From pipes_utils4.c
-void			pipe_error_message(char *input, t_token *tk);
-
-// From pipes_utils2.c  
-void			pipe_syntax_error(char *msg, t_shell *shell);
 
 #endif

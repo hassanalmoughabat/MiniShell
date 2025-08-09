@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/26 17:25:50 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/06 18:56:47 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	handle_heredoc_pipe_redirect(t_token *lst, t_shell *shell)
 	}
 	pipe_params.pid1 = pid1;
 	return (pipe_params.pipefd = pipefd,
-		(handle_heredoc_pipe_redirect_part2(&pipe_params)));
+		(handle_heredoc_pipe_redirect_part2(&pipe_params, shell)));
 }
 
 void	cleanup_heredocs_after_exec(t_pipe_data *data)
