@@ -59,23 +59,25 @@ static int	count_var_chars(char *str, int start)
 	return (count);
 }
 
-static char	*find_env_value(char *var_name, t_env *env)
+char	*cut_from_op(char op, char *str, t_env *env)
 {
-	t_env	*current;
-	char	*equals_pos;
-	int		name_len;
+	int		pos;
+	int		count;
+	char	*value;
+	char	*send;
+	int		i;
 
-	name_len = ft_strlen(var_name);
-	current = env;
-	while (current)
-	{
-		if (current->line && ft_strncmp(current->line, var_name, name_len) == 0)
-		{
-			equals_pos = ft_strchr(current->line, '=');
-			if (equals_pos && equals_pos == current->line + name_len)
-				return (equals_pos + 1);
-		}
-		current = current->next;
-	}
-	return (NULL);
+	pos = ft_index(str, op);
+	count = count_var_chars(str, pos);
+	value = (char *)malloc(sizeof(char) * (count + 1));
+	if (!value)
+		return (NULL);
+	pos ++;
+	i = 0;
+	while (str[pos] && i < count)
+		value[i++] = str[pos++];
+	value[i] = '\0';
+	send = my_getenv(value, transform(env));
+	free(value);
+	return (send);
 }

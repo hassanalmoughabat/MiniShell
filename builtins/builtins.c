@@ -6,32 +6,37 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:17:06 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/25 13:41:26 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/06 23:33:00 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-void	ft_pwd_option(char *curr, int flag, t_env *env)
+static int	handle_pwd_options(t_token *curr, t_env *env)
 {
-	if (flag == 1 && (curr[1] != '-' || curr[2]))
+	int	i;
+
+	while (curr && curr->cmd[0] == '-')
 	{
-		ft_putstr_fd("bash pwd: -", 2);
-		ft_putchar_fd(curr[1], 2);
-		ft_putstr_fd(": invalid option\n", 2);
-		env->exit_status = 1;
-	}
-	else if (flag == 2)
-	{
-		if (curr && curr[0])
+		if (ft_strcmp(curr->cmd, "--") == 0)
+			break ;
+		i = 1;
+		while (curr->cmd[i])
 		{
-			ft_putendl_fd(curr, 1);
-			env->exit_status = ENU_SUCCESS;
-			return ;
+			if (curr->cmd[i] != 'L' && curr->cmd[i] != 'P')
+			{
+				ft_putstr_fd("minishell: pwd: -", 2);
+				ft_putchar_fd(curr->cmd[i], 2);
+				ft_putstr_fd(": invalid option\n", 2);
+				ft_putstr_fd("pwd: usage: pwd [-LP]\n", 2);
+				env->exit_status = 2;
+				return (0);
+			}
+			i++;
 		}
-		env->exit_status = ENU_GENEREAL_FAILURE;
+		curr = curr->next;
 	}
-	return ;
+	return (1);
 }
 
 int	ft_pwd(t_shell *shell)
@@ -41,20 +46,26 @@ int	ft_pwd(t_shell *shell)
 	char	cwd[PATH_MAX];
 
 	curr = shell->tk;
-	pwd_env = get_value_from_env("PWD", shell->env);
-	if (curr->next)
+	if (curr && ft_strcmp(curr->cmd, "pwd") == 0)
 		curr = curr->next;
-	if (curr->cmd[0] == '-')
-		return (ft_pwd_option(curr->cmd, 1, shell->env), 1);
+	if (!handle_pwd_options(curr, shell->env))
+		return (1);
 	if (getcwd(cwd, PATH_MAX))
 	{
 		ft_putendl_fd(cwd, 1);
-		shell->env->exit_status = ENU_SUCCESS;
-		return (1);
+		return (shell->env->exit_status = 0, 1);
 	}
-	else
-		ft_pwd_option(pwd_env, 2, shell->env);
-	return (0);
+	pwd_env = get_value_from_env("PWD", shell->env);
+	if (pwd_env && pwd_env[0])
+	{
+		ft_putendl_fd(pwd_env, 1);
+		free(pwd_env);
+		return (shell->env->exit_status = 0, 1);
+	}
+	ft_putstr_fd("minishell: pwd: error retrieving current directory\n", 2);
+	if (pwd_env)
+		free(pwd_env);
+	return (shell->env->exit_status = 1, 1);
 }
 
 t_env	*ft_copy(t_env *envp)
