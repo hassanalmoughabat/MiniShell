@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 00:54:58 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 14:53:43 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/08/09 15:22:52 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,14 @@ void	exec_filtered_cmd(t_shell *shell, t_token *cmd_tokens)
 	free_token_list(cmd_tokens);
 }
 
-int	handle_redirection(t_token *tk, t_shell *shell)
+int	handle_redirection(t_token *tk, t_shell *shell, char *input)
 {
 	t_token	*curr;
 	t_token	*last_out;
 	t_token	*cmd_tokens;
 
 	last_out = NULL;
-	if (check_redirect_syntax(shell))
+	if (check_redirect_syntax(shell, input))
 		return (2);
 	if (!process_redirs(shell, &last_out))
 		return (1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_input_redirect.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:00:00 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/08 01:45:07 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/09 15:22:44 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ int	open_last_input_redir(t_shell *shell)
 	int		fd;
 	t_token	*last_in;
 
-	fd = -1;
 	curr = shell->tk;
 	last_in = NULL;
 	while (curr)
@@ -61,8 +60,6 @@ int	open_last_input_redir(t_shell *shell)
 		{
 			last_in = curr;
 			remove_added_quotes(&last_in->next->cmd);
-			if (fd != -1)
-				close(fd);
 			fd = open(last_in->next->cmd, O_RDONLY);
 			if (fd == -1)
 			{
@@ -90,16 +87,12 @@ int	handle_less(char *filename, t_shell *shell)
 {
 	int		fd;
 	t_token	*cmd_tokens;
-	int		standalone_result;
 
-	standalone_result = handle_standalone_less(filename, shell);
-	if (standalone_result != -1)
-		return (standalone_result);
+	if (handle_standalone_less(filename, shell) != -1)
+		return (1);
 	fd = open_last_input_redir(shell);
 	if (fd == -2)
 		return (shell->env->exit_status = 1, 1);
-	if (fd == -1)
-		return (0);
 	if (dup2(fd, STDIN_FILENO) == -1)
 		return (error_dup(shell), close(fd), 1);
 	close(fd);
