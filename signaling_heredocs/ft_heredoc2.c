@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredoc2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 20:40:13 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 14:40:10 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/07/27 01:04:57 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_heredoc.h"
+#include "../includes/minihell.h"
 
 int	validate_delimiter(const char *delimiter)
 {
@@ -49,7 +49,7 @@ int	ft_index(char *str, char c)
 	return (0);
 }
 
-int	count_var_chars(char *str, int start)
+static int	count_var_chars(char *str, int start)
 {
 	int	count;
 
@@ -59,7 +59,7 @@ int	count_var_chars(char *str, int start)
 	return (count);
 }
 
-char	*find_env_value(char *var_name, t_env *env)
+static char	*find_env_value(char *var_name, t_env *env)
 {
 	t_env	*current;
 	char	*equals_pos;

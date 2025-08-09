@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredoc.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 02:15:00 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 14:51:35 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/07/27 02:15:00 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,6 @@ typedef struct s_char_expansion_params
 }	t_char_expansion_params;
 
 // Function declarations
-char	*find_env_value(char *var_name, t_env *env);
-int		count_var_chars(char *str, int start);
 char	*expand_variables(char *line, t_env *env, int quote);
 int		handle_dless(char *delimiter, t_shell *shell, int quote);
 int		has_quotes(char *str);
