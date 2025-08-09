@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   parsing2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:49:42 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/27 01:21:52 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/06 17:26:36 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	child_exec(t_shell *shell, char *cmd, char **argv)
 {
 	char	*path;
 
-	signal(SIGQUIT, SIG_DFL);
+	ft_set_child_signals();
 	path = get_path(argv[0], shell->ft_env);
 	if (!path)
 	{
@@ -56,12 +56,19 @@ void	parent_wait_and_cleanup(t_shell *shell, pid_t pid, char **argv)
 	int	status;
 
 	waitpid(pid, &status, 0);
-	if (WIFSIGNALED(status))
+	g_signal.signint_child = false;
+	if (g_signal.sig_status != 0)
+	{
+		shell->env->exit_status = g_signal.sig_status;
+		g_signal.sig_status = 0;
+	}
+	else if (WIFSIGNALED(status))
 		shell->env->exit_status = 128 + WTERMSIG(status);
 	else if (WIFEXITED(status))
 		shell->env->exit_status = WEXITSTATUS(status);
 	else
 		shell->env->exit_status = 0;
+	ft_restore_parent_signals();
 	free_shell_args(argv);
 }
 
@@ -97,5 +104,6 @@ int	ft_is_builtin(char *cmd)
 		return (1);
 	else if (ft_strcmp(temp, "env") == 0)
 		return (1);
+	free (temp);
 	return (0);
 }
