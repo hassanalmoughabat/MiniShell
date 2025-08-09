@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredoc_helper.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 01:10:25 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 15:22:25 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/07/27 01:11:05 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_heredoc.h"
+#include "../includes/minihell.h"
 
 int	get_exit_code(int status)
 {
@@ -68,12 +68,4 @@ char	*ft_strsub(char const *s, unsigned int start, size_t len)
 	}
 	str[i] = '\0';
 	return (str);
-}
-
-int	ft_setup_heredoc_pipe(char *delimiter, int *pipefd)
-{
-	signal(SIGINT, ft_heredoc_sigint_handler);
-	if (!validate_delimiter(delimiter) || pipe(pipefd) == -1)
-		return (-1);
-	return (0);
 }
