@@ -31,7 +31,6 @@ void	respective_addition(t_shell *shell, int flag, t_env **copy)
 			val = get_value_from_env(shell->key, *copy);
 			if (val && ft_strcmp(val, ""))
 				ft_update_env(copy, shell);
-			free(val);
 		}
 		else
 			ft_add_key_to_env(copy, shell->key);

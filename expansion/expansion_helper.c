@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:20:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/26 15:00:34 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/06 15:26:22 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*extract_value(char *str, int *index)
 		length ++;
 	}
 	(*index)--;
-	result = malloc(sizeof(char) * (length + 1));
+	result = malloc(sizeof(char) * length + 1);
 	if (!result)
 		return (NULL);
 	while (j < length)

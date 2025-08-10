@@ -23,16 +23,8 @@ void	handle_directory_error(t_token *cmd, t_shell *shell)
 
 void	handle_path_error(t_token *cmd, t_shell *shell)
 {
-	char	*cmd_str;
-
-	if (cmd && cmd->cmd)
-	{
-		remove_added_quotes(&cmd->cmd);
-		cmd_str = cmd->cmd;
-	}
-	else
-		cmd_str = "unknown";
-	shell->env->exit_status = ft_err_msg((t_error){cmd_str,
+	remove_added_quotes(&cmd->cmd);
+	shell->env->exit_status = ft_err_msg((t_error){cmd->cmd,
 			ERROR_MESG_NO_FILE, ENU_CMD_NOT_FOUND});
 	exit(127);
 }

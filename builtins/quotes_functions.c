@@ -55,7 +55,7 @@ int	remove_added_quotes(char **value)
 	size_t	i;
 	size_t	j;
 
-	if (!value || !*value)
+	if (!*value || !value)
 		return (0);
 	temp = *value;
 	result = malloc(ft_strlen(temp) + 1);
@@ -72,7 +72,6 @@ int	remove_added_quotes(char **value)
 			result[j++] = temp[i++];
 	}
 	result[j] = '\0';
-	free(temp);
 	*value = ft_strdup(result);
 	return (free(result), 0);
 }

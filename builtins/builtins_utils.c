@@ -79,8 +79,8 @@ void	ft_print_env(t_env *env)
 			ft_putstr_fd("\n", 1);
 			ev = ev->next;
 		}
-		env->exit_status = ENU_SUCCESS;
 	}
+	env->exit_status = ENU_SUCCESS;
 }
 
 void	display_list(t_token *tk)

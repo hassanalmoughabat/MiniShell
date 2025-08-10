@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 14:34:09 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/26 14:53:26 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/09 02:38:20 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,45 +31,50 @@ void	update_quotes(int *s_quotes, int *d_quotes, char *key, int i)
 	return ;
 }
 
-void	append_value(char **expanded, char *value)
+int	process_dollar_cases(char *key, int *i, char **expanded,
+	t_shell *shell)
 {
-	char	*temp;
-
-	if (!value)
-		return ;
-	temp = ft_strjoin(*expanded, value);
-	free(*expanded);
-	*expanded = temp;
-	free(value);
-}
-
-int	process_var(char *key, int *i, char **expanded, t_shell *shell)
-{
-	char	*var_name;
-	char	*value;
-
-	var_name = extract_dollar_var(key, i);
-	if (!var_name)
-		return (0);
-	value = get_value_from_env(var_name, shell->env);
-	free(var_name);
-	if (value)
-		append_value(expanded, value);
-	return (1);
-}
-
-int	handle_dollar_core(char *key, int *i, char **expanded, t_shell *shell)
-{
-	if (handle_standalone_dollar(key, *i + 1))
-	{
-		*expanded = ft_strjoin_char(*expanded, '$');
-		(*i)++;
-		return (1);
-	}
-	(*i)++;
 	if (dollar_cases(key, i, expanded, shell))
 		return (1);
 	if (key[*i] && !ft_check_space(key[*i]) && !ft_check_exceptions(key, *i))
-		return (process_var(key, i, expanded, shell));
+	{
+		*expanded = handle_var_expansion(*expanded, key, i, shell);
+	}
 	return (0);
+}
+
+void	process_dollar_not_in_single_quotes(char *key, int *i,
+	char **expanded, t_shell *shell)
+{
+	if (handle_standalone_dollar_check(key, *i))
+	{
+		*expanded = join_char_and_free(*expanded, '$');
+		(*i)++;
+		return ;
+	}
+	(*i)++;
+	process_dollar_cases(key, i, expanded, shell);
+}
+
+void	process_dollar_char(char *key, int *i, char **expanded,
+	t_shell *shell)
+{
+	int	in_s;
+	int	in_d;
+
+	in_s = 0;
+	in_d = 0;
+	update_quotes(&in_s, &in_d, key, *i);
+	if (handle_dollar_in_quotes(key, *i, in_s))
+	{
+		*expanded = join_char_and_free(*expanded, key[*i]);
+		return ;
+	}
+	if (!in_s)
+	{
+		process_dollar_not_in_single_quotes(key, i, expanded, shell);
+		(*i)--;
+	}
+	else
+		*expanded = join_char_and_free(*expanded, key[*i]);
 }
