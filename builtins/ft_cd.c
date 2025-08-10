@@ -6,54 +6,25 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 18:39:38 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/08 00:27:11 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/24 19:53:30 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-// void	handle_empty_dir(t_shell *shell, char *home)
-// {
-// 	if (!home)
-// 	{
-// 		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-// 		shell->env->exit_status = 1;
-// 		return ;
-// 	}
-// 	if (ft_strcmp(home, "") && chdir(home))
-// 	{
-// 		shell->env->exit_status = ft_err_msg((t_error){home,
-// 				ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
-// 		return ;
-// 	}
-// }
-
 void	handle_empty_dir(t_shell *shell, char *home)
 {
-	char	*current_pwd;
-
 	if (!home)
 	{
 		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-		return ((void)(shell->env->exit_status = 1));
+		shell->env->exit_status = 1;
+		return ;
 	}
-	if (ft_strcmp(home, ""))
+	if (ft_strcmp(home, "") && chdir(home))
 	{
-		current_pwd = ft_get_cd_pwd();
-		if (current_pwd)
-			current_pwd = ft_strdup(current_pwd);
-		else
-			current_pwd = set_curr_pwd(shell);
-		if (chdir(home))
-		{
-			shell->env->exit_status = ft_err_msg((t_error){home,
-					ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
-			free(current_pwd);
-			return ;
-		}
-		update_env_values(shell, current_pwd);
-		shell->env->exit_status = 0;
-		free(current_pwd);
+		shell->env->exit_status = ft_err_msg((t_error){home,
+				ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
+		return ;
 	}
 }
 

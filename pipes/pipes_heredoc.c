@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/08/09 02:23:05 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/24 12:23:08 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,13 +108,12 @@ pid_t	create_heredoc_child(t_heredoc_child_params *params, t_shell *shell)
 		return (-1);
 	if (pid1 == 0)
 	{
-		ft_set_heredoc_signals();
 		close(params->pipefd[0]);
 		heredoc_fd = handle_dless(params->delimiter, shell, params->quote);
 		if (heredoc_fd < 0)
 		{
 			close(params->pipefd[1]);
-			exit(130);
+			exit(1);
 		}
 		dup2(heredoc_fd, STDIN_FILENO);
 		close(heredoc_fd);

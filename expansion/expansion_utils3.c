@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:38:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 02:39:06 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/26 16:38:37 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,23 +46,4 @@ void	replace_dollar(t_token **t_list, t_shell *shell)
 		process_token(curr, shell);
 		curr = curr->next;
 	}
-}
-
-char	*handle_dollar(char *key, int flag, t_shell *shell)
-{
-	int		i;
-	char	*expanded;
-
-	i = 0;
-	expanded = ft_strdup("");
-	while (key[i])
-	{
-		if (key[i] == '$' && !escape(key, i))
-			process_dollar_char(key, &i, &expanded, shell);
-		else
-			expanded = join_char_and_free(expanded, key[i]);
-		i++;
-	}
-	(void)flag;
-	return (expanded);
 }

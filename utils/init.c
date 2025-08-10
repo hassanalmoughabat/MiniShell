@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 01:14:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/27 01:14:55 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/10 18:13:08 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,8 @@ void	init_shell(t_shell *shell, char **envp)
 	ensure_pwd_exists(shell);
 	update_env_value(&(shell->env), "_=", "/usr/bin/env");
 	shell->shell_level = get_shell_level(shell->env);
-	update_env_value(&(shell->env), "SHLVL=", ft_itoa(shell->shell_level));
+	{
+		char *shlvl_str = ft_itoa(shell->shell_level);
+		update_env_value(&(shell->env), "SHLVL=", shlvl_str);
+	}
 }

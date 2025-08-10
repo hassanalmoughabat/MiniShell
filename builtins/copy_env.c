@@ -75,9 +75,15 @@ t_env	*copy_env(t_env *envp)
 	current = envp;
 	while (current)
 	{
-		new_node = new_env_node(copy_env_node(current));
-		if (!new_node)
+		char *node_str = copy_env_node(current);
+		if (!node_str)
 			return (ft_free_env(head), NULL);
+		new_node = new_env_node(node_str);
+		if (!new_node)
+		{
+			free(node_str);
+			return (ft_free_env(head), NULL);
+		}
 		if (!head)
 		{
 			head = new_node;

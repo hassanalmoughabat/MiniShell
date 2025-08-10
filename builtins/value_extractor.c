@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 00:39:41 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/06 15:51:56 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/05/26 22:40:21 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ char	*extract_dollar_var(char *key, int *index)
 		(*index)++;
 		length++;
 	}
+	(*index)--;
 	dollar_value = malloc(sizeof(char) * (length + 1));
 	if (!dollar_value)
 		return (NULL);

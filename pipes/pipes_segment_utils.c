@@ -17,6 +17,8 @@ t_token	*remove_redirection_tokens(t_token *cmd_segment)
 {
 	t_token	*curr;
 	t_token	*next;
+	t_token	*to_free_redirect;
+	t_token	*to_free_file;
 
 	curr = cmd_segment;
 	while (curr)
@@ -24,6 +26,8 @@ t_token	*remove_redirection_tokens(t_token *cmd_segment)
 		if ((curr->type == T_GREAT || curr->type == T_DGREAT
 				|| curr->type == T_LESS) && curr->next)
 		{
+			to_free_redirect = curr;
+			to_free_file = curr->next;
 			next = curr->next->next;
 			if (curr->prev)
 				curr->prev->next = next;
@@ -31,6 +35,10 @@ t_token	*remove_redirection_tokens(t_token *cmd_segment)
 				cmd_segment = next;
 			if (next)
 				next->prev = curr->prev;
+			free(to_free_redirect->cmd);
+			free(to_free_redirect);
+			free(to_free_file->cmd);
+			free(to_free_file);
 			curr = next;
 			continue ;
 		}
