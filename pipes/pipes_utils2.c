@@ -151,9 +151,9 @@ int	valid_pipe(t_shell *shell, char *input)
 	{
 		if (tk->type == T_PIPE)
 		{
-			if (!tk->next)
-				return (pipe_syntax_error(tk->cmd, shell), 0);
-			if ((tk->next->type == T_PIPE || tk->next->type != T_IDENTIFIER))
+			// if (!tk->next->next)
+			// 	return (pipe_syntax_error(tk->cmd, shell), 0);
+			if ((tk->next->type == T_PIPE))
 			{
 				ft_putstr_fd("bash: syntax error near unexpected token `", 2);
 				pipe_error_message(input, tk);
@@ -190,6 +190,8 @@ void	handle_pipe(t_token *lst, t_shell *shell, char *input)
 
 	if (!lst || !valid_pipe(shell, input))
 		return ;
+	int pipe = valid_pipe(shell, input);
+	printf("is %d\n", pipe);
 	if (has_heredoc(lst) && count_pipes(lst) == 1)
 	{
 		if (check_special_heredoc_pipe(lst, shell))
