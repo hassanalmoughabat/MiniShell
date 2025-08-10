@@ -63,27 +63,21 @@ bool	ft_atoll_safe(const char *str, long long *result)
 void	ft_exit(t_shell *shell)
 {
 	t_token	*curr;
-	int		exit_code;
 
 	printf("exit\n");
 	curr = shell->tk;
 	if (!curr)
-		exit_code = shell->env->exit_status;
-	else
+		exit(shell->env->exit_status);
+	decrement(&shell);
+	update_shlvl_in_env(&(shell->env), shell->shell_level);
+	if (curr && curr->cmd)
 	{
-		decrement(&shell);
-		update_shlvl_in_env(&(shell->env), shell->shell_level);
-		if (curr && curr->cmd)
-		{
-			curr = curr->next;
-			if (!curr)
-				shell->env->exit_status = 0;
-			else
-				handle_exit_code(curr, shell);
-		}
-		exit_code = shell->env->exit_status;
+		curr = curr->next;
+		if (!curr)
+			shell->env->exit_status = 0;
+		else
+			handle_exit_code(curr, shell);
 	}
-	free_shell(shell);
-	free_array(shell->ft_env);
-	exit(exit_code);
+	free_env_list(shell->copy);
+	exit(shell->env->exit_status);
 }

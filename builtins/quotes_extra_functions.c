@@ -46,15 +46,12 @@ char	*quotes_in_env(char *value, char *key, int flag)
 	char	*val;
 	char	*temp;
 
+	temp = key;
 	if (value)
 	{
-		val = ft_strjoin(key, "=");
+		val = ft_strjoin(temp, "=");
 		if (flag)
-		{
 			temp = ft_strjoin(val, value);
-			free(val);
-			return (temp);
-		}
 		else
 		{
 			temp = ft_strjoin(val, "\"");
@@ -62,12 +59,14 @@ char	*quotes_in_env(char *value, char *key, int flag)
 			val = ft_strjoin(temp, value);
 			free(temp);
 			temp = ft_strjoin(val, "\"");
-			free(val);
-			return (temp);
 		}
+		free(val);
+		val = ft_strdup(temp);
 	}
 	else
-		return (ft_strdup(key));
+		val = ft_strdup(temp);
+	free (temp);
+	return (val);
 }
 
 int	handle_export_quotes(char *temp, char *result, size_t *i, size_t *j)

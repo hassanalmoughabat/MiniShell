@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:18:18 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/27 01:15:00 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/06 17:19:46 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,19 @@ int	ft_read(char *input, t_shell *shell)
 			ft_putstr_fd("exit\n", 1);
 			break ;
 		}
-		else
+		if (g_signal.sig_status != 0)
 		{
-			shell->tk = ft_tokenize(input);
-			if (shell->ft_env)
-				free_array(shell->ft_env);
-			shell->ft_env = transform(shell->env);
-			replace_dollar(&(shell->tk), shell);
-			if (shell->tk)
-				after_parsing(shell, input);
-			add_history(input);
-			free(input);
-			shell->tk = NULL;
+			shell->env->exit_status = g_signal.sig_status;
+			g_signal.sig_status = 0;
 		}
+		shell->tk = ft_tokenize(input);
+		if (shell->ft_env)
+			free_array(shell->ft_env);
+		shell->ft_env = transform(shell->env);
+		replace_dollar(&(shell->tk), shell);
+		if (shell->tk)
+			after_parsing(shell, input);
+		add_history(input);
 	}
 	return (shell->env->exit_status);
 }
@@ -69,7 +69,6 @@ int	main(int argc, char **argv, char **envp)
 	t_shell		shell;
 	char		*input;
 	char		*path;
-	int			exit_status;
 
 	(void)argc;
 	(void)argv;
@@ -83,6 +82,6 @@ int	main(int argc, char **argv, char **envp)
 		shell.env->exit_status = ENU_GENEREAL_FAILURE;
 	else
 		shell.path = path;
-	exit_status = ft_read(input, &shell);
-	return (exit_status);
+	ft_read(input, &shell);
+	return (shell.env->exit_status);
 }

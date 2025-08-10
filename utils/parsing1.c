@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/27 01:51:54 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/09 00:26:58 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,32 +52,36 @@ void	handle_path_command(t_shell *shell, char *cmd)
 	argv = build_argv_from_tokens(shell->tk);
 	if (!argv || !argv[0] || !argv[0][0])
 		return (exit_with_cleanup(shell, argv, cmd, ENU_GENEREAL_FAILURE));
+	g_signal.signint_child = true;
 	pid = fork();
 	if (pid == -1)
 		return (exit_with_cleanup(shell, argv, cmd, ENU_GENEREAL_FAILURE));
 	if (pid == 0)
 		child_exec(shell, cmd, argv);
-	else if (shell->env)
+	else
 		parent_wait_and_cleanup(shell, pid, argv);
-	}
+}
 
 void	handle_redirections(t_shell *shell, t_token *curr, char *input)
 {
 	pid_t	pid;
 	int		status;
 
+	g_signal.signint_child = true;
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_IGN);
 		handle_redirection(curr, shell, input);
 		exit(shell->env->exit_status);
 	}
 	waitpid(pid, &status, 0);
+	g_signal.signint_child = false;
 	if (WIFSIGNALED(status))
 		shell->env->exit_status = 128 + WTERMSIG(status);
 	else if (WIFEXITED(status))
 		shell->env->exit_status = WEXITSTATUS(status);
-
 }
 
 void	after_parsing(t_shell *shell, char *input)
@@ -88,7 +92,11 @@ void	after_parsing(t_shell *shell, char *input)
 		return ;
 	curr = shell->tk;
 	if (!ft_strcmp(curr->cmd, ":") || !ft_strcmp(curr->cmd, "!"))
+	{
+		if (!ft_strcmp(curr->cmd, "!"))
+			shell->env->exit_status = 1;
 		return ;
+	}
 	if (handle_semicolon_error(shell, curr))
 		return ;
 	if (contain_list("|", curr))

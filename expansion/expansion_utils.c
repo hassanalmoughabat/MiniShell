@@ -6,36 +6,60 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 14:52:57 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/26 14:57:00 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/06 21:06:46 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-char	*handle_dollar(char *key, int flag, t_shell *shell)
+char	*join_char_and_free(char *expanded, char c)
 {
-	int		i;
-	char	*expanded;
-	int		in_s;
-	int		in_d;
+	char	*temp;
 
-	i = -1;
-	in_s = 0;
-	in_d = 0;
-	expanded = ft_strdup("");
-	while (key[++i])
+	temp = ft_strjoin_char(expanded, c);
+	free(expanded);
+	return (temp);
+}
+
+char	*join_str_and_free(char *expanded, char *str)
+{
+	char	*temp;
+
+	temp = ft_strjoin(expanded, str);
+	free(expanded);
+	return (temp);
+}
+
+char	*handle_var_expansion(char *expanded, char *key, int *i,
+	t_shell *shell)
+{
+	char	*var_name;
+	char	*value;
+
+	var_name = extract_dollar_var(key, i);
+	if (!var_name)
 	{
-		update_quotes(&in_s, &in_d, key, i);
-		if (key[i] == '$' && !escape(key, i))
-		{
-			if (in_s && !escape(key, i - 1))
-				expanded = ft_strjoin_char(expanded, key[i]);
-			else if (!in_s)
-				handle_dollar_core(key, &i, &expanded, shell);
-		}
-		else
-			expanded = ft_strjoin_char(expanded, key[i]);
+		free(var_name);
+		return (expanded);
 	}
-	(void)flag;
+	value = get_value_from_env(var_name, shell->env);
+	free(var_name);
+	if (value)
+	{
+		expanded = join_str_and_free(expanded, value);
+		free(value);
+	}
 	return (expanded);
+}
+
+int	handle_dollar_in_quotes(char *key, int i, int in_s)
+{
+	if (in_s && !escape(key, i - 1))
+		return (1);
+	return (0);
+}
+
+int	handle_standalone_dollar_check(char *key, int i)
+{
+	return (handle_standalone_dollar(key, i + 1));
 }
