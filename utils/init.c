@@ -6,7 +6,7 @@
 /*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 01:14:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/10 18:13:08 by hal-moug         ###   ########.fr       */
+/*   Updated: 2025/08/10 19:13:47 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,7 @@ void	init_shell(t_shell *shell, char **envp)
 	{
 		char *shlvl_str = ft_itoa(shell->shell_level);
 		update_env_value(&(shell->env), "SHLVL=", shlvl_str);
+		if (shlvl_str)
+			free(shlvl_str);
 	}
 }
