@@ -70,7 +70,6 @@ t_env	*initialize_env_list(char **envp)
 		if (!new_node)
 		{
 			free_my_env(head);
-			free(envp[i]);
 			return (NULL);
 		}
 		if (!head)
@@ -91,11 +90,19 @@ char	*get_path(char *cmd, char *envp[])
 	char	*path_part;
 	char	**s_cmd;
 
+	if (!cmd || !cmd[0])
+		return (NULL);
 	i = 0;
 	allpath = ft_split(my_getenv("PATH", envp), ':');
 	s_cmd = ft_split(cmd, ' ');
-	if (!allpath)
+	if (!allpath || !s_cmd || !s_cmd[0])
+	{
+		if (allpath)
+			ft_free_tab(allpath);
+		if (s_cmd)
+			ft_free_tab(s_cmd);
 		return (NULL);
+	}
 	while (allpath[i])
 	{
 		path_part = ft_strjoin(allpath[i], "/");

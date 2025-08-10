@@ -87,5 +87,9 @@ void	init_shell(t_shell *shell, char **envp)
 	ensure_pwd_exists(shell);
 	update_env_value(&(shell->env), "_=", "/usr/bin/env");
 	shell->shell_level = get_shell_level(shell->env);
-	update_env_value(&(shell->env), "SHLVL=", ft_itoa(shell->shell_level));
+	{
+		char *shlvl_str = ft_itoa(shell->shell_level);
+		update_env_value(&(shell->env), "SHLVL=", shlvl_str);
+		free(shlvl_str);
+	}
 }

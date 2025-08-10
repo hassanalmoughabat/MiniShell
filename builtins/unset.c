@@ -82,20 +82,59 @@ void	detect_key(t_token *tk, t_env **env)
 void	ft_unset(t_shell *shell, t_env **copy)
 {
 	t_token	*current;
+	char	*key;
 
 	if (!shell->tk || !shell->env || !*copy)
 		return ;
-	current = shell->tk;
+	current = shell->tk->next;
 	while (current)
 	{
-		if (current->cmd)
+		if (current->cmd && ft_strcmp(current->cmd, "_"))
 		{
-			detect_key(shell->tk, &(shell->env));
-			detect_key(shell->tk, copy);
+			key = get_var(current->cmd);
+			if (key)
+		
+			{
+				remove_matching_env(&(shell->env), key);
+				remove_matching_env(copy, key);
+				free(key);
+			}
 		}
 		if (!ft_strcmp(current->cmd, "new_line"))
 			return ;
 		current = current->next;
 	}
 	shell->env->exit_status = 0;
+}
+
+void	unset_env(t_env **env, t_env **copy)
+{
+	t_env	*current;
+	t_env	*next;
+
+	if (!env || !*env)
+		return ;
+	current = *env;
+	while (current)
+	{
+		next = current->next;
+		if (current->line)
+			free(current->line);
+		free(current);
+		current = next;
+	}
+	*env = NULL;
+	if (copy && *copy)
+	{
+		current = *copy;
+		while (current)
+		{
+			next = current->next;
+			if (current->line)
+				free(current->line);
+			free(current);
+			current = next;
+		}
+		*copy = NULL;
+	}
 }

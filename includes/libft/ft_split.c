@@ -92,7 +92,7 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (NULL);
 	count = ft_count(s, c);
-	s_split = (char **)malloc((count + 1) * sizeof(char *));
+	s_split = (char **)malloc(sizeof(char *) * (count + 1));
 	if (!s_split)
 		return (NULL);
 	s_split = split(s_split, s, c, count);

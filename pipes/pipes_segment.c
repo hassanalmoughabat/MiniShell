@@ -47,6 +47,11 @@ t_token	*create_token_copy(t_token *src)
 	if (!new_token)
 		return (NULL);
 	new_token->cmd = ft_strdup(src->cmd);
+	if (!new_token->cmd)
+	{
+		free(new_token);
+		return (NULL);
+	}
 	new_token->type = src->type;
 	new_token->next = NULL;
 	new_token->prev = NULL;
@@ -68,12 +73,16 @@ void	remove_heredoc_tokens(t_pipe_child_data *child_data)
 {
 	t_token	*cur;
 	t_token	*next;
+	t_token	*to_free_heredoc;
+	t_token	*to_free_delimiter;
 
 	cur = child_data->cmd_segment;
 	while (cur)
 	{
 		if (cur->type == T_DLESS && cur->next)
 		{
+			to_free_heredoc = cur;
+			to_free_delimiter = cur->next;
 			next = cur->next->next;
 			if (cur->prev)
 				cur->prev->next = next;
@@ -81,6 +90,10 @@ void	remove_heredoc_tokens(t_pipe_child_data *child_data)
 				child_data->cmd_segment = next;
 			if (next)
 				next->prev = cur->prev;
+			free(to_free_heredoc->cmd);
+			free(to_free_heredoc);
+			free(to_free_delimiter->cmd);
+			free(to_free_delimiter);
 			cur = next;
 			continue ;
 		}

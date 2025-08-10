@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipes_heredoc_utils.c                              :+:      :+:    :+:   */
+/*   handle_great_main.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 02:43:42 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/06/28 16:37:38 by njoudieh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,32 @@ pid_t	create_output_child(int *pipefd, t_token *redirect_token,
 	if (pid2 == 0)
 		setup_output_redirect_child(pipefd, redirect_token, ft_env);
 	return (pid2);
+}
+
+int	handle_heredoc_pipe_redirect_part2(t_heredoc_pipe_params *params)
+{
+	pid_t	pid2;
+	int		status;
+
+	pid2 = create_output_child(params->pipefd, params->redirect_token,
+			params->ft_env);
+	if (pid2 == -1)
+	{
+		close(params->pipefd[0]);
+		close(params->pipefd[1]);
+		free(params->delimiter);
+		kill(params->pid1, SIGTERM);
+		waitpid(params->pid1, NULL, 0);
+		return (0);
+	}
+	close(params->pipefd[0]);
+	close(params->pipefd[1]);
+	free(params->delimiter);
+	waitpid(params->pid1, &status, 0);
+	waitpid(pid2, &status, 0);
+	if (WIFEXITED(status))
+		params->env->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		params->env->exit_status = 128 + WTERMSIG(status);
+	return (1);
 }

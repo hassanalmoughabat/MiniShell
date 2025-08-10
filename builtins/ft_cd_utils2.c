@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:15:21 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 02:29:27 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/07/24 19:17:12 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,21 +74,23 @@ void	retrieve_dir(t_shell *shell, char *old_pwd)
 	oldpwd_env = get_value_from_env("OLDPWD", shell->env);
 	if (!oldpwd_env || !oldpwd_env[0])
 		return ((void)error_env(shell, 1));
-	if (chdir(oldpwd_env) != 0)
+	if (chdir(oldpwd_env) == 0)
 	{
-		shell->env->exit_status = ft_err_msg((t_error){oldpwd_env,
-				ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
-		return ;
-	}
-	printf("%s\n", oldpwd_env);
-	new_pwd = ft_get_cd_pwd();
-	update_env_value(&(shell->env), "OLDPWD=", old_pwd);
-	if (new_pwd)
-	{
-		update_env_value(&(shell->env), "PWD=", new_pwd);
-		shell->env->exit_status = 0;
+		new_pwd = ft_get_cd_pwd();
+		if (new_pwd)
+		{
+			update_env_value(&(shell->env), "OLDPWD=", old_pwd);
+			update_env_value(&(shell->env), "PWD=", new_pwd);
+		}
+		else
+		{
+			update_env_value(&(shell->env), "OLDPWD=", old_pwd);
+			shell->env->exit_status = ft_err_msg((t_error){old_pwd,
+					ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
+		}
 	}
 	else
 		shell->env->exit_status = ft_err_msg((t_error){oldpwd_env,
 				ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
+	return ;
 }

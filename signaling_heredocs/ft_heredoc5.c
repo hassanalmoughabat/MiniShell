@@ -112,10 +112,12 @@ char	*get_delimeter(t_token *tk)
 	t_token	*curr;
 	char	*temp;
 
+	if (!tk)
+		return (NULL);
 	curr = tk;
 	while (curr)
 	{
-		if (ft_strcmp(curr->cmd, "<<") == 0 && curr->next)
+		if (curr->cmd && ft_strcmp(curr->cmd, "<<") == 0 && curr->next && curr->next->cmd)
 		{
 			temp = dollar_delimeter(curr->next->cmd);
 			return (temp);
