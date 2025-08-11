@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 01:29:15 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/11 16:41:40 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ int	valid_pipe(t_shell *shell, char *input)
 		{
 			if (!tk->next)
 				return (pipe_syntax_error(tk->cmd, shell), 0);
-			if ((tk->next->type == T_PIPE || tk->next->type != T_IDENTIFIER))
+			if (tk->next->type == T_PIPE )
 			{
 				ft_putstr_fd("bash: syntax error near unexpected token `", 2);
 				pipe_error_message(input, tk);
