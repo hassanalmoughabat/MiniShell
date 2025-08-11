@@ -46,7 +46,6 @@ EXPANSION	:=	expansion/expander_extraction.c\
 SHELL_LVL	:=	shell_lvl/shell_handling.c
 
 SIGNALING	:=	signaling_heredocs/ft_signal.c \
-				signaling_heredocs/ft_signal2.c \
 				signaling_heredocs/external_cmd.c \
 				signaling_heredocs/error_msg.c \
 				signaling_heredocs/external_cmd_utils.c \
@@ -72,9 +71,7 @@ PIPES		:=	pipes/pipes_utils.c \
 				pipes/pipes_heredoc_utils2.c \
 				pipes/pipes_heredoc_util2.c \
 				pipes/pipes_utils2.c \
-				pipes/pipes_utils3.c \
-				pipes/pipes_utils4.c \
-				pipes/pipes_utils5.c
+				pipes/pipes_utils3.c 
 
 
 TOKENIZE	:= 	tokenize/ft_error_handler.c \

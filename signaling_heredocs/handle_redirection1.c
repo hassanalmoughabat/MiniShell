@@ -77,7 +77,6 @@ int	check_redirect_syntax(t_shell *shell, char *input)
 {
 	t_token	*curr;
 
-	(void)input;
 	curr = shell->tk;
 	while (curr)
 	{

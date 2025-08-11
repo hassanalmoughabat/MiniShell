@@ -57,3 +57,24 @@ void	ft_init_signals(void)
 	signal(SIGINT, ft_sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
+
+void	ft_set_child_signals(void)
+{
+	g_signal.signint_child = true;
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
+
+void	ft_restore_parent_signals(void)
+{
+	g_signal.signint_child = false;
+	signal(SIGINT, ft_sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void ft_set_pipe_parent_signals(void)
+{
+    g_signal.signint_child = true;
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+}
