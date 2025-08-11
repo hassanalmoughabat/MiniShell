@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "minihell.h": "c",
+        "pipes.h": "c"
+    }
+}

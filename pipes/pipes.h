@@ -50,6 +50,7 @@ typedef struct s_child_setup_params
 	int			heredoc_fd;
 }				t_child_setup_params;
 
+void			pipe_error_message(char *input, t_token *tk);
 t_token			*remove_redirection_tokens(t_token *cmd_segment);
 void			setup_input_redirection(t_pipe_child_data *child_data);
 void			setup_output_redirection(t_pipe_child_data *child_data);
