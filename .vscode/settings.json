@@ -2,5 +2,8 @@
     "files.associations": {
         "minihell.h": "c",
         "pipes.h": "c"
-    }
+    },
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "master"
+    ]
 }
