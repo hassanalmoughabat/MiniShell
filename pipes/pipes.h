@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/08/06 20:50:23 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/13 00:05:30 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,15 @@ typedef struct s_child_setup_params
 	int			heredoc_fd;
 }				t_child_setup_params;
 
+typedef struct s_single_cmd_params
+{
+	t_pipe_data	*data;
+	t_token		*start;
+	t_token		*curr;
+	int			i;
+	t_shell		*shell;
+}	t_single_cmd_params;
+
 t_token			*remove_redirection_tokens(t_token *cmd_segment);
 void			setup_input_redirection(t_pipe_child_data *child_data);
 void			setup_output_redirection(t_pipe_child_data *child_data);
@@ -83,8 +92,7 @@ pid_t			create_output_child(int *pipefd, t_token *redirect_token,
 					char **ft_env);
 void			cleanup_heredocs_after_exec(t_pipe_data *data);
 void			wait_for_children(t_pipe_data *data, t_shell *shell);
-void			execute_single_command(t_pipe_data *data, t_token *start,
-					t_token *curr, int i, t_shell *shell);
+void			execute_single_command(t_single_cmd_params *params);
 void			setup_pipe_data(t_pipe_data *data, t_token *lst,
 					t_shell *shell);
 void			handle_great_redirect(t_token *curr);
@@ -97,7 +105,7 @@ void			close_all_pipes(int **fds, int count);
 t_token			*next_pipe(t_token *start);
 int				count_pipes(t_token *lst);
 int				create_pipes(int ***pipes, int pipe_count);
-
+int				valid_pipe(t_shell *shell, char *input);
 // From pipes_heredoc.c
 t_heredoc_info	*process_heredocs_before_pipes(t_token *lst,
 					t_shell *shell, int *hd_count);
@@ -123,5 +131,7 @@ int				check_special_heredoc_pipe(t_token *lst, t_shell *shell);
 // From pipes_main.c
 void			execute_pipe_commands(t_pipe_data *data, t_shell *shell);
 void			handle_pipe(t_token *lst, t_shell *shell, char *input);
-
+void			close_parent_heredoc(t_pipe_data *data, int heredoc_fd);
+void			setup_pipe_signals(void);
+void			restore_pipe_signals(void);
 #endif

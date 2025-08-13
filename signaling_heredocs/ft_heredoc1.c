@@ -6,224 +6,85 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:56:14 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 16:04:08 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/12 19:25:56 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
 
-char *expand_variables(char *line, t_env *env, int quote)
+static int	resize_buffer(t_expand_data *data, int new_len)
 {
-    if (quote == 1 || !line || !ft_strchr(line, '$'))
-        return ft_strdup(line);
-    char *result = malloc(1024);
-    if (!result)
-        return NULL;
-    char *src = line;
-    char *dst = result;
-    int result_len = 0;
-    int buffer_size = 1024;
-    while (*src )
-    {
-        if (*src == '$' && (isalpha(src[1]) || src[1] == '_'))
-        {
-            src++;
-            char var_name[256] = {0};
-            int i = 0;
-            
-            while (*src && (isalnum(*src) || *src == '_') && i < 255)
-            {
-                var_name[i++] = *src++;
-            }
-            var_name[i] = '\0';
-            char *value = my_getenv(var_name, transform(env));
-            if (!value)
-                value = "";
-            int value_len = ft_strlen(value);          
-            if (result_len + value_len + 1 >= buffer_size)
-            {
-                buffer_size = (result_len + value_len + 1) * 2;
-                char *new_result = realloc(result, buffer_size);
-                if (!new_result)
-                {
-                    free(result);
-                    return NULL;
-                }
-                result = new_result;
-                dst = result + result_len;
-            }
-            strcpy(dst, value);
-            dst += value_len;
-            result_len += value_len;
-        }
-        else
-        {
-            if (result_len + 1 >= buffer_size)
-            {
-                buffer_size *= 2;
-                char *new_result = realloc(result, buffer_size);
-                if (!new_result)
-                {
-                    free(result);
-                    return NULL;
-                }
-                result = new_result;
-                dst = result + result_len;
-            }
-            *dst++ = *src++;
-            result_len++;
-        }
-    }
-    
-    *dst = '\0';
-    return (result);
+	char	*new_result;
+	int		offset;
+
+	data->buffer_size = new_len * 2;
+	offset = data->dst - data->result;
+	new_result = realloc(data->result, data->buffer_size);
+	if (!new_result)
+	{
+		free(data->result);
+		return (0);
+	}
+	data->result = new_result;
+	data->dst = data->result + offset;
+	return (1);
 }
 
-int handle_dless(char *delimiter, t_shell *shell, int quote)
+char	*extract_var(char **src)
 {
-    int pipefd[2];
-    size_t total_written = 0;
-    char *line;
-    char *expanded_line;
-
-    if (!validate_delimiter(delimiter) || pipe(pipefd) == -1)
-        return (-1);
-    ft_set_heredoc_signals();
-    g_signal.heredoc_sigint = false;
-    while (1)
-    {
-        line = readline("> ");
-        if (!line)
-        {
-            ft_putstr_fd("bash: warning: here-document delimited by end-of-file (wanted `", 2);
-            ft_putstr_fd(delimiter, 2);
-            ft_putendl_fd("')", 2);
-            shell->env->exit_status = 0;
-            break;
-        }
-        if (ft_strcmp(line, delimiter) == 0)
-        {
-            free(line);
-            break;
-        }
-        expanded_line = expand_variables(line, shell->env, quote);
-        if (!expanded_line)
-            expanded_line = ft_strdup(line);
-        size_t line_len = ft_strlen(expanded_line);
-        if (total_written + line_len + 1 > MAX_HEREDOC_SIZE)
-        {
-            ft_putendl_fd("minishell: heredoc: maximum size exceeded", 2);
-            free(line);
-            free(expanded_line);
-            close(pipefd[0]);
-            close(pipefd[1]);
-            ft_init_signals();
-            return -1;
-        }
-        write(pipefd[1], expanded_line, line_len);
-        write(pipefd[1], "\n", 1);
-        total_written += line_len + 1;
-        free(line);
-        free(expanded_line);
-    }
-    close(pipefd[1]);
-    ft_init_signals();
-    return pipefd[0];
-}
-
-int	has_quotes(char *str)
-{
-	int	i;
+	char	var_name[256];
+	int		i;
 
 	i = 0;
-	while (str[i])
+	while (**src && (ft_isalnum(**src) || **src == '_') && i < 255)
 	{
-		if (ft_check_quotes(str[i]))
-			return (1);
-		i++;
+		var_name[i++] = **src;
+		(*src)++;
 	}
-	return (0);
+	var_name[i] = '\0';
+	return (ft_strdup(var_name));
 }
 
-void handle_heredoc(t_shell *shell)
+int	expand_variable(t_expand_data *data, char *var_name, t_env *env)
 {
-    t_token *curr;
-    int read_fd;
-    pid_t pid;
-    int status;
-    char *path;
-    char *cmd;
-    char *delimiter;
-    int quote;
+	char	*value;
+	int		value_len;
 
-    curr = shell->tk;
-    while (curr)
-    {
-        if (curr->cmd && ft_strcmp(curr->cmd, "<<") == 0 && curr->next)
-        {
-            delimiter = get_delimeter(curr);
-            if (!delimiter)
-                return ;
-            quote = has_quotes(delimiter);
-            remove_added_quotes(&delimiter);
-            cmd = find_command_around_heredoc(shell->tk, delimiter);
-            pid = fork();
-            if (pid == -1)
-            {
-                perror("fork");
-                free(delimiter);
-                shell->env->exit_status = 1;
-                return;
-            }
-            if (pid == 0)
-            {
-                read_fd = handle_dless(delimiter, shell, quote);
-                if (read_fd < 0)
-                {
-                    free(delimiter);
-                    exit (1);
-                }
-                if (cmd)
-                {
-                    char *args[] = {cmd, NULL};
-                    path = get_path(cmd, shell->ft_env);
-                    if (dup2(read_fd, STDIN_FILENO) == -1)
-                    {
-                        perror("dup2");
-                        close(read_fd);
-                        free(delimiter);
-                        exit(1);
-                    }
-                    close(read_fd);
-                    if (path)
-                    {
-                        execve(path, args, shell->ft_env);
-                        free(path);
-                    }
-                    free(delimiter);
-                    exit(127);
-                }
-                else
-                {
-                    close(read_fd);
-                    free(delimiter);
-                    exit(0);
-                }
-            }
-            else
-            {
-                free(delimiter);
-                waitpid(pid, &status, 0);
-                if (WIFSIGNALED(status))
-                    shell->env->exit_status = 128 + WTERMSIG(status);
-                else
-                    shell->env->exit_status = WEXITSTATUS(status);
-                if (shell->env->exit_status == 130)
-                    return;
-                curr = curr->next->next;
-                continue;
-            }
-        }
-        curr = curr->next;
-    }
+	value = my_getenv(var_name, transform(env));
+	if (!value)
+		value = "";
+	value_len = ft_strlen(value);
+	if (data->result_len + value_len + 1 >= data->buffer_size)
+	{
+		if (!resize_buffer(data, data->result_len + value_len + 1))
+			return (0);
+	}
+	ft_strcpy(data->dst, value);
+	data->dst += value_len;
+	data->result_len += value_len;
+	return (1);
+}
+
+int	copy_char(t_expand_data *data, char c)
+{
+	if (data->result_len + 1 >= data->buffer_size)
+	{
+		if (!resize_buffer(data, data->buffer_size * 2))
+			return (0);
+	}
+	*(data->dst) = c;
+	data->dst++;
+	data->result_len++;
+	return (1);
+}
+
+int	init_expand_data(t_expand_data *data)
+{
+	data->result = malloc(1024);
+	if (!data->result)
+		return (0);
+	data->dst = data->result;
+	data->result_len = 0;
+	data->buffer_size = 1024;
+	return (1);
 }

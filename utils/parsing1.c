@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 00:26:58 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/12 19:16:30 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	handle_path_command(t_shell *shell, char *cmd)
 		parent_wait_and_cleanup(shell, pid, argv);
 }
 
-void	handle_redirections(t_shell *shell, t_token *curr, char *input)
+void	handle_redirections(t_shell *shell, t_token *curr)
 {
 	pid_t	pid;
 	int		status;
@@ -73,7 +73,7 @@ void	handle_redirections(t_shell *shell, t_token *curr, char *input)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_IGN);
-		handle_redirection(curr, shell, input);
+		handle_redirection(curr, shell);
 		exit(shell->env->exit_status);
 	}
 	waitpid(pid, &status, 0);
@@ -103,7 +103,7 @@ void	after_parsing(t_shell *shell, char *input)
 		handle_pipe(shell->tk, shell, input);
 	else if (contain_list("<<", curr) || contain_list(">>", curr)
 		|| contain_list("<", curr) || contain_list(">", curr))
-		handle_redirections(shell, curr, input);
+		handle_redirections(shell, curr);
 	else if (ft_is_builtin(curr->cmd))
 		handle_builtin(shell, curr->cmd);
 	else

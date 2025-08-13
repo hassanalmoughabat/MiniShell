@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 02:43:10 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 02:57:10 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/12 20:16:39 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,23 +94,4 @@ void	setup_child_data(t_pipe_child_data *child_data, t_pipe_data *data,
 	child_data->heredoc_fd = params->heredoc_fd;
 	child_data->is_first_with_heredoc = (params->i == 0
 			&& params->heredoc_fd >= 0);
-}
-
-void	close_parent_heredoc(t_pipe_data *data, int heredoc_fd)
-{
-	int	j;
-
-	if (heredoc_fd < 0)
-		return ;
-	j = 0;
-	while (j < data->hd_count)
-	{
-		if (data->heredocs[j].fd == heredoc_fd)
-		{
-			close(data->heredocs[j].fd);
-			data->heredocs[j].fd = -1;
-			break ;
-		}
-		j++;
-	}
 }

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 02:39:24 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/13 00:17:57 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,14 @@ typedef struct s_shell
 	int			shell_level;
 }	t_shell;
 
+typedef struct s_heredoc_data
+{
+	int		pipefd[2];
+	size_t	total_written;
+	char	*delimiter;
+	int		quote;
+}	t_heredoc_data;
+
 typedef struct s_signal
 {
 	bool		signint_child;
@@ -55,7 +63,25 @@ typedef struct s_signal
 	int			sig_status;
 }	t_signal;
 
+typedef struct s_expand_data
+{
+	char	*result;
+	char	*dst;
+	int		result_len;
+	int		buffer_size;
+}	t_expand_data;
+
+typedef struct s_heredoc_ctx
+{
+	char	*delimiter;
+	char	*cmd;
+	char	*path;
+	int		quote;
+	int		read_fd;
+}	t_heredoc_ctx;
+
 extern t_signal	g_signal;
+
 typedef enum error_msg
 {
 	ERROR,
@@ -268,16 +294,25 @@ void	update_env_value(t_env **head, char *target, char *new_value);
 // -----------------------heredoc----------------------------------------
 int		has_quotes(char *str);
 char	*get_delimeter(t_token *tk);
+char	*extract_var(char **src);
+int		copy_char(t_expand_data *data, char c);
+int		init_expand_data(t_expand_data *data);
 int		validate_delimiter(const char *delimiter);
 char	*cut_from_op(char op, char *str, t_env *env);
+char	*expand_variables(char *line, t_env *env, int quote);
 char	*replace_variable(char *line, char *var_name, char *new_val);
-
+int		expand_variable(t_expand_data *data, char *var_name, t_env *env);
+int		init_heredoc_context(t_heredoc_ctx *ctx, t_token *curr,
+			t_shell *shell);
+void	child_process(t_heredoc_ctx *ctx, t_shell *shell);
+void	handle_parent_process(pid_t pid, t_shell *shell);
 //-----------------------signaling---------------------------------------
 void	ft_init_signals(void);
 void	ft_set_child_signals(void);
 void	ft_sigint_handler(int num);
 void	ft_sigquit_handler(int num);
 void	ft_set_heredoc_signals(void);
+void	ft_restore_main_signals(void);
 void	ft_restore_parent_signals(void);
 void	ft_heredoc_sigint_handler(int signum);
 // ----------------------parsing-----------------------------------------
@@ -300,13 +335,15 @@ void	parent_wait_and_cleanup(t_shell *shell, pid_t pid, char **argv);
 // ----------------------Piping and Redirections-------------------------
 int		valid_pipe(t_shell *shell, char *input);
 int		handle_dless(char *delimiter, t_shell *shell, int quote);
-int		handle_redirection(t_token *tk, t_shell *shell, char *input);
+int		handle_redirection(t_token *tk, t_shell *shell);
 
 //-----------------------Redirection_utils--------------------------------
 int		symbols(char *tk);
 int		ft_index(char *str, char c);
 int		count_tokens(t_token *tokens);
 t_token	*filter_cmd_tokens(t_token *tk);
+int		check_redirect_syntax(t_shell *shell);
+int		open_last_input_redir(t_shell *shell);
 void	print_cmd_error(char *cmd, char *msg);
 char	**build_args_array(t_token *cmd_tokens);
 void	execute_external_cmd(t_token *cmd_tokens,
@@ -316,11 +353,11 @@ int		open_file_input(t_token *curr, t_shell *shell);
 int		open_output_file(t_token *curr, t_shell *shell);
 void	handle_path_error(t_token *cmd, t_shell *shell);
 void	handle_no_such_file(t_token *cmd, t_shell *shell);
-int		check_redirect_syntax(t_shell *shell, char *input);
 int		handle_input_redirect(t_token *curr, t_shell *shell);
 void	handle_directory_error(t_token *cmd, t_shell *shell);
 void	handle_permission_error(t_token *cmd, t_shell *shell);
 void	exec_filtered_cmd(t_shell *shell, t_token *cmd_tokens);
+int		handle_standalone_less(char *filename, t_shell *shell);
 
 //----------------------------Heredoc--------------------------------------
 char	*get_delimeter(t_token *tk);

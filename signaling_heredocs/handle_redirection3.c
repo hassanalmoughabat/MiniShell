@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 00:54:58 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/27 00:57:06 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/12 19:15:09 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,14 @@ void	exec_filtered_cmd(t_shell *shell, t_token *cmd_tokens)
 	free_token_list(cmd_tokens);
 }
 
-int	handle_redirection(t_token *tk, t_shell *shell, char *input)
+int	handle_redirection(t_token *tk, t_shell *shell)
 {
 	t_token	*curr;
 	t_token	*last_out;
 	t_token	*cmd_tokens;
 
 	last_out = NULL;
-	if (check_redirect_syntax(shell, input))
+	if (check_redirect_syntax(shell))
 		return (2);
 	if (!process_redirs(shell, &last_out))
 		return (1);
