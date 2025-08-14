@@ -62,7 +62,7 @@ void	error_validity_export(char *input, t_token *tk)
 		ft_putstr_fd(": invalid option\n", 2);
 		return ;
 	}
-	remove_added_quotes(&tk->cmd);
+	remove_added_quotes(&tk->cmd, NULL);
 	ft_putstr_fd("minishell export: ", 2);
 	ft_putchar_fd('`', 2);
 	ft_putstr_fd(tk->cmd, 2);

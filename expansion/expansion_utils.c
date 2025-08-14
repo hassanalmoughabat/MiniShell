@@ -12,21 +12,19 @@
 
 #include "../includes/minihell.h"
 
-char	*join_char_and_free(char *expanded, char c)
+char	*join_char_and_free(char *expanded, char c, t_gc *gc)
 {
 	char	*temp;
 
-	temp = ft_strjoin_char(expanded, c);
-	free(expanded);
+	temp = ft_strjoin_char(expanded, c, gc);
 	return (temp);
 }
 
-char	*join_str_and_free(char *expanded, char *str)
+char	*join_str_and_free(char *expanded, char *str, t_gc *gc)
 {
 	char	*temp;
 
-	temp = ft_strjoin(expanded, str);
-	free(expanded);
+	temp = ft_strjoin(expanded, str, gc);
 	return (temp);
 }
 
@@ -36,18 +34,13 @@ char	*handle_var_expansion(char *expanded, char *key, int *i,
 	char	*var_name;
 	char	*value;
 
-	var_name = extract_dollar_var(key, i);
+	var_name = extract_dollar_var(key, i, &shell->gc);
 	if (!var_name)
-	{
-		free(var_name);
 		return (expanded);
-	}
-	value = get_value_from_env(var_name, shell->env);
-	free(var_name);
+	value = get_value_from_env(var_name, shell->env, &shell->gc);
 	if (value)
 	{
-		expanded = join_str_and_free(expanded, value);
-		free(value);
+		expanded = join_str_and_free(expanded, value, &shell->gc);
 	}
 	return (expanded);
 }

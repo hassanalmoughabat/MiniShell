@@ -24,9 +24,9 @@ int	is_valid_n_flag(char *word)
 	return (word[i] == '\0');
 }
 
-void	print_echo(char **temp)
+void	print_echo(char **temp, t_gc *gc)
 {
-	remove_added_quotes(temp);
+	remove_added_quotes(temp, gc);
 	if (temp && ft_strcmp(*temp, ""))
 	{
 		ft_putstr_fd(*temp, 1);
@@ -45,15 +45,14 @@ void	ft_echo(t_shell *shell)
 	curr = shell->tk;
 	if (curr && !ft_strcmp(curr->cmd, "echo"))
 		curr = curr->next;
-	handle_n_cases(&curr, &flag);
+	handle_n_cases(&curr, &flag, &shell->gc);
 	while (curr)
 	{
 		if (!curr->cmd)
 			return ;
-		temp = ft_strdup(curr->cmd);
+		temp = ft_strdup_gc(&shell->gc, curr->cmd);
 		if (temp && ft_strcmp(temp, " "))
-			print_echo(&temp);
-		free(temp);
+			print_echo(&temp, &shell->gc);
 		curr = curr->next;
 	}
 	if (!flag)

@@ -12,7 +12,7 @@
 
 #include "token.h"
 
-t_token	*ft_check_string(char *input)
+t_token	*ft_check_string(char *input, t_gc *gc)
 {
 	t_token	*token_list;
 	int		error_flag;
@@ -26,18 +26,18 @@ t_token	*ft_check_string(char *input)
 		if (ft_check_space(*input))
 			ft_skip_added_spaces(&input);
 		else if (ft_check_special_char(input))
-			error_flag = (!ft_handle_operators(&input, &token_list));
+			error_flag = (!ft_handle_operators(&input, &token_list, gc));
 		else
-			error_flag = (!ft_handle_quotes(&input, &token_list));
+			error_flag = (!ft_handle_quotes(&input, &token_list, gc));
 	}
 	return (token_list);
 }
 
-t_token	*ft_tokenize(char *input)
+t_token	*ft_tokenize(char *input, t_gc *gc)
 {
 	t_token	*head_list;
 
-	head_list = ft_check_string(input);
+	head_list = ft_check_string(input, gc);
 	input = NULL;
 	return (head_list);
 }

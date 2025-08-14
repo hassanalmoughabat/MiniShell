@@ -75,7 +75,7 @@ int	parse_until_delim(char *temp, size_t *i)
 	return (1);
 }
 
-int	ft_handle_quotes(char **input, t_token **token_list)
+int	ft_handle_quotes(char **input, t_token **token_list, t_gc *gc)
 {
 	size_t	i;
 	char	*cmd;
@@ -84,12 +84,12 @@ int	ft_handle_quotes(char **input, t_token **token_list)
 	i = 0;
 	if (!parse_until_delim(*input, &i))
 		return (0);
-	cmd = ft_substr(*input, 0, i);
+	cmd = ft_substr(*input, 0, i, gc);
 	if (!cmd)
 		return (0);
-	new_token = create_token (cmd, T_IDENTIFIER);
+	new_token = create_token(cmd, T_IDENTIFIER, gc);
 	if (!new_token)
-		return (free(cmd), 0);
+		return (0);
 	*input += i;
 	ft_add_token_last(token_list, new_token);
 	return (1);

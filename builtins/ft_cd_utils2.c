@@ -14,7 +14,7 @@
 
 char	*ft_get_cd_pwd(void)
 {
-	char	cwd[PATH_MAX];
+	static char	cwd[PATH_MAX];
 	char	*pwd;
 
 	pwd = getcwd(cwd, PATH_MAX);
@@ -43,12 +43,16 @@ char	*find_dir_in_list(t_token *tk)
 char	*set_curr_pwd(t_shell *shell)
 {
 	char	*old_pwd_env;
+	char	*result;
 
-	old_pwd_env = get_value_from_env("PWD", shell->env);
+	old_pwd_env = get_value_from_env("PWD", shell->env, NULL);
 	if (old_pwd_env && old_pwd_env[0])
-		return (ft_strdup(old_pwd_env));
+		result = ft_strdup_gc(&shell->gc, old_pwd_env);
 	else
-		return (ft_strdup(""));
+		result = ft_strdup_gc(&shell->gc, "");
+	if (old_pwd_env)
+		free(old_pwd_env);
+	return (result);
 }
 
 void	error_env(t_shell *shell, int flag)
@@ -71,24 +75,25 @@ void	retrieve_dir(t_shell *shell, char *old_pwd)
 	char	*oldpwd_env;
 	char	*new_pwd;
 
-	oldpwd_env = get_value_from_env("OLDPWD", shell->env);
+	oldpwd_env = get_value_from_env("OLDPWD", shell->env, NULL);
 	if (!oldpwd_env || !oldpwd_env[0])
-		return ((void)error_env(shell, 1));
+		return ((void)error_env(shell, 1), free(oldpwd_env));
 	if (chdir(oldpwd_env) != 0)
 	{
 		shell->env->exit_status = ft_err_msg((t_error){oldpwd_env,
 				ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
-		return ;
+		return (free(oldpwd_env));
 	}
 	printf("%s\n", oldpwd_env);
 	new_pwd = ft_get_cd_pwd();
-	update_env_value(&(shell->env), "OLDPWD=", old_pwd);
+	update_env_value(&(shell->env), "OLDPWD=", old_pwd, &shell->gc);
 	if (new_pwd)
 	{
-		update_env_value(&(shell->env), "PWD=", new_pwd);
+		update_env_value(&(shell->env), "PWD=", new_pwd, &shell->gc);
 		shell->env->exit_status = 0;
 	}
 	else
 		shell->env->exit_status = ft_err_msg((t_error){oldpwd_env,
 				ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
+	free(oldpwd_env);
 }

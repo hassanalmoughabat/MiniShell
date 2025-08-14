@@ -76,7 +76,7 @@ char	*handle_single_variable(char *result, char *start, t_env *env)
 	name = extract_var_name(start, end);
 	if (!name)
 		return (NULL);
-	value = cut_from_op('$', start, env);
+	value = cut_from_op('$', start, env, NULL);
 	if (!value)
 		value = ft_strdup("");
 	temp = replace_variable(result, name, value);

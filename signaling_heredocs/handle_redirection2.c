@@ -71,7 +71,7 @@ int	open_output_file(t_token *curr, t_shell *shell)
 		ft_putendl_fd(curr->next->cmd, 2);
 		return (shell->env->exit_status = 2, 0);
 	}
-	remove_added_quotes(&curr->next->cmd);
+	remove_added_quotes(&curr->next->cmd, NULL);
 	if (curr->type == T_GREAT)
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
 	else
@@ -100,7 +100,7 @@ int	open_file_input(t_token *curr, t_shell *shell)
 		shell->env->exit_status = 2;
 		return (0);
 	}
-	remove_added_quotes(&curr->next->cmd);
+	remove_added_quotes(&curr->next->cmd, NULL);
 	fd = open(curr->next->cmd, O_RDONLY);
 	if (fd == -1)
 	{

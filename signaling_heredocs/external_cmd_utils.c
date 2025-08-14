@@ -27,7 +27,7 @@ int	count_tokens(t_token *tokens)
 	return (count);
 }
 
-char	**build_args_array(t_token *cmd_tokens)
+char	**build_args_array(t_token *cmd_tokens, t_gc *gc)
 {
 	char	**args;
 	t_token	*curr;
@@ -35,14 +35,14 @@ char	**build_args_array(t_token *cmd_tokens)
 	int		i;
 
 	count = count_tokens(cmd_tokens);
-	args = malloc(sizeof(char *) * (count + 1));
+	args = ft_malloc(gc, sizeof(char *) * (count + 1));
 	if (!args)
 		return (NULL);
 	i = 0;
 	curr = cmd_tokens;
 	while (curr)
 	{
-		remove_added_quotes(&curr->cmd);
+		remove_added_quotes(&curr->cmd, NULL);
 		args[i] = ft_strdup(curr->cmd);
 		if (!args[i])
 		{

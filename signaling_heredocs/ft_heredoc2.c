@@ -59,7 +59,7 @@ static int	count_var_chars(char *str, int start)
 	return (count);
 }
 
-char	*cut_from_op(char op, char *str, t_env *env)
+char	*cut_from_op(char op, char *str, t_env *env, t_gc *gc)
 {
 	int		pos;
 	int		count;
@@ -69,7 +69,7 @@ char	*cut_from_op(char op, char *str, t_env *env)
 
 	pos = ft_index(str, op);
 	count = count_var_chars(str, pos);
-	value = (char *)malloc(sizeof(char) * (count + 1));
+	value = (char *)ft_malloc(gc, sizeof(char) * (count + 1));
 	if (!value)
 		return (NULL);
 	pos ++;
@@ -77,7 +77,6 @@ char	*cut_from_op(char op, char *str, t_env *env)
 	while (str[pos] && i < count)
 		value[i++] = str[pos++];
 	value[i] = '\0';
-	send = my_getenv(value, transform(env));
-	free(value);
+	send = my_getenv(value, transform(env, gc));
 	return (send);
 }

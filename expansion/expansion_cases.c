@@ -48,7 +48,7 @@ void	process_dollar_not_in_single_quotes(char *key, int *i,
 {
 	if (handle_standalone_dollar_check(key, *i))
 	{
-		*expanded = join_char_and_free(*expanded, '$');
+		*expanded = join_char_and_free(*expanded, '$', &shell->gc);
 		(*i)++;
 		return ;
 	}
@@ -67,7 +67,7 @@ void	process_dollar_char(char *key, int *i, char **expanded,
 	update_quotes(&in_s, &in_d, key, *i);
 	if (handle_dollar_in_quotes(key, *i, in_s))
 	{
-		*expanded = join_char_and_free(*expanded, key[*i]);
+		*expanded = join_char_and_free(*expanded, key[*i], &shell->gc);
 		return ;
 	}
 	if (!in_s)
@@ -76,5 +76,5 @@ void	process_dollar_char(char *key, int *i, char **expanded,
 		(*i)--;
 	}
 	else
-		*expanded = join_char_and_free(*expanded, key[*i]);
+		*expanded = join_char_and_free(*expanded, key[*i], &shell->gc);
 }

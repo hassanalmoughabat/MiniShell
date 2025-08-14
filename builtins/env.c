@@ -12,7 +12,7 @@
 
 #include "../includes/minihell.h"
 
-char	*path_extract(char *str, int count)
+char	*path_extract(char *str, int count, t_gc *gc)
 {
 	int				i;
 	int				word_len;
@@ -23,7 +23,7 @@ char	*path_extract(char *str, int count)
 	while (str[i])
 		i++;
 	word_len = i - count;
-	path = malloc(sizeof(char) * (word_len + 1));
+	path = ft_malloc(gc, sizeof(char) * (word_len + 1));
 	if (!path)
 		return (0);
 	j = 0;
@@ -37,7 +37,7 @@ char	*path_extract(char *str, int count)
 	return (path);
 }
 
-char	*get_my_path(t_env *env)
+char	*get_my_path(t_env *env, t_gc *gc)
 {
 	t_env	*current;
 	char	*path;
@@ -49,7 +49,7 @@ char	*get_my_path(t_env *env)
 	{
 		if (ft_strncmp(current->line, "PATH=", 5) == 0)
 		{
-			path = path_extract(current->line, 5);
+			path = path_extract(current->line, 5, gc);
 			env->exit_status = ENU_SUCCESS;
 			return (path);
 		}
@@ -58,7 +58,7 @@ char	*get_my_path(t_env *env)
 	return (NULL);
 }
 
-char	**transform(t_env *env)
+char	**transform(t_env *env, t_gc *gc)
 {
 	char	**ftenvp;
 	int		count;
@@ -72,14 +72,14 @@ char	**transform(t_env *env)
 		count++;
 		current = current->next;
 	}
-	ftenvp = (char **)malloc(sizeof(char *) * (count + 1));
+	ftenvp = (char **)ft_malloc(gc, sizeof(char *) * (count + 1));
 	if (!ftenvp)
 		return (NULL);
 	current = env;
 	i = 0;
 	while (current && i < count)
 	{
-		ftenvp[i] = ft_strdup(current->line);
+		ftenvp[i] = ft_strdup_gc(gc, current->line);
 		i++;
 		current = current->next;
 	}
@@ -99,7 +99,7 @@ char	*my_getenv(char *name, char **env)
 		j = 0;
 		while (env[i][j] && env[i][j] != '=')
 			j++;
-		sub = ft_substr(env[i], 0, j);
+		sub = ft_substr(env[i], 0, j, NULL);
 		if (ft_strcmp(sub, name) == 0)
 		{
 			free(sub);

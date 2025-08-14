@@ -12,16 +12,13 @@
 
 #include "token.h"
 
-t_token	*create_token(char *value, t_token_type operator)
+t_token	*create_token(char *value, t_token_type operator, t_gc *gc)
 {
 	t_token	*new_token;
 
-	new_token = (t_token *)ft_calloc(1, sizeof(t_token));
+	new_token = (t_token *)ft_malloc(gc, sizeof(t_token));
 	if (!new_token)
-	{
-		free(value);
 		return (NULL);
-	}
 	new_token->type = operator;
 	new_token->cmd = value;
 	new_token->next = NULL;

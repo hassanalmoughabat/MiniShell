@@ -34,10 +34,10 @@ void	cleanup_pipes(t_pipe_data *data)
 	i = 0;
 	while (i < data->pipe_count)
 	{
-		free(data->pipes[i]);
+		// Pipes are managed by gc, no manual free needed
 		i++;
 	}
-	free(data->pipes);
+	// data->pipes is managed by gc, no manual free needed
 }
 
 void	handle_signal_output(int sig, int *flag_quit)
@@ -66,9 +66,13 @@ void	wait_for_children(t_pipe_data *data, t_shell *shell)
 	final_status = 0;
 	flag_quit = 0;
 	got_final_status = 0;
-	waited_pid = wait(&status);
-	while (waited_pid > 0)
+	while ((waited_pid = wait(&status)) > 0)
 	{
+		if (g_signal.sig_status == 130)
+		{
+			kill(0, SIGTERM);
+			break;
+		}
 		if (waited_pid == data->last_child_pid)
 		{
 			final_status = status;
@@ -76,7 +80,6 @@ void	wait_for_children(t_pipe_data *data, t_shell *shell)
 			if (WIFSIGNALED(status))
 				handle_signal_output(WTERMSIG(status), &flag_quit);
 		}
-		waited_pid = wait(&status);
 	}
 	set_exit_status(shell, final_status, got_final_status);
 	cleanup_pipes(data);

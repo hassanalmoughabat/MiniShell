@@ -18,7 +18,7 @@ int	redirect_last_out(t_token *last, t_shell *shell)
 	int	fd;
 	int	dup_result;
 
-	remove_added_quotes(&last->next->cmd);
+	remove_added_quotes(&last->next->cmd, NULL);
 	if (last->type == T_GREAT)
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
 	else
@@ -66,8 +66,8 @@ int	process_redirs(t_shell *shell, t_token **last_out)
 void	exec_filtered_cmd(t_shell *shell, t_token *cmd_tokens)
 {
 	shell->tk = cmd_tokens;
-	remove_added_quotes(&cmd_tokens->cmd);
-	if (ft_is_builtin(cmd_tokens->cmd))
+	remove_added_quotes(&cmd_tokens->cmd, &shell->gc);
+	if (ft_is_builtin(cmd_tokens->cmd, shell))
 		handle_builtin(shell, cmd_tokens->cmd);
 	else
 		handle_path_command(shell, cmd_tokens->cmd);

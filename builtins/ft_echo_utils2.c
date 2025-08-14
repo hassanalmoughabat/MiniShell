@@ -40,7 +40,7 @@ void	normalize_helper(char *str, int i, char **result)
 	return ;
 }
 
-char	*normalize_spaces(char *str)
+char	*normalize_spaces(char *str, t_gc *gc)
 {
 	char	*result;
 	int		i;
@@ -48,7 +48,7 @@ char	*normalize_spaces(char *str)
 	i = 0;
 	if (!str)
 		return (NULL);
-	result = malloc(ft_strlen(str) + 1);
+	result = ft_malloc(gc, ft_strlen(str) + 1);
 	if (!result)
 		return (NULL);
 	while (str[i] && ft_check_space(str[i]))
@@ -69,27 +69,25 @@ int	is_quote_token(char *str)
 			&& str[1] == '"' && str[2] == '\''));
 }
 
-void	handle_n_cases(t_token **tk, int *flag)
+void	handle_n_cases(t_token **tk, int *flag, t_gc *gc)
 {
 	char	*content;
 	int		n_check;
 
 	while (*tk)
 	{
-		n_check = check_n_flags((*tk)->cmd);
+		n_check = check_n_flags((*tk)->cmd, gc);
 		if (n_check == 1)
 			*flag = 1;
 		else if (n_check == 2)
 		{
 			*flag = 1;
-			content = extract_content_after_flags((*tk)->cmd);
+			content = extract_content_after_flags((*tk)->cmd, gc);
 			if (content && content[0])
 			{
-				free((*tk)->cmd);
 				(*tk)->cmd = content;
 				break ;
 			}
-			free(content);
 		}
 		else
 			break ;

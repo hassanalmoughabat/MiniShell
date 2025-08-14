@@ -48,17 +48,17 @@ int	quote_type(char *str)
 	return (0);
 }
 
-int	remove_added_quotes(char **value)
+int	remove_added_quotes(char **value, t_gc *gc)
 {
 	char	*temp;
 	char	*result;
 	size_t	i;
 	size_t	j;
 
-	if (!*value || !value)
+	if (!value || !*value)
 		return (0);
 	temp = *value;
-	result = malloc(ft_strlen(temp) + 1);
+	result = ft_malloc(gc, ft_strlen(temp) + 1);
 	if (!result)
 		return (1);
 	i = 0;
@@ -67,11 +67,24 @@ int	remove_added_quotes(char **value)
 	{
 		if (ft_check_quotes(temp[i]) && !escape(temp, i)
 			&& handle_export_quotes(temp, result, &i, &j) == -1)
-			return (free(result), -1);
+		{
+			if (!gc)
+				free(result);
+			return (-1);
+		}
 		else if (!ft_check_quotes(temp[i]) || escape(temp, i))
 			result[j++] = temp[i++];
 	}
 	result[j] = '\0';
-	*value = ft_strdup(result);
-	return (free(result), 0);
+	if (gc)
+	{
+		*value = ft_strdup_gc(gc, result);
+		// Don't free result - it's managed by gc
+	}
+	else
+	{
+		*value = ft_strdup(result);
+		free(result);
+	}
+	return (0);
 }

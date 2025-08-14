@@ -12,24 +12,25 @@
 
 #include "../includes/minihell.h"
 
-void	add_old_pwd_var(char *target, char *new_value, t_env **head)
+void	add_old_pwd_var(char *target, char *new_value, t_env **head, t_gc *gc)
 {
 	char	*updated_value;
 
 	updated_value = NULL;
 	if (!ft_strcmp(target, "OLDPWD="))
 	{
-		updated_value = ft_strjoin(target, new_value);
+		updated_value = ft_strjoin(target, new_value, gc);
 		if (updated_value)
 		{
-			ft_add_key_to_env(head, updated_value);
-			free(updated_value);
+			ft_add_key_to_env(head, updated_value, gc);
+			if (!gc)
+				free(updated_value);
 		}
 	}
 	return ;
 }
 
-void	update_env_value(t_env **head, char *target, char *new_value)
+void	update_env_value(t_env **head, char *target, char *new_value, t_gc *gc)
 {
 	char	*updated_value;
 	size_t	len;
@@ -38,7 +39,7 @@ void	update_env_value(t_env **head, char *target, char *new_value)
 	len = ft_strlen(new_value);
 	if (!*head || !target || !new_value)
 		return ;
-	updated_value = malloc(ft_strlen(target) + len + 1);
+	updated_value = ft_malloc(gc, ft_strlen(target) + len + 1);
 	if (!updated_value)
 		return ;
 	current = *head;
@@ -49,25 +50,23 @@ void	update_env_value(t_env **head, char *target, char *new_value)
 		{
 			ft_strcpy(updated_value, target);
 			ft_strcat(updated_value, new_value);
-			free(current->line);
 			current->line = updated_value;
 			return ;
 		}
 		current = current->next;
 	}
-	add_old_pwd_var(target, new_value, head);
+	add_old_pwd_var(target, new_value, head, gc);
 }
 
-char	*ft_get_pwd(void)
+char	*ft_get_pwd(t_gc *gc)
 {
 	char	*cwd;
 
-	cwd = malloc(PATH_MAX);
+	cwd = ft_malloc(gc, PATH_MAX);
 	if (!cwd)
 		return (NULL);
 	if (getcwd(cwd, PATH_MAX))
 		return (cwd);
-	free(cwd);
 	return (NULL);
 }
 

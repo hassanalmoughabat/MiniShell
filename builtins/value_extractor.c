@@ -12,7 +12,7 @@
 
 #include "../includes/minihell.h"
 
-char	*extract_dollar_var(char *key, int *index)
+char	*extract_dollar_var(char *key, int *index, t_gc *gc)
 {
 	char	*dollar_value;
 	int		start;
@@ -27,7 +27,7 @@ char	*extract_dollar_var(char *key, int *index)
 		(*index)++;
 		length++;
 	}
-	dollar_value = malloc(sizeof(char) * (length + 1));
+	dollar_value = ft_malloc(gc, sizeof(char) * (length + 1));
 	if (!dollar_value)
 		return (NULL);
 	while (j < length)
@@ -51,7 +51,7 @@ char	*extract_quoted_substring(char *input, int *i)
 		(*i)++;
 	if (input[*i] == quote)
 		(*i)++;
-	substr = ft_substr(input, start, (*i) - start);
+	substr = ft_substr(input, start, (*i) - start, NULL);
 	return (substr);
 }
 
@@ -70,7 +70,7 @@ char	*extract_unquoted_substring(char *input, int *i, int *flag)
 		(*i)++;
 		len ++;
 	}
-	substr = ft_substr(input, start, len);
+	substr = ft_substr(input, start, len, NULL);
 	return (substr);
 }
 

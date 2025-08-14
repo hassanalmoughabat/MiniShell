@@ -21,7 +21,7 @@ char	*extract_and_expand(char *input, t_shell *shell)
 
 	i = 0;
 	flag = 0;
-	expanded = ft_strdup("");
+	expanded = ft_strdup_gc(&shell->gc, "");
 	while (input[i])
 	{
 		if (ft_check_quotes(input[i]) && !escape(input, i))
@@ -31,8 +31,7 @@ char	*extract_and_expand(char *input, t_shell *shell)
 		if (!substr)
 			continue ;
 		expand_helper(&substr, flag, shell);
-		expanded = ft_strjoin(expanded, substr);
-		free(substr);
+		expanded = ft_strjoin(expanded, substr, &shell->gc);
 	}
 	return (expanded);
 }
@@ -45,7 +44,7 @@ void	handle_value(char *value, char **result, t_shell *shell)
 	temp = extract_and_expand(value, shell);
 	if (temp)
 	{
-		*result = ft_strdup(temp);
+		*result = ft_strdup_gc(&shell->gc, temp);
 		free(temp);
 	}
 }

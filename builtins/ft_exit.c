@@ -78,6 +78,5 @@ void	ft_exit(t_shell *shell)
 		else
 			handle_exit_code(curr, shell);
 	}
-	free_env_list(shell->copy);
 	exit(shell->env->exit_status);
 }

@@ -28,17 +28,17 @@ void	respective_addition(t_shell *shell, int flag, t_env **copy)
 	{
 		if (check_if_var_exist(copy, shell->key))
 		{
-			val = get_value_from_env(shell->key, *copy);
+			val = get_value_from_env(shell->key, *copy, &shell->gc);
 			if (val && ft_strcmp(val, ""))
 				ft_update_env(copy, shell);
 		}
 		else
-			ft_add_key_to_env(copy, shell->key);
+			ft_add_key_to_env(copy, shell->key, &shell->gc);
 		return ;
 	}
 }
 
-char	*escaped_copy(char *input, size_t len, size_t quote_count)
+char	*escaped_copy(char *input, size_t len, size_t quote_count, t_gc *gc)
 {
 	size_t	i;
 	size_t	j;
@@ -46,7 +46,7 @@ char	*escaped_copy(char *input, size_t len, size_t quote_count)
 
 	i = 0;
 	j = 0;
-	escaped = malloc(len + quote_count + 1);
+	escaped = ft_malloc(gc, len + quote_count + 1);
 	if (!escaped)
 		return (NULL);
 	while (i < len)
@@ -59,7 +59,7 @@ char	*escaped_copy(char *input, size_t len, size_t quote_count)
 	return (escaped);
 }
 
-char	*escape_all_quotes(char *input)
+char	*escape_all_quotes(char *input, t_gc *gc)
 {
 	char	*temp;
 	size_t	len;
@@ -77,7 +77,7 @@ char	*escape_all_quotes(char *input)
 			quote_count++;
 		i ++;
 	}
-	temp = escaped_copy(input, len, quote_count);
+	temp = escaped_copy(input, len, quote_count, gc);
 	return (temp);
 }
 
@@ -94,7 +94,7 @@ void	ft_export(t_shell *shell, t_env **copy)
 	{
 		i = set_key_value(curr, &(shell->key), &(shell->value), shell);
 		if (contains_quote(shell->value))
-			shell->value = escape_all_quotes(shell->value);
+			shell->value = escape_all_quotes(shell->value, &shell->gc);
 		if ((!shell->key || shell->key[0] == '\0' || !ft_strcmp(shell->key, ""))
 			&& !curr->next && i == 1)
 			print_export_env(shell, 1, *copy);

@@ -41,19 +41,17 @@ void	handle_empty_dir(t_shell *shell, char *home)
 	{
 		current_pwd = ft_get_cd_pwd();
 		if (current_pwd)
-			current_pwd = ft_strdup(current_pwd);
+			current_pwd = ft_strdup_gc(&shell->gc, current_pwd);
 		else
 			current_pwd = set_curr_pwd(shell);
 		if (chdir(home))
 		{
 			shell->env->exit_status = ft_err_msg((t_error){home,
 					ERROR_MESG_NO_FILE, ENU_GENEREAL_FAILURE});
-			free(current_pwd);
 			return ;
 		}
 		update_env_values(shell, current_pwd);
 		shell->env->exit_status = 0;
-		free(current_pwd);
 	}
 }
 
@@ -61,16 +59,15 @@ void	set_env_pwd(char **home, char **dir, t_shell *shell)
 {
 	*home = my_getenv("HOME", shell->ft_env);
 	*dir = find_dir_in_list(shell->tk);
-	remove_added_quotes(dir);
-	remove_added_quotes(home);
+	remove_added_quotes(dir, &shell->gc);
+	remove_added_quotes(home, &shell->gc);
 }
 
 int	fix_home(char **dir, char *home, int flag, t_shell *shell)
 {
 	if (flag == 1)
 	{
-		free(*dir);
-		*dir = ft_strdup(home);
+		*dir = ft_strdup_gc(&shell->gc, home);
 		return (1);
 	}
 	else if (flag == 2)
@@ -94,7 +91,7 @@ void	ft_cd(t_shell *shell)
 	current_pwd = ft_get_cd_pwd();
 	if (!current_pwd)
 		current_pwd = set_curr_pwd(shell);
-	old_pwd = ft_strdup(current_pwd);
+	old_pwd = ft_strdup_gc(&shell->gc, current_pwd);
 	set_env_pwd(&home, &dir, shell);
 	if (dir && !ft_strcmp(dir, "-"))
 		return ((void)retrieve_dir(shell, old_pwd));
@@ -108,5 +105,4 @@ void	ft_cd(t_shell *shell)
 			return ;
 		update_env_values(shell, old_pwd);
 	}
-	free(old_pwd);
 }

@@ -92,7 +92,7 @@ void	fill_new_del(char *new_del, char *delim)
 	new_del[j] = '\0';
 }
 
-char	*dollar_delimeter(char *delim)
+char	*dollar_delimeter(char *delim, t_gc *gc)
 {
 	int		len;
 	char	*new_del;
@@ -100,14 +100,17 @@ char	*dollar_delimeter(char *delim)
 	if (!delim)
 		return (NULL);
 	len = calc_new_len(delim);
-	new_del = malloc(sizeof(char) * (len + 1));
+	if (gc)
+		new_del = ft_malloc(gc, sizeof(char) * (len + 1));
+	else
+		new_del = malloc(sizeof(char) * (len + 1));
 	if (!new_del)
 		return (NULL);
 	fill_new_del(new_del, delim);
 	return (new_del);
 }
 
-char	*get_delimeter(t_token *tk)
+char	*get_delimeter(t_token *tk, t_gc *gc)
 {
 	t_token	*curr;
 	char	*temp;
@@ -117,7 +120,7 @@ char	*get_delimeter(t_token *tk)
 	{
 		if (ft_strcmp(curr->cmd, "<<") == 0 && curr->next)
 		{
-			temp = dollar_delimeter(curr->next->cmd);
+			temp = dollar_delimeter(curr->next->cmd, gc);
 			return (temp);
 		}
 		curr = curr->next;

@@ -12,7 +12,7 @@
 
 #include "../includes/minihell.h"
 
-char	**build_argv_from_tokens(t_token *tk)
+char	**build_argv_from_tokens(t_token *tk, t_gc *gc)
 {
 	char	**argv;
 	int		count;
@@ -20,14 +20,12 @@ char	**build_argv_from_tokens(t_token *tk)
 	count = count_total_args(tk);
 	if (count == 0)
 		return (NULL);
-	argv = malloc(sizeof(char *) * (count + 1));
+	argv = ft_malloc(gc, sizeof(char *) * (count + 1));
 	if (!argv)
 		return (NULL);
 	if (!fill_argv_from_tokens(argv, tk, count))
 	{
-		while (--count >= 0)
-			free(argv[count]);
-		free(argv);
+		// Memory will be freed by gc, no need to free manually
 		return (NULL);
 	}
 	return (argv);

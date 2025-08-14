@@ -13,11 +13,11 @@
 #include "token.h"
 
 int	ft_append_operator(t_token **list, t_token_type operator,
-	char **input, char *value)
+	char **input, char *value, t_gc *gc)
 {
 	t_token	*new_token;
 
-	new_token = create_token(value, operator);
+	new_token = create_token(value, operator, gc);
 	if (!new_token)
 		return (0);
 	ft_add_token_last(list, new_token);
@@ -35,19 +35,19 @@ int	ft_check_special_char(char *str)
 	return (0);
 }
 
-int	ft_handle_operators(char **input, t_token **list)
+int	ft_handle_operators(char **input, t_token **list, t_gc *gc)
 {
 	if (**input == '>' && (*input)[1] != '>')
-		return (ft_append_operator(list, T_GREAT, input, ">"));
+		return (ft_append_operator(list, T_GREAT, input, ">", gc));
 	else if (**input == '<' && (*input)[1] != '<')
-		return (ft_append_operator(list, T_LESS, input, "<"));
+		return (ft_append_operator(list, T_LESS, input, "<", gc));
 	else if (**input == '>' && (*input)[1] == '>')
-		return (ft_append_operator(list, T_DGREAT, input, ">>"));
+		return (ft_append_operator(list, T_DGREAT, input, ">>", gc));
 	else if (**input == '<' && (*input)[1] == '<')
-		return (ft_append_operator(list, T_DLESS, input, "<<"));
+		return (ft_append_operator(list, T_DLESS, input, "<<", gc));
 	else if (!ft_strncmp(*input, "|", 1))
-		return (ft_append_operator(list, T_PIPE, input, "|"));
+		return (ft_append_operator(list, T_PIPE, input, "|", gc));
 	else if (!ft_strncmp(*input, "\n", 1))
-		return (ft_append_operator(list, T_NL, input, "new_line"));
+		return (ft_append_operator(list, T_NL, input, "new_line", gc));
 	return (0);
 }

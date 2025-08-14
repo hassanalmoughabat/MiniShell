@@ -23,7 +23,7 @@ int	is_char(char c, char const *set)
 	return (0);
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strtrim(char const *s1, char const *set, struct s_garbage_collector *gc)
 {
 	char	*trim_s1;
 	int		start;
@@ -41,7 +41,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 		start++;
 	if (start >= end)
 		return (ft_strdup(""));
-	trim_s1 = (char *)malloc((end - start + 1) * sizeof(char));
+	trim_s1 = (char *)ft_malloc(gc, (end - start + 1) * sizeof(char));
 	if (!trim_s1)
 		return (NULL);
 	while (++i < end - start)

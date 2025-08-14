@@ -55,7 +55,7 @@ int	ft_pwd(t_shell *shell)
 		ft_putendl_fd(cwd, 1);
 		return (shell->env->exit_status = 0, 1);
 	}
-	pwd_env = get_value_from_env("PWD", shell->env);
+	pwd_env = get_value_from_env("PWD", shell->env, NULL);
 	if (pwd_env && pwd_env[0])
 	{
 		ft_putendl_fd(pwd_env, 1);
@@ -79,7 +79,7 @@ t_env	*ft_copy(t_env *envp)
 	current = envp;
 	while (current)
 	{
-		new_node = new_env_node(current->line);
+		new_node = new_env_node(current->line, NULL);
 		if (!new_node)
 			return (ft_free_env(head), NULL);
 		if (!head)
@@ -102,13 +102,13 @@ void	handle_builtin(t_shell *shell, char *cmd)
 	static t_env	*copy;
 
 	if (copy == NULL)
-		copy = copy_env(shell->env);
+		copy = copy_env(shell->env, &shell->gc);
 	if (!copy)
 		return ;
-	remove_added_quotes(&cmd);
-	remove_added_quotes(&shell->tk->cmd);
+	remove_added_quotes(&cmd, &shell->gc);
+	remove_added_quotes(&shell->tk->cmd, &shell->gc);
 	if (!ft_strcmp(cmd, "env"))
-		ft_print_env(shell->env);
+		ft_print_env(shell->env, &shell->gc);
 	else if (!ft_strcmp(cmd, "pwd"))
 		ft_pwd(shell);
 	else if (!ft_strcmp(cmd, "cd"))

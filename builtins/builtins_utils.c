@@ -41,36 +41,40 @@ int	ft_list_size(t_token *token)
 	return (size);
 }
 
-void	print_helper(t_env *env)
+void	print_helper(t_env *env, t_gc *gc)
 {
 	char	*pwd;
 	char	*pwd_env;
+	char	*temp_env;
 
-	ft_putstr_fd(get_value_from_env("_=", env), 1);
+	temp_env = get_value_from_env("_=", env, NULL);
+	if (temp_env)
+	{
+		ft_putstr_fd(temp_env, 1);
+		free(temp_env);
+	}
 	ft_putstr_fd("\n", 1);
-	pwd = ft_get_pwd();
+	pwd = ft_get_pwd(gc);
 	if (pwd)
 	{
-		pwd_env = ft_strjoin("PWD=", pwd);
+		pwd_env = ft_strjoin("PWD=", pwd, gc);
 		if (pwd_env)
 		{
 			ft_putstr_fd(pwd_env, 1);
 			ft_putstr_fd("\n", 1);
-			free(pwd_env);
 		}
-		free(pwd);
 	}
 	ft_putstr_fd("SHLVL=1\n", 1);
 	ft_putstr_fd("_=\n", 1);
 }
 
-void	ft_print_env(t_env *env)
+void	ft_print_env(t_env *env, t_gc *gc)
 {
 	t_env	*ev;
 
 	ev = env;
 	if (!ev)
-		print_helper(env);
+		print_helper(env, gc);
 	else
 	{
 		while (ev)

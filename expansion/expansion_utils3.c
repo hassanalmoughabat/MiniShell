@@ -54,13 +54,13 @@ char	*handle_dollar(char *key, int flag, t_shell *shell)
 	char	*expanded;
 
 	i = 0;
-	expanded = ft_strdup("");
+	expanded = ft_strdup_gc(&shell->gc, "");
 	while (key[i])
 	{
 		if (key[i] == '$' && !escape(key, i))
 			process_dollar_char(key, &i, &expanded, shell);
 		else
-			expanded = join_char_and_free(expanded, key[i]);
+			expanded = join_char_and_free(expanded, key[i], &shell->gc);
 		i++;
 	}
 	(void)flag;

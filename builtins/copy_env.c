@@ -25,26 +25,23 @@ void	ft_free_env(t_env *head)
 	}
 }
 
-t_env	*new_env_node(char *key_value)
+t_env	*new_env_node(char *key_value, t_gc *gc)
 {
 	t_env	*node;
 
 	if (!key_value)
 		return (NULL);
-	node = malloc(sizeof(t_env));
+	node = ft_malloc(gc, sizeof(t_env));
 	if (!node)
 		return (NULL);
-	node->line = ft_strdup(key_value);
+	node->line = ft_strdup_gc(gc, key_value);
 	if (!node->line)
-	{
-		free(node);
 		return (NULL);
-	}
 	node->next = NULL;
 	return (node);
 }
 
-char	*copy_env_node(t_env *env)
+char	*copy_env_node(t_env *env, t_gc *gc)
 {
 	char	*equal_ptr;
 	char	*key;
@@ -52,19 +49,17 @@ char	*copy_env_node(t_env *env)
 	char	*temp;
 
 	equal_ptr = ft_strchr(env->line, '=');
-	key = ft_substr(env->line, 0, equal_ptr - env->line);
+	key = ft_substr(env->line, 0, equal_ptr - env->line, gc);
 	equal_ptr ++;
 	if (equal_ptr)
-		value = ft_strdup(equal_ptr);
-	temp = quotes_in_env(value, key, 0);
-	free(key);
-	free(value);
+		value = ft_strdup_gc(gc, equal_ptr);
+	temp = quotes_in_env(value, key, 0, gc);
 	if (!temp)
 		return (NULL);
 	return (temp);
 }
 
-t_env	*copy_env(t_env *envp)
+t_env	*copy_env(t_env *envp, t_gc *gc)
 {
 	t_env	*head;
 	t_env	*curr1;
@@ -75,7 +70,7 @@ t_env	*copy_env(t_env *envp)
 	current = envp;
 	while (current)
 	{
-		new_node = new_env_node(copy_env_node(current));
+		new_node = new_env_node(copy_env_node(current, gc), gc);
 		if (!new_node)
 			return (ft_free_env(head), NULL);
 		if (!head)

@@ -60,7 +60,7 @@ int	open_last_input_redir(t_shell *shell)
 		if (curr->type == T_LESS && curr->next && is_valid_filename(curr->next))
 		{
 			last_in = curr;
-			remove_added_quotes(&last_in->next->cmd);
+			remove_added_quotes(&last_in->next->cmd, NULL);
 			if (fd != -1)
 				close(fd);
 			fd = open(last_in->next->cmd, O_RDONLY);

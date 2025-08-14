@@ -30,8 +30,6 @@ void	delete_env_node(t_env **env, char *target)
 				prev->next = current->next;
 			else
 				*env = current->next;
-			free(current->line);
-			free(current);
 			return ;
 		}
 		prev = current;

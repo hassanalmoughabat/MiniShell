@@ -39,14 +39,14 @@ int	ft_pipe_builtin(t_token *tk)
 	return (0);
 }
 
-t_token	*create_token_copy(t_token *src)
+t_token	*create_token_copy(t_token *src, t_gc *gc)
 {
 	t_token	*new_token;
 
-	new_token = malloc(sizeof(t_token));
+	new_token = ft_malloc(gc, sizeof(t_token));
 	if (!new_token)
 		return (NULL);
-	new_token->cmd = ft_strdup(src->cmd);
+	new_token->cmd = ft_strdup_gc(gc, src->cmd);
 	new_token->type = src->type;
 	new_token->next = NULL;
 	new_token->prev = NULL;

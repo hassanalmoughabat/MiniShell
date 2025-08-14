@@ -19,12 +19,12 @@ void	update_env_values(t_shell *shell, char *old_pwd)
 	new_pwd = ft_get_cd_pwd();
 	if (new_pwd)
 	{
-		update_env_value(&(shell->env), "OLDPWD=", old_pwd);
-		update_env_value(&(shell->env), "PWD=", new_pwd);
+		update_env_value(&(shell->env), "OLDPWD=", old_pwd, &shell->gc);
+		update_env_value(&(shell->env), "PWD=", new_pwd, &shell->gc);
 	}
 	else
 	{
-		update_env_value(&(shell->env), "OLDPWD=", old_pwd);
+		update_env_value(&(shell->env), "OLDPWD=", old_pwd, &shell->gc);
 		ft_putstr_fd("cd: error retrieving current directory: ", 2);
 		ft_putstr_fd("getcwd: cannot access parent directories: ", 2);
 		ft_putstr_fd("No such file or directory\n", 2);

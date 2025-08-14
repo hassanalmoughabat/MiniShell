@@ -37,25 +37,29 @@ void	free_my_env(t_env *env)
 	}
 }
 
-t_env	*create_env_node(char *envp)
+t_env	*create_env_node(char *envp, t_gc *gc)
 {
 	t_env	*new_node;
 
-	new_node = (t_env *)malloc(sizeof(t_env));
+	new_node = (t_env *)ft_malloc(gc, sizeof(t_env));
 	if (!new_node)
 		return (NULL);
-	new_node->line = ft_strdup(envp);
+	if (gc)
+		new_node->line = ft_strdup_gc(gc, envp);
+	else
+		new_node->line = ft_strdup(envp);
 	new_node->exit_status = ENU_SUCCESS;
 	if (!new_node->line)
 	{
-		free(new_node);
+		if (!gc)
+			free(new_node);
 		return (NULL);
 	}
 	new_node->next = NULL;
 	return (new_node);
 }
 
-t_env	*initialize_env_list(char **envp)
+t_env	*initialize_env_list(char **envp, t_gc *gc)
 {
 	t_env	*head;
 	t_env	*current;
@@ -66,7 +70,7 @@ t_env	*initialize_env_list(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		new_node = create_env_node(envp[i]);
+		new_node = create_env_node(envp[i], gc);
 		if (!new_node)
 		{
 			free_my_env(head);
@@ -92,14 +96,20 @@ char	*get_path(char *cmd, char *envp[])
 	char	**s_cmd;
 
 	i = 0;
-	allpath = ft_split(my_getenv("PATH", envp), ':');
-	s_cmd = ft_split(cmd, ' ');
-	if (!allpath)
+	allpath = ft_split(my_getenv("PATH", envp), ':', NULL);
+	s_cmd = ft_split(cmd, ' ', NULL);
+	if (!allpath || !s_cmd || !s_cmd[0])
+	{
+		if (allpath)
+			ft_free_tab(allpath);
+		if (s_cmd)
+			ft_free_tab(s_cmd);
 		return (NULL);
+	}
 	while (allpath[i])
 	{
-		path_part = ft_strjoin(allpath[i], "/");
-		exec = ft_strjoin(path_part, s_cmd[0]);
+		path_part = ft_strjoin(allpath[i], "/", NULL);
+		exec = ft_strjoin(path_part, s_cmd[0], NULL);
 		free(path_part);
 		if (access(exec, F_OK | X_OK) == 0)
 			return (ft_free_tab(s_cmd), ft_free_tab(allpath), exec);

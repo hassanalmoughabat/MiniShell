@@ -36,7 +36,7 @@ void	child_exec(t_shell *shell, char *cmd, char **argv)
 	path = get_path(argv[0], shell->ft_env);
 	if (!path)
 	{
-		remove_added_quotes(&cmd);
+		remove_added_quotes(&cmd, NULL);
 		shell->env->exit_status = ft_err_msg((t_error){cmd,
 				ERROR_MESG_NO_FILE, ENU_CMD_NOT_FOUND});
 		exit(127);
@@ -76,7 +76,7 @@ int	handle_empty_cmd(t_shell *shell, char *cmd)
 {
 	if (!ft_strcmp(cmd, "\"\"") || !ft_strcmp(cmd, "''"))
 	{
-		remove_added_quotes(&cmd);
+		remove_added_quotes(&cmd, NULL);
 		shell->env->exit_status = ft_err_msg((t_error){cmd,
 				ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
 		return (1);
@@ -84,12 +84,12 @@ int	handle_empty_cmd(t_shell *shell, char *cmd)
 	return (0);
 }
 
-int	ft_is_builtin(char *cmd)
+int	ft_is_builtin(char *cmd, t_shell *shell)
 {
 	char	*temp;
 
-	temp = ft_strdup(cmd);
-	remove_added_quotes(&temp);
+	temp = ft_strdup_gc(&shell->gc, cmd);
+	remove_added_quotes(&temp, &shell->gc);
 	if ((ft_strcmp(temp, "cd") == 0))
 		return (1);
 	else if (ft_strcmp(temp, "echo") == 0)
@@ -104,6 +104,5 @@ int	ft_is_builtin(char *cmd)
 		return (1);
 	else if (ft_strcmp(temp, "env") == 0)
 		return (1);
-	free (temp);
 	return (0);
 }

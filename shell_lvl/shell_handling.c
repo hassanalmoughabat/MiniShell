@@ -12,13 +12,13 @@
 
 #include "../includes/minihell.h"
 
-void	add_shell_level(t_env **env, char *new_line)
+void	add_shell_level(t_env **env, char *new_line, t_gc *gc)
 {
 	t_env	*curr;
 	t_env	*new_node;
 
 	curr = *env;
-	new_node = create_env_node(new_line);
+	new_node = create_env_node(new_line, gc);
 	if (!new_node)
 		return ;
 	while (curr && ft_strncmp(curr->line, "DISPLAY=", 8))
@@ -46,14 +46,13 @@ void	update_shlvl_in_env(t_env **env, int new_shlvl)
 	curr = *env;
 	while (curr && ft_strncmp(curr->line, "SHLVL=", 6))
 		curr = curr->next;
-	new_value = ft_itoa(new_shlvl);
-	new_line = ft_strjoin("SHLVL=", new_value);
+	new_value = ft_itoa(new_shlvl, NULL);
+	new_line = ft_strjoin("SHLVL=", new_value, NULL);
 	free(new_value);
 	if (curr)
 	{
-		free(curr->line);
 		curr->line = new_line;
 	}
 	else
-		add_shell_level(env, new_line);
+		add_shell_level(env, new_line, NULL);
 }

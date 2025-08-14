@@ -73,7 +73,7 @@ int	is_dollar_inside_single_quotes(char *str, int dollar_pos)
 	return (in_single);
 }
 
-char	*skip_dollars_before_quotes(char *str)
+char	*skip_dollars_before_quotes(char *str, t_gc *gc)
 {
 	char	*result;
 	int		i;
@@ -83,7 +83,7 @@ char	*skip_dollars_before_quotes(char *str)
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
-	result = malloc(len);
+	result = ft_malloc(gc, len);
 	if (!result)
 		return (NULL);
 	i = 0;
@@ -100,7 +100,7 @@ char	*expand_token_value(char *cmd, t_shell *shell)
 
 	temp = NULL;
 	if (!should_expand_dollar(cmd))
-		temp = skip_dollars_before_quotes(cmd);
+		temp = skip_dollars_before_quotes(cmd, &shell->gc);
 	else
 		handle_value(cmd, &temp, shell);
 	return (temp);

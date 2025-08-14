@@ -12,7 +12,7 @@
 
 #include "../includes/minihell.h"
 
-int	has_equal_in_quote(char *input, char *quote)
+int	has_equal_in_quote(char *input, char *quote, t_gc *gc)
 {
 	int		i;
 	int		j;
@@ -27,10 +27,9 @@ int	has_equal_in_quote(char *input, char *quote)
 			j = ++ i;
 			while (input[i] && (input[i] != *quote || escape(input, i)))
 				i++;
-			substr = ft_substr(input, j, i - j);
+			substr = ft_substr(input, j, i - j, gc);
 			if (has_equal(substr))
-				return (free(substr), 1);
-			free(substr);
+				return (1);
 		}
 		i ++;
 	}
@@ -42,15 +41,15 @@ char	*get_value(char *input, char quote, int flag, t_shell *shell)
 	char	*value;
 	char	*result;
 
-	value = ft_strdup("");
+	value = ft_strdup_gc(&shell->gc, "");
 	if (!input)
 		return (NULL);
-	set_value(&value, quote, input, flag);
+	set_value(&value, quote, input, flag, &shell->gc);
 	if (!value)
 		return (NULL);
 	handle_value(value, &result, shell);
-	if (remove_added_quotes(&result) == -1)
-		return (free(value), NULL);
+	if (remove_added_quotes(&result, &shell->gc) == -1)
+		return (NULL);
 	return (result);
 }
 
@@ -59,16 +58,16 @@ char	*get_key(t_token *tk, t_shell *shell, char *quote, int *ind)
 	char	*result;
 	char	*key;
 
-	result = ft_strdup("");
+	result = ft_strdup_gc(&shell->gc, "");
 	if (!shell->curr_cmd)
 		return (NULL);
-	set_key(shell->curr_cmd, &key, quote, ind);
-	if (!check_valid_key(tk, key, shell->env))
-		return (free(key), free(result), NULL);
+	set_key(shell->curr_cmd, &key, quote, ind, &shell->gc);
+	if (!check_valid_key(tk, key, shell->env, &shell->gc))
+		return (NULL);
 	handle_value(key, &result, shell);
-	if (remove_added_quotes(&result) == -1)
-		return (free(key), free(result), NULL);
+	if (remove_added_quotes(&result, &shell->gc) == -1)
+		return (NULL);
 	if (!check_key_after_expansion(result, shell->env, tk))
-		return (error_message_export(&result), NULL);
+		return (NULL);
 	return (result);
 }

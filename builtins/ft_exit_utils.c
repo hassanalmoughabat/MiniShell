@@ -84,7 +84,7 @@ void	handle_exit_code(t_token *curr, t_shell *shell)
 	bool		in_range;
 
 	arg_num = 0;
-	remove_added_quotes(&curr->cmd);
+	remove_added_quotes(&curr->cmd, NULL);
 	if (!curr->cmd || ft_strlen(curr->cmd) == 0)
 		shell->env->exit_status = ft_err_msg((t_error){"",
 				ERROR_MESG_NUMERIC_REQUIRED, ENU_MISUSED_BUILTIN});

@@ -24,7 +24,7 @@ void	cleanup_heredocs(t_heredoc_info *heredocs, int count)
 			close(heredocs[i].fd);
 		i++;
 	}
-	free(heredocs);
+	// Memory is managed by gc, no need to free
 }
 
 int	process_single_heredoc(t_token *curr, t_heredoc_info *heredocs,
@@ -33,14 +33,13 @@ int	process_single_heredoc(t_token *curr, t_heredoc_info *heredocs,
 	char	*delimiter;
 	int		quote;
 
-	delimiter = get_delimeter(curr);
+	delimiter = get_delimeter(curr, &shell->gc);
 	if (!delimiter)
 		return (-1);
 	quote = has_quotes(delimiter);
-	remove_added_quotes(&delimiter);
+	remove_added_quotes(&delimiter, &shell->gc);
 	heredocs[i].fd = handle_dless(delimiter, shell, quote);
 	heredocs[i].position = curr;
-	free(delimiter);
 	if (heredocs[i].fd < 0)
 		return (-1);
 	return (0);
@@ -58,7 +57,7 @@ t_heredoc_info	*process_heredocs_before_pipes(t_token *lst,
 	*hd_count = count;
 	if (count == 0)
 		return (NULL);
-	heredocs = malloc(sizeof(t_heredoc_info) * count);
+	heredocs = ft_malloc(&shell->gc, sizeof(t_heredoc_info) * count);
 	if (!heredocs)
 		return (NULL);
 	curr = lst;

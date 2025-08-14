@@ -43,7 +43,7 @@ int	count_split_words(char *cmd)
 	char	**split;
 	int		i;
 
-	split = ft_split(cmd, ' ');
+	split = ft_split(cmd, ' ', NULL);
 	if (!split)
 		return (0);
 	i = 0;
@@ -90,7 +90,7 @@ int	add_token_to_argv(char **argv, int *i, t_token *curr)
 	argv[*i] = ft_strdup(curr->cmd);
 	if (!argv[*i])
 		return (0);
-	remove_added_quotes(&argv[*i]);
+	remove_added_quotes(&argv[*i], NULL);
 	(*i)++;
 	return (1);
 }

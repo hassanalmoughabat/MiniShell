@@ -12,14 +12,14 @@
 
 #include "../includes/minihell.h"
 
-int	check_valid_key(t_token *tk, char *key, t_env *env)
+int	check_valid_key(t_token *tk, char *key, t_env *env, t_gc *gc)
 {
 	int		i;
 	char	*temp;
 
 	i = 1;
-	temp = ft_strdup(key);
-	remove_added_quotes(&temp);
+	temp = ft_strdup_gc(gc, key);
+	remove_added_quotes(&temp, gc);
 	if (key[0] == '#')
 		return (2);
 	if (!ft_strcmp(temp, "") || (!ft_isalpha(key[0]) && key[0] != '_'

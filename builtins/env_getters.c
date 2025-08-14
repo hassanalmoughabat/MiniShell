@@ -12,7 +12,7 @@
 
 #include "../includes/minihell.h"
 
-char	*get_value_from_env(char *key, t_env *env)
+char	*get_value_from_env(char *key, t_env *env, t_gc *gc)
 {
 	char	*value;
 	char	*temp;
@@ -28,14 +28,20 @@ char	*get_value_from_env(char *key, t_env *env)
 		{
 			temp = ft_strchr(current->line, '=');
 			temp ++;
-			value = ft_strdup(temp);
+			if (gc)
+				value = ft_strdup_gc(gc, temp);
+			else
+				value = ft_strdup(temp);
 			if (!value)
 				return (NULL);
 			return (value);
 		}
 		current = current->next;
 	}
-	return (ft_strdup(""));
+	if (gc)
+		return (ft_strdup_gc(gc, ""));
+	else
+		return (ft_strdup(""));
 }
 
 char	*get_var(char *input)
@@ -48,6 +54,6 @@ char	*get_var(char *input)
 		return (NULL);
 	while (input[i] && input[i] != '=')
 		i ++;
-	key = ft_substr(input, 0, i);
+	key = ft_substr(input, 0, i, NULL);
 	return (key);
 }

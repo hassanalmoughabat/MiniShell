@@ -22,7 +22,7 @@ int	fill_argv_from_tokens(char **argv, t_token *tk, int count)
 	{
 		if (ft_strchr(tk->cmd, ' '))
 		{
-			split = ft_split(tk->cmd, ' ');
+			split = ft_split(tk->cmd, ' ', NULL);
 			if (split && !add_split_parts(argv, &i, split, count))
 				return (ft_free_tab(split), 0);
 			ft_free_tab(split);
@@ -48,8 +48,8 @@ void	handle_path_command(t_shell *shell, char *cmd)
 
 	if (!cmd || !shell->tk || handle_empty_cmd(shell, cmd))
 		return ;
-	remove_added_quotes(&cmd);
-	argv = build_argv_from_tokens(shell->tk);
+	remove_added_quotes(&cmd, &shell->gc);
+	argv = build_argv_from_tokens(shell->tk, &shell->gc);
 	if (!argv || !argv[0] || !argv[0][0])
 		return (exit_with_cleanup(shell, argv, cmd, ENU_GENEREAL_FAILURE));
 	g_signal.signint_child = true;
@@ -104,7 +104,7 @@ void	after_parsing(t_shell *shell, char *input)
 	else if (contain_list("<<", curr) || contain_list(">>", curr)
 		|| contain_list("<", curr) || contain_list(">", curr))
 		handle_redirections(shell, curr, input);
-	else if (ft_is_builtin(curr->cmd))
+	else if (ft_is_builtin(curr->cmd, shell))
 		handle_builtin(shell, curr->cmd);
 	else
 		handle_path_command(shell, curr->cmd);

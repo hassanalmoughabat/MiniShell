@@ -61,7 +61,7 @@ char	*ft_insert(char *ptr, int len_numb, int n)
 	return (ptr);
 }
 
-char	*ft_itoa(int n)
+char	*ft_itoa(int n, struct s_garbage_collector *gc)
 {
 	char	*numb;
 	int		sign;
@@ -70,7 +70,7 @@ char	*ft_itoa(int n)
 	len_numb = 1;
 	sign = 1;
 	len_numb = len_numb + ft_lennb(n, &sign);
-	numb = (char *)malloc((len_numb + 1) * sizeof(char));
+	numb = (char *)ft_malloc(gc, (len_numb + 1) * sizeof(char));
 	if (!numb)
 		return (NULL);
 	numb[len_numb] = '\0';

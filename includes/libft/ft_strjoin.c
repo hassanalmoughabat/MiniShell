@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2, struct s_garbage_collector *gc)
 {
 	char	*dest;
 	int		pref_len;
@@ -26,7 +26,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		pref_len++;
 	while (s2[suf_len] != '\0')
 		suf_len++;
-	dest = (char *)malloc((pref_len + suf_len + 1) * sizeof(char));
+	dest = (char *)ft_malloc(gc, (pref_len + suf_len + 1) * sizeof(char));
 	if (!dest)
 		return (NULL);
 	while (s1[++i] != '\0')

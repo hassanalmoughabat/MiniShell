@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char), struct s_garbage_collector *gc)
 {
 	char			*d;
 	unsigned int	i;
@@ -21,7 +21,7 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 	while (s[i] != '\0')
 		i++;
 	i++;
-	d = (char *)malloc(i * sizeof(char));
+	d = (char *)ft_malloc(gc, i * sizeof(char));
 	if (!d)
 		return (NULL);
 	i = 0;

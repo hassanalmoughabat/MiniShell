@@ -30,16 +30,26 @@ void	ft_push_to_env(t_env **env, t_env *node)
 	return ;
 }
 
-void	ft_add_key_to_env(t_env **copy, char *key)
+void	ft_add_key_to_env(t_env **copy, char *key, t_gc *gc)
 {
 	t_env	*new_node;
 
 	if (!key)
 		return ;
-	new_node = (t_env *)malloc(sizeof(t_env));
-	if (!new_node)
-		return ;
-	new_node->line = ft_strdup(key);
+	if (gc)
+	{
+		new_node = (t_env *)ft_malloc(gc, sizeof(t_env));
+		if (!new_node)
+			return ;
+		new_node->line = ft_strdup_gc(gc, key);
+	}
+	else
+	{
+		new_node = (t_env *)malloc(sizeof(t_env));
+		if (!new_node)
+			return ;
+		new_node->line = ft_strdup(key);
+	}
 	new_node->next = NULL;
 	ft_push_to_env(copy, new_node);
 }
@@ -56,8 +66,7 @@ void	update_value(t_env **env, char *key, char *value, int flag)
 		if (!ft_strcmp(extract_key, key)
 			&& ft_strlen(key) == ft_strlen(extract_key))
 		{
-			free(current->line);
-			current->line = quotes_in_env(value, key, flag);
+			current->line = quotes_in_env(value, key, flag, NULL);
 			free(extract_key);
 			return ;
 		}
@@ -78,8 +87,7 @@ void	update_copy_add_env(t_shell *shell, t_env **copy)
 		if (!ft_strcmp(extract_key, shell->key)
 			&& ft_strlen(shell->key) == ft_strlen(extract_key))
 		{
-			free(curr1->line);
-			curr1->line = quotes_in_env(shell->value, shell->key, 0);
+			curr1->line = quotes_in_env(shell->value, shell->key, 0, NULL);
 			ft_add_env(copy, shell, 0);
 			return ;
 		}

@@ -47,11 +47,11 @@ char	*extract_value(char *str, int *index)
 	return (result);
 }
 
-static int	handle_special_char(char *key, int *i, char **expanded)
+static int	handle_special_char(char *key, int *i, char **expanded, t_gc *gc)
 {
 	if (ft_check_space(key[*i]))
 	{
-		*expanded = ft_strjoin_char(*expanded, '$');
+		*expanded = ft_strjoin_char(*expanded, '$', gc);
 		(*i)++;
 		return (1);
 	}
@@ -63,7 +63,7 @@ static int	handle_special_char(char *key, int *i, char **expanded)
 	if (ft_check_exceptions(key, *i))
 	{
 		(*i)++;
-		*expanded = ft_strjoin(*expanded, "\\$\\\\");
+		*expanded = ft_strjoin(*expanded, "\\$\\\\", NULL);
 		return (1);
 	}
 	return (0);
@@ -73,13 +73,13 @@ int	dollar_cases(char *key, int *index, char **expanded, t_shell *shell)
 {
 	char	*temp;
 
-	if (handle_special_char(key, index, expanded))
+	if (handle_special_char(key, index, expanded, &shell->gc))
 		return (1);
 	if (key[*index] == '?')
 	{
 		(*index)++;
-		temp = ft_itoa(shell->env->exit_status);
-		*expanded = ft_strjoin(*expanded, temp);
+		temp = ft_itoa(shell->env->exit_status, NULL);
+		*expanded = ft_strjoin(*expanded, temp, NULL);
 		free(temp);
 		return (1);
 	}

@@ -25,7 +25,7 @@ char	*ft_strcat(char *dest, const char *src)
 	return (dest);
 }
 
-char	*ft_strjoin_char(char *str, char c)
+char	*ft_strjoin_char(char *str, char c, t_gc *gc)
 {
 	char	*new_str;
 	size_t	len;
@@ -35,7 +35,7 @@ char	*ft_strjoin_char(char *str, char c)
 		len = 0;
 	else
 		len = ft_strlen(str);
-	new_str = (char *)malloc(len + 2);
+	new_str = (char *)ft_malloc(gc, len + 2);
 	if (!new_str)
 		return (NULL);
 	i = 0;
@@ -60,7 +60,7 @@ char	*join_env_value(char *expanded, char *value)
 	else if (!value)
 		result = ft_strdup(expanded);
 	else
-		result = ft_strjoin(expanded, value);
+		result = ft_strjoin(expanded, value, NULL);
 	return (result);
 }
 

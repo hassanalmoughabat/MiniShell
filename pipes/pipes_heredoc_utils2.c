@@ -25,7 +25,7 @@ int	setup_heredoc_pipe(t_token *lst, char **ft_env, t_env *env,
 	if (!heredoc_token || !pipe_token || !redirect_token
 		|| !redirect_token->next)
 		return (0);
-	delimiter = get_delimeter(lst);
+	delimiter = get_delimeter(lst, NULL);
 	if (!delimiter)
 		return (0);
 	pipe_params->delimiter = delimiter;
@@ -53,7 +53,7 @@ int	handle_heredoc_pipe_redirect(t_token *lst, t_shell *shell)
 	if (!setup_heredoc_pipe(lst, shell->ft_env, shell->env, &pipe_params))
 		return (0);
 	quote = has_quotes(pipe_params.delimiter);
-	remove_added_quotes(&pipe_params.delimiter);
+	remove_added_quotes(&pipe_params.delimiter, NULL);
 	if (pipe(pipefd) == -1)
 		return ((free(pipe_params.delimiter), 0));
 	child_params.pipefd = pipefd;

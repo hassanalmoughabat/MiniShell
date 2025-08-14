@@ -35,7 +35,7 @@ void	setup_pipe_redirects(t_pipe_redirect_params *params)
 	close_all_pipes(params->pipes, params->pipe_count);
 }
 
-t_token	*extract_command_segment(t_token *start, t_token *end)
+t_token	*extract_command_segment(t_token *start, t_token *end, t_gc *gc)
 {
 	t_token	*new_list;
 	t_token	*curr;
@@ -47,10 +47,10 @@ t_token	*extract_command_segment(t_token *start, t_token *end)
 	curr = start;
 	while (curr && curr != end)
 	{
-		new_token = create_token_copy(curr);
+		new_token = create_token_copy(curr, gc);
 		if (!new_token)
 		{
-			free_token_list(new_list);
+			// new_list is managed by gc, no manual free needed
 			return (NULL);
 		}
 		add_token_to_list(&new_list, &last, new_token);
