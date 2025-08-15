@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipes_utils2.c                                     :+:      :+:    :+:   */
+/*   pipes_utils4.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 01:29:15 by njoudieh42       ###   ########.fr       */
+/*   Created: 2025/08/12 20:22:08 by njoudieh42        #+#    #+#             */
+/*   Updated: 2025/08/12 23:45:44 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	handle_pipe(t_token *lst, t_shell *shell, char *input)
 			return ;
 	}
 	setup_pipe_data(&data, lst, shell);
-	if (create_pipes(&pipes, data.pipe_count, &shell->gc) == -1)
+	if (create_pipes(&pipes, data.pipe_count) == -1)
 	{
 		if (data.heredocs)
 		{
@@ -57,39 +57,4 @@ void	handle_pipe(t_token *lst, t_shell *shell, char *input)
 	}
 	data.pipes = pipes;
 	execute_pipe_commands(&data, shell);
-}
-
-static void	print_error(char *str)
-{
-	ft_putstr_fd("bash: syntax error near unexpected token `", 2);
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd("\'\n", 2);
-}
-
-int	valid_pipe(t_shell *shell, char *input)
-{
-	t_token	*tk;
-
-	tk = shell->tk;
-	while (tk)
-	{
-		if (tk->type == T_PIPE)
-		{
-			if ((tk->next->type == T_PIPE))
-			{
-				ft_putstr_fd("bash: syntax error near unexpected token `", 2);
-				pipe_error_message(input, tk);
-				ft_putstr_fd("\'\n", 2);
-				return (shell->env->exit_status = 2, 0);
-			}
-			if (tk->next->type == T_IDENTIFIER
-				&& tk->prev->type != T_IDENTIFIER)
-			{
-				print_error(tk->cmd);
-				return (shell->env->exit_status = 2, 0);
-			}
-		}
-		tk = tk->next;
-	}
-	return (1);
 }

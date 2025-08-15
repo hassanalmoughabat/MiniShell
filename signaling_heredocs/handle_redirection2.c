@@ -12,14 +12,14 @@
 
 #include "../includes/minihell.h"
 
-t_token	*create_new_token(t_token *src)
+t_token	*create_new_token(t_token *src, t_gc *gc)
 {
 	t_token	*new;
 
-	new = malloc(sizeof(t_token));
+	new = ft_malloc(gc, sizeof(t_token));
 	if (!new)
 		return (NULL);
-	new->cmd = ft_strdup(src->cmd);
+	new->cmd = ft_strdup_gc(gc, src->cmd);
 	new->type = src->type;
 	new->next = NULL;
 	new->prev = NULL;
@@ -33,7 +33,7 @@ t_token	*skip_redir_tokens(t_token *tk)
 	return (tk->next);
 }
 
-t_token	*filter_cmd_tokens(t_token *tk)
+t_token	*filter_cmd_tokens(t_token *tk, t_gc *gc)
 {
 	t_token	*res;
 	t_token	*last;
@@ -49,7 +49,7 @@ t_token	*filter_cmd_tokens(t_token *tk)
 			tk = skip_redir_tokens(tk);
 			continue ;
 		}
-		new = create_new_token(tk);
+		new = create_new_token(tk, gc);
 		if (!res)
 			res = new;
 		else
@@ -71,7 +71,7 @@ int	open_output_file(t_token *curr, t_shell *shell)
 		ft_putendl_fd(curr->next->cmd, 2);
 		return (shell->env->exit_status = 2, 0);
 	}
-	remove_added_quotes(&curr->next->cmd, NULL);
+	remove_added_quotes(&curr->next->cmd, &shell->gc);
 	if (curr->type == T_GREAT)
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
 	else
@@ -100,7 +100,7 @@ int	open_file_input(t_token *curr, t_shell *shell)
 		shell->env->exit_status = 2;
 		return (0);
 	}
-	remove_added_quotes(&curr->next->cmd, NULL);
+	remove_added_quotes(&curr->next->cmd, &shell->gc);
 	fd = open(curr->next->cmd, O_RDONLY);
 	if (fd == -1)
 	{

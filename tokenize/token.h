@@ -19,7 +19,7 @@
 # include <sys/wait.h>
 # include "../includes/libft/libft.h"
 
-typedef struct s_garbage_collector t_gc;
+typedef struct s_garbage_collector	t_gc;
 
 typedef enum s_token_type
 {

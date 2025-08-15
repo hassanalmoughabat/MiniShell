@@ -25,9 +25,9 @@ char	*extract_and_expand(char *input, t_shell *shell)
 	while (input[i])
 	{
 		if (ft_check_quotes(input[i]) && !escape(input, i))
-			substr = extract_quoted_substring(input, &i);
+			substr = extract_quoted_substring(input, &i, &shell->gc);
 		else
-			substr = extract_unquoted_substring(input, &i, &flag);
+			substr = extract_unquoted_substring(input, &i, &flag, &shell->gc);
 		if (!substr)
 			continue ;
 		expand_helper(&substr, flag, shell);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/07/06 00:00:00 by claude           ###   ########.fr       */
+/*   Updated: 2025/08/12 20:14:52 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,32 +65,29 @@ int	count_pipes(t_token *lst)
 	return (count);
 }
 
-void	close_pipe_descriptors(int *pipe_fds)
-{
-	if (pipe_fds)
-	{
-		close(pipe_fds[0]);
-		close(pipe_fds[1]);
-	}
-}
-
-int	create_pipes(int ***pipes, int pipe_count, t_gc *gc)
+int	create_pipes(int ***pipes, int pipe_count)
 {
 	int	i;
 
-	*pipes = ft_malloc(gc, sizeof(int *) * pipe_count);
+	*pipes = malloc(sizeof(int *) * pipe_count);
 	if (!*pipes)
 		return (-1);
 	i = -1;
 	while (++i < pipe_count)
 	{
-		(*pipes)[i] = ft_malloc(gc, sizeof(int) * 2);
+		(*pipes)[i] = malloc(sizeof(int) * 2);
 		if (!(*pipes)[i])
+		{
+			while (--i >= 0)
+				free((*pipes)[i]);
+			free(*pipes);
 			return (-1);
+		}
 		if (pipe((*pipes)[i]) == -1)
 		{
 			while (i >= 0)
-				close_pipe_descriptors((*pipes)[i--]);
+				free((*pipes)[i--]);
+			free(*pipes);
 			return (-1);
 		}
 	}

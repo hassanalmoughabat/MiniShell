@@ -33,10 +33,10 @@ void	child_exec(t_shell *shell, char *cmd, char **argv)
 	char	*path;
 
 	ft_set_child_signals();
-	path = get_path(argv[0], shell->ft_env);
+	path = get_path(argv[0], shell->ft_env, &shell->gc);
 	if (!path)
 	{
-		remove_added_quotes(&cmd, NULL);
+		remove_added_quotes(&cmd, &shell->gc);
 		shell->env->exit_status = ft_err_msg((t_error){cmd,
 				ERROR_MESG_NO_FILE, ENU_CMD_NOT_FOUND});
 		exit(127);
@@ -76,7 +76,7 @@ int	handle_empty_cmd(t_shell *shell, char *cmd)
 {
 	if (!ft_strcmp(cmd, "\"\"") || !ft_strcmp(cmd, "''"))
 	{
-		remove_added_quotes(&cmd, NULL);
+		remove_added_quotes(&cmd, &shell->gc);
 		shell->env->exit_status = ft_err_msg((t_error){cmd,
 				ERROR_MESG_CMD_NOT_FOUND, ENU_CMD_NOT_FOUND});
 		return (1);

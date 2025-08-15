@@ -63,7 +63,7 @@ char	*extract_var_name(char *start, char *end)
 	return (name);
 }
 
-char	*handle_single_variable(char *result, char *start, t_env *env)
+char	*handle_single_variable(char *result, char *start, t_env *env, t_gc *gc)
 {
 	char	*end;
 	char	*name;
@@ -76,28 +76,25 @@ char	*handle_single_variable(char *result, char *start, t_env *env)
 	name = extract_var_name(start, end);
 	if (!name)
 		return (NULL);
-	value = cut_from_op('$', start, env, NULL);
+	value = cut_from_op('$', start, env, gc);
 	if (!value)
-		value = ft_strdup("");
+		value = ft_strdup_gc(gc, "");
 	temp = replace_variable(result, name, value);
-	free(result);
-	free(name);
-	free(value);
 	return (temp);
 }
 
-char	*process_all_variables(char *line, t_env *env)
+char	*process_all_variables(char *line, t_env *env, t_gc *gc)
 {
 	char	*result;
 	char	*start;
 
-	result = ft_strdup(line);
+	result = ft_strdup_gc(gc, line);
 	if (!result)
 		return (NULL);
 	start = ft_strchr(result, '$');
 	while (start)
 	{
-		result = handle_single_variable(result, start, env);
+		result = handle_single_variable(result, start, env, gc);
 		if (!result)
 			return (NULL);
 	}

@@ -22,8 +22,5 @@ void	cleanup_minishell(t_shell *shell, char **transform_result, char *input)
 	{
 		if (shell->path)
 			free(shell->path);
-		// Environment cleanup handled by garbage collector
-		// if (shell->env)
-		//	free_env_list(shell->env);
 	}
 }

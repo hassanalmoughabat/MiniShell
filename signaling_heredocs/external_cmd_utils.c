@@ -42,13 +42,10 @@ char	**build_args_array(t_token *cmd_tokens, t_gc *gc)
 	curr = cmd_tokens;
 	while (curr)
 	{
-		remove_added_quotes(&curr->cmd, NULL);
-		args[i] = ft_strdup(curr->cmd);
+		remove_added_quotes(&curr->cmd, gc);
+		args[i] = ft_strdup_gc(gc, curr->cmd);
 		if (!args[i])
-		{
-			ft_free_tab(args);
 			return (NULL);
-		}
 		i++;
 		curr = curr->next;
 	}

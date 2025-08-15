@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 02:43:10 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/09 02:57:10 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/12 20:16:39 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,6 @@ void	close_unused_heredocs(t_pipe_data *data, int heredoc_fd)
 void	setup_child_data(t_pipe_child_data *child_data, t_pipe_data *data,
 			t_child_setup_params *params)
 {
-	if (!params->cmd_segment)
-		return ;
 	child_data->cmd_segment = params->cmd_segment;
 	child_data->ft_env = data->ft_env;
 	child_data->env = data->env;

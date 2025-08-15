@@ -28,23 +28,17 @@ char	*get_value_from_env(char *key, t_env *env, t_gc *gc)
 		{
 			temp = ft_strchr(current->line, '=');
 			temp ++;
-			if (gc)
-				value = ft_strdup_gc(gc, temp);
-			else
-				value = ft_strdup(temp);
+			value = ft_strdup_gc(gc, temp);
 			if (!value)
 				return (NULL);
 			return (value);
 		}
 		current = current->next;
 	}
-	if (gc)
-		return (ft_strdup_gc(gc, ""));
-	else
-		return (ft_strdup(""));
+	return (ft_strdup_gc(gc, ""));
 }
 
-char	*get_var(char *input)
+char	*get_var(char *input, t_gc *gc)
 {
 	size_t	i;
 	char	*key;
@@ -54,6 +48,6 @@ char	*get_var(char *input)
 		return (NULL);
 	while (input[i] && input[i] != '=')
 		i ++;
-	key = ft_substr(input, 0, i, NULL);
+	key = ft_substr(input, 0, i, gc);
 	return (key);
 }

@@ -70,9 +70,8 @@ void	free_shell(t_shell *shell)
 {
 	if (!shell)
 		return ;
-	// Environment cleanup handled by garbage collector
-	// if (shell->env)
-	//	free_env_list(shell->env);
+	if (shell->env)
+		free_env_list(shell->env);
 	if (shell->path)
 		free(shell->path);
 	free(shell);

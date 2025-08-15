@@ -59,7 +59,7 @@ void	remove_matching_env(t_env **env, char *key)
 	}
 }
 
-void	detect_key(t_token *tk, t_env **env)
+void	detect_key(t_token *tk, t_env **env, t_gc *gc)
 {
 	t_token		*curr;
 	char		*key;
@@ -67,7 +67,7 @@ void	detect_key(t_token *tk, t_env **env)
 	curr = tk;
 	while (curr)
 	{
-		key = get_var(curr->cmd);
+		key = get_var(curr->cmd, gc);
 		if (!ft_strcmp(curr->cmd, "_"))
 			return ;
 		if (key)
@@ -88,8 +88,8 @@ void	ft_unset(t_shell *shell, t_env **copy)
 	{
 		if (current->cmd)
 		{
-			detect_key(shell->tk, &(shell->env));
-			detect_key(shell->tk, copy);
+			detect_key(shell->tk, &(shell->env), &shell->gc);
+			detect_key(shell->tk, copy, &shell->gc);
 		}
 		if (!ft_strcmp(current->cmd, "new_line"))
 			return ;

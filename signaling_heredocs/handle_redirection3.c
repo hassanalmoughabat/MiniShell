@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 00:54:58 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/27 00:57:06 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/12 19:15:09 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	redirect_last_out(t_token *last, t_shell *shell)
 	int	fd;
 	int	dup_result;
 
-	remove_added_quotes(&last->next->cmd, NULL);
+	remove_added_quotes(&last->next->cmd, &shell->gc);
 	if (last->type == T_GREAT)
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
 	else
@@ -81,7 +81,7 @@ int	handle_redirection(t_token *tk, t_shell *shell, char *input)
 	t_token	*cmd_tokens;
 
 	last_out = NULL;
-	if (check_redirect_syntax(shell, input))
+	if (check_redirect_syntax(shell))
 		return (2);
 	if (!process_redirs(shell, &last_out))
 		return (1);
@@ -94,7 +94,7 @@ int	handle_redirection(t_token *tk, t_shell *shell, char *input)
 			return (handle_input_redirect(curr, shell));
 		curr = curr->next;
 	}
-	cmd_tokens = filter_cmd_tokens(tk);
+	cmd_tokens = filter_cmd_tokens(tk, &shell->gc);
 	if (cmd_tokens && cmd_tokens->cmd)
 		exec_filtered_cmd(shell, cmd_tokens);
 	return (1);

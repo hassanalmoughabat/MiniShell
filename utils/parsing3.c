@@ -17,17 +17,14 @@ char	**build_argv_from_tokens(t_token *tk, t_gc *gc)
 	char	**argv;
 	int		count;
 
-	count = count_total_args(tk);
+	count = count_total_args(tk, gc);
 	if (count == 0)
 		return (NULL);
 	argv = ft_malloc(gc, sizeof(char *) * (count + 1));
 	if (!argv)
 		return (NULL);
-	if (!fill_argv_from_tokens(argv, tk, count))
-	{
-		// Memory will be freed by gc, no need to free manually
+	if (!fill_argv_from_tokens(argv, tk, count, gc))
 		return (NULL);
-	}
 	return (argv);
 }
 

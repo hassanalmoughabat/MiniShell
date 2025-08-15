@@ -41,7 +41,8 @@ void	ft_add_env(t_env **copy, t_shell *shell, int flag)
 	}
 }
 
-char	*quotes_in_env(char *value, char *key, int flag, t_gc *gc)
+char	*quotes_in_env(char *value, char *key,
+			int flag, t_gc *gc)
 {
 	char	*val;
 	char	*temp;
@@ -81,29 +82,3 @@ char	*quotes_in_env(char *value, char *key, int flag, t_gc *gc)
 	return (val);
 }
 
-int	handle_export_quotes(char *temp, char *result, size_t *i, size_t *j)
-{
-	char	quote;
-
-	quote = temp[*i];
-	(*i)++;
-	while (*i < ft_strlen(temp))
-	{
-		if (temp[*i] == '\\' && temp[*i + 1] == quote)
-		{
-			(*i)++;
-			result[(*j)++] = temp[*i];
-		}
-		else if (temp[*i] == quote && !escape(temp, *i))
-			break ;
-		else
-			result[(*j)++] = temp[*i];
-		(*i)++;
-	}
-	if (*i < ft_strlen(temp) && temp[*i] == quote)
-		(*i)++;
-	else
-		return (ft_error_message_quotes(quote), -1);
-	result[*j] = '\0';
-	return (0);
-}

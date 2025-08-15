@@ -54,7 +54,7 @@ void	ft_add_key_to_env(t_env **copy, char *key, t_gc *gc)
 	ft_push_to_env(copy, new_node);
 }
 
-void	update_value(t_env **env, char *key, char *value, int flag)
+void	update_value(t_env **env, char *key, char *value, int flag, t_gc *gc)
 {
 	char	*extract_key;	
 	t_env	*current;
@@ -62,15 +62,13 @@ void	update_value(t_env **env, char *key, char *value, int flag)
 	current = *env;
 	while (current)
 	{
-		extract_key = get_var(current->line);
+		extract_key = get_var(current->line, gc);
 		if (!ft_strcmp(extract_key, key)
 			&& ft_strlen(key) == ft_strlen(extract_key))
 		{
 			current->line = quotes_in_env(value, key, flag, NULL);
-			free(extract_key);
 			return ;
 		}
-		free(extract_key);
 		current = current->next;
 	}
 }
@@ -83,7 +81,7 @@ void	update_copy_add_env(t_shell *shell, t_env **copy)
 	curr1 = *copy;
 	while (curr1)
 	{
-		extract_key = get_var(curr1->line);
+		extract_key = get_var(curr1->line, &shell->gc);
 		if (!ft_strcmp(extract_key, shell->key)
 			&& ft_strlen(shell->key) == ft_strlen(extract_key))
 		{
@@ -91,7 +89,6 @@ void	update_copy_add_env(t_shell *shell, t_env **copy)
 			ft_add_env(copy, shell, 0);
 			return ;
 		}
-		free(extract_key);
 		curr1 = curr1->next;
 	}
 }
@@ -101,8 +98,8 @@ int	ft_update_env(t_env **copy, t_shell *shell)
 	if (check_if_var_exist(copy, shell->key)
 		&& check_if_var_exist(&(shell->env), shell->key))
 	{
-		update_value(copy, shell->key, shell->value, 0);
-		update_value(&(shell->env), shell->key, shell->value, 1);
+		update_value(copy, shell->key, shell->value, 0, &shell->gc);
+		update_value(&(shell->env), shell->key, shell->value, 1, &shell->gc);
 	}
 	else if (check_if_var_exist(copy, shell->key)
 		&& !check_if_var_exist(&(shell->env), shell->key))

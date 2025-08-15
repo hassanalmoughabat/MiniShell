@@ -100,10 +100,7 @@ char	*dollar_delimeter(char *delim, t_gc *gc)
 	if (!delim)
 		return (NULL);
 	len = calc_new_len(delim);
-	if (gc)
-		new_del = ft_malloc(gc, sizeof(char) * (len + 1));
-	else
-		new_del = malloc(sizeof(char) * (len + 1));
+	new_del = ft_malloc(gc, sizeof(char) * (len + 1));
 	if (!new_del)
 		return (NULL);
 	fill_new_del(new_del, delim);

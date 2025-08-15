@@ -22,7 +22,7 @@ This is a **Minishell** implementation - a simplified shell that mimics basic ba
 - **Tokenization**: `tokenize/` - Lexical analysis of input commands into tokens
 - **Expansion**: `expansion/` - Variable expansion (environment variables, $PATH, etc.)
 - **Built-ins**: `builtins/` - Implementation of shell built-in commands (cd, echo, env, export, pwd, unset, exit)
-- **Pipes & Redirection**: `pipes/` and `signaling_heredocs/` - Handle command piping, I/O redirection, and heredocs
+- **Pipes & Redirctione**: `pipes/` and `signaling_heredocs/` - Handle command piping, I/O redirection, and heredocs
 - **Signal Handling**: Global signal management for proper shell behavior
 - **Environment**: Environment variable management and shell level tracking
 
@@ -67,3 +67,4 @@ The shell handles complex features like heredocs, nested pipes, environment vari
 - Token parsing handles quotes, variable expansion, and special characters
 - Compile flags include `-g` for debugging - use GDB or valgrind for troubleshooting
 - when you want see if there is any leaks use valgrind --leak-check=full -q ./minishell
+- to check leak use: valgrind --leak-check=full -q

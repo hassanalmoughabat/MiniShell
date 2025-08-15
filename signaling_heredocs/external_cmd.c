@@ -35,9 +35,9 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env, t_shell *shell)
 	args = build_args_array(cmd_tokens, &shell->gc);
 	if (!args)
 		exit(EXIT_FAILURE);
-	path = get_path(args[0], ft_env);
+	path = get_path(args[0], ft_env, &shell->gc);
 	signal(SIGQUIT, SIG_DFL);
-	path = get_path(args[0], shell->ft_env);
+	path = get_path(args[0], shell->ft_env, &shell->gc);
 	if (!path)
 		handle_path_error(cmd_tokens, shell);
 	if (symbols(cmd_tokens->cmd))

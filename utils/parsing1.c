@@ -12,7 +12,7 @@
 
 #include "../includes/minihell.h"
 
-int	fill_argv_from_tokens(char **argv, t_token *tk, int count)
+int	fill_argv_from_tokens(char **argv, t_token *tk, int count, t_gc *gc)
 {
 	char	**split;
 	int		i;
@@ -22,12 +22,11 @@ int	fill_argv_from_tokens(char **argv, t_token *tk, int count)
 	{
 		if (ft_strchr(tk->cmd, ' '))
 		{
-			split = ft_split(tk->cmd, ' ', NULL);
-			if (split && !add_split_parts(argv, &i, split, count))
-				return (ft_free_tab(split), 0);
-			ft_free_tab(split);
+			split = ft_split(tk->cmd, ' ', gc);
+			if (split && !add_split_parts(argv, &i, split, count, gc))
+				return (0);
 		}
-		else if (!add_token_to_argv(argv, &i, tk))
+		else if (!add_token_to_argv(argv, &i, tk, gc))
 			return (0);
 		tk = tk->next;
 	}

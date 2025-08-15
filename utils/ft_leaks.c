@@ -66,7 +66,6 @@ char	*ft_strdup_gc(t_gc *gc, const char *s)
 	return (d);
 }
 
-
 char	*ft_strjoin_gc(const char *s1, const char *s2, t_gc *gc)
 {
 	char	*dest;

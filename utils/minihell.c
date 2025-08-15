@@ -34,6 +34,12 @@ void	print_welcome_message(void)
 	ft_putstr_fd("\n", 1);
 }
 
+void	shell_tk(t_shell *shell, char *input)
+{
+	after_parsing(shell, input);
+	shell->tk = NULL;
+}
+
 int	ft_read(char *input, t_shell *shell)
 {
 	print_welcome_message();
@@ -55,27 +61,30 @@ int	ft_read(char *input, t_shell *shell)
 		shell->ft_env = transform(shell->env, &shell->gc);
 		replace_dollar(&(shell->tk), shell);
 		if (shell->tk)
-		{
-			after_parsing(shell, input);
-			shell->tk = NULL;
-		}
+			shell_tk(shell, input);
 		add_history(input);
 	}
 	return (shell->env->exit_status);
 }
 
+static void	prepare_read(t_shell shell)
+{
+	char	*input;
+
+	input = NULL;
+	ft_read(input, &shell);
+}
 
 int	main(int argc, char **argv, char **envp)
 {
 	char		**ft_transform;
 	t_shell		shell;
 	t_gc		gcleak;
-	char		*input;
 	char		*path;
+	int			exit_status;
 
 	(void)argc;
 	(void)argv;
-	input = NULL;
 	ft_memset(&gcleak, 0, sizeof(t_gc));
 	init_shell(&shell, envp);
 	ft_transform = transform(shell.env, &shell.gc);
@@ -86,9 +95,8 @@ int	main(int argc, char **argv, char **envp)
 		shell.env->exit_status = ENU_GENEREAL_FAILURE;
 	else
 		shell.path = path;
-	ft_read(input, &shell);
-	// Save exit status before cleanup
-	int exit_status = shell.env->exit_status;
+	prepare_read(shell);
+	exit_status = shell.env->exit_status;
 	ft_free_all(&shell.gc);
 	return (exit_status);
 }

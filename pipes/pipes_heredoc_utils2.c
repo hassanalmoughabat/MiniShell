@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/06 18:56:47 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/12 20:13:49 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "pipes.h"
 
 int	setup_heredoc_pipe(t_token *lst, char **ft_env, t_env *env,
-			t_heredoc_pipe_params *pipe_params)
+			t_heredoc_pipe_params *pipe_params, t_gc *gc)
 {
 	t_token					*heredoc_token;
 	t_token					*pipe_token;
@@ -25,7 +25,7 @@ int	setup_heredoc_pipe(t_token *lst, char **ft_env, t_env *env,
 	if (!heredoc_token || !pipe_token || !redirect_token
 		|| !redirect_token->next)
 		return (0);
-	delimiter = get_delimeter(lst, NULL);
+	delimiter = get_delimeter(lst, gc);
 	if (!delimiter)
 		return (0);
 	pipe_params->delimiter = delimiter;
@@ -46,21 +46,19 @@ int	handle_heredoc_pipe_redirect(t_token *lst, t_shell *shell)
 {
 	int						pipefd[2];
 	pid_t					pid1;
-	int						quote;
 	t_heredoc_pipe_params	pipe_params;
 	t_heredoc_child_params	child_params;
 
-	if (!setup_heredoc_pipe(lst, shell->ft_env, shell->env, &pipe_params))
+	if (!setup_heredoc_pipe(lst, shell->ft_env, shell->env, &pipe_params, &shell->gc))
 		return (0);
-	quote = has_quotes(pipe_params.delimiter);
-	remove_added_quotes(&pipe_params.delimiter, NULL);
+	remove_added_quotes(&pipe_params.delimiter, &shell->gc);
 	if (pipe(pipefd) == -1)
-		return ((free(pipe_params.delimiter), 0));
+		return (0);
 	child_params.pipefd = pipefd;
 	child_params.delimiter = pipe_params.delimiter;
 	child_params.env = shell->env;
 	child_params.ft_env = shell->ft_env;
-	child_params.quote = quote;
+	child_params.quote = has_quotes(pipe_params.delimiter);
 	pid1 = create_heredoc_child(&child_params, shell);
 	if (pid1 == -1)
 	{

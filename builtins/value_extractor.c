@@ -39,7 +39,7 @@ char	*extract_dollar_var(char *key, int *index, t_gc *gc)
 	return (dollar_value);
 }
 
-char	*extract_quoted_substring(char *input, int *i)
+char	*extract_quoted_substring(char *input, int *i, t_gc *gc)
 {
 	char	quote;
 	int		start;
@@ -51,11 +51,11 @@ char	*extract_quoted_substring(char *input, int *i)
 		(*i)++;
 	if (input[*i] == quote)
 		(*i)++;
-	substr = ft_substr(input, start, (*i) - start, NULL);
+	substr = ft_substr(input, start, (*i) - start, gc);
 	return (substr);
 }
 
-char	*extract_unquoted_substring(char *input, int *i, int *flag)
+char	*extract_unquoted_substring(char *input, int *i, int *flag, t_gc *gc)
 {
 	int		start;
 	int		len;
@@ -70,7 +70,7 @@ char	*extract_unquoted_substring(char *input, int *i, int *flag)
 		(*i)++;
 		len ++;
 	}
-	substr = ft_substr(input, start, len, NULL);
+	substr = ft_substr(input, start, len, gc);
 	return (substr);
 }
 

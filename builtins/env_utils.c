@@ -87,7 +87,7 @@ t_env	*initialize_env_list(char **envp, t_gc *gc)
 	return (head);
 }
 
-char	*get_path(char *cmd, char *envp[])
+char	*get_path(char *cmd, char *envp[], t_gc *gc)
 {
 	int		i;
 	char	*exec;
@@ -96,27 +96,17 @@ char	*get_path(char *cmd, char *envp[])
 	char	**s_cmd;
 
 	i = 0;
-	allpath = ft_split(my_getenv("PATH", envp), ':', NULL);
-	s_cmd = ft_split(cmd, ' ', NULL);
+	allpath = ft_split(my_getenv("PATH", envp), ':', gc);
+	s_cmd = ft_split(cmd, ' ', gc);
 	if (!allpath || !s_cmd || !s_cmd[0])
-	{
-		if (allpath)
-			ft_free_tab(allpath);
-		if (s_cmd)
-			ft_free_tab(s_cmd);
 		return (NULL);
-	}
 	while (allpath[i])
 	{
-		path_part = ft_strjoin(allpath[i], "/", NULL);
-		exec = ft_strjoin(path_part, s_cmd[0], NULL);
-		free(path_part);
+		path_part = ft_strjoin(allpath[i], "/", gc);
+		exec = ft_strjoin(path_part, s_cmd[0], gc);
 		if (access(exec, F_OK | X_OK) == 0)
-			return (ft_free_tab(s_cmd), ft_free_tab(allpath), exec);
-		free(exec);
+			return (exec);
 		i++;
 	}
-	ft_free_tab(allpath);
-	ft_free_tab(s_cmd);
-	return (ft_strdup(cmd));
+	return (ft_strdup_gc(gc, cmd));
 }

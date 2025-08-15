@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/07/26 17:26:34 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/12 20:15:08 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ t_token	*extract_command_segment(t_token *start, t_token *end, t_gc *gc)
 		new_token = create_token_copy(curr, gc);
 		if (!new_token)
 		{
-			// new_list is managed by gc, no manual free needed
+			free_token_list(new_list);
 			return (NULL);
 		}
 		add_token_to_list(&new_list, &last, new_token);
@@ -71,4 +71,23 @@ void	handle_pipe_child(t_pipe_child_data *child_data, t_shell *shell)
 	setup_pipe_redirects(&params);
 	remove_heredoc_tokens(child_data);
 	handle_redirections_and_execute(child_data, shell);
+}
+
+void	close_parent_heredoc(t_pipe_data *data, int heredoc_fd)
+{
+	int	j;
+
+	if (heredoc_fd < 0)
+		return ;
+	j = 0;
+	while (j < data->hd_count)
+	{
+		if (data->heredocs[j].fd == heredoc_fd)
+		{
+			close(data->heredocs[j].fd);
+			data->heredocs[j].fd = -1;
+			break ;
+		}
+		j++;
+	}
 }

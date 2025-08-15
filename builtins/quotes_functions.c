@@ -48,6 +48,33 @@ int	quote_type(char *str)
 	return (0);
 }
 
+int	handle_export_quotes(char *temp, char *result, size_t *i, size_t *j)
+{
+	char	quote;
+
+	quote = temp[*i];
+	(*i)++;
+	while (*i < ft_strlen(temp))
+	{
+		if (temp[*i] == '\\' && temp[*i + 1] == quote)
+		{
+			(*i)++;
+			result[(*j)++] = temp[*i];
+		}
+		else if (temp[*i] == quote && !escape(temp, *i))
+			break ;
+		else
+			result[(*j)++] = temp[*i];
+		(*i)++;
+	}
+	if (*i < ft_strlen(temp) && temp[*i] == quote)
+		(*i)++;
+	else
+		return (ft_error_message_quotes(quote), -1);
+	result[*j] = '\0';
+	return (0);
+}
+
 int	remove_added_quotes(char **value, t_gc *gc)
 {
 	char	*temp;
@@ -67,24 +94,11 @@ int	remove_added_quotes(char **value, t_gc *gc)
 	{
 		if (ft_check_quotes(temp[i]) && !escape(temp, i)
 			&& handle_export_quotes(temp, result, &i, &j) == -1)
-		{
-			if (!gc)
-				free(result);
 			return (-1);
-		}
 		else if (!ft_check_quotes(temp[i]) || escape(temp, i))
 			result[j++] = temp[i++];
 	}
 	result[j] = '\0';
-	if (gc)
-	{
-		*value = ft_strdup_gc(gc, result);
-		// Don't free result - it's managed by gc
-	}
-	else
-	{
-		*value = ft_strdup(result);
-		free(result);
-	}
+	*value = ft_strdup_gc(gc, result);
 	return (0);
 }

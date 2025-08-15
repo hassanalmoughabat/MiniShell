@@ -19,7 +19,7 @@ int	ft_check_exceptions(char *str, int index)
 	return (0);
 }
 
-char	*extract_value(char *str, int *index)
+char	*extract_value(char *str, int *index, t_gc *gc)
 {
 	char	*result;
 	int		start;
@@ -35,7 +35,7 @@ char	*extract_value(char *str, int *index)
 		length ++;
 	}
 	(*index)--;
-	result = malloc(sizeof(char) * length + 1);
+	result = ft_malloc(gc, sizeof(char) * length + 1);
 	if (!result)
 		return (NULL);
 	while (j < length)
@@ -63,7 +63,7 @@ static int	handle_special_char(char *key, int *i, char **expanded, t_gc *gc)
 	if (ft_check_exceptions(key, *i))
 	{
 		(*i)++;
-		*expanded = ft_strjoin(*expanded, "\\$\\\\", NULL);
+		*expanded = ft_strjoin(*expanded, "\\$\\\\", gc);
 		return (1);
 	}
 	return (0);
@@ -78,9 +78,8 @@ int	dollar_cases(char *key, int *index, char **expanded, t_shell *shell)
 	if (key[*index] == '?')
 	{
 		(*index)++;
-		temp = ft_itoa(shell->env->exit_status, NULL);
-		*expanded = ft_strjoin(*expanded, temp, NULL);
-		free(temp);
+		temp = ft_itoa(shell->env->exit_status, &shell->gc);
+		*expanded = ft_strjoin(*expanded, temp, &shell->gc);
 		return (1);
 	}
 	return (0);

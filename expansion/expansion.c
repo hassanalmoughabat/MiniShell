@@ -83,7 +83,7 @@ char	*skip_dollars_before_quotes(char *str, t_gc *gc)
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
-	result = ft_malloc(gc, len);
+	result = ft_malloc(gc, len + 1);
 	if (!result)
 		return (NULL);
 	i = 0;
