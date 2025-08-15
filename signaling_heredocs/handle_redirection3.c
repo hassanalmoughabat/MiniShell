@@ -30,13 +30,12 @@ int	redirect_last_out(t_token *last, t_shell *shell)
 		return (0);
 	}
 	dup_result = dup2(fd, STDOUT_FILENO);
+	close(fd);
 	if (dup_result == -1)
 	{
-		close(fd);
 		shell->env->exit_status = 1;
 		return (0);
 	}
-	close(fd);
 	return (1);
 }
 

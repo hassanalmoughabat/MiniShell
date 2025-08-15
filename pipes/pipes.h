@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/08/13 00:05:30 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/14 17:37:34 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,4 +134,7 @@ void			handle_pipe(t_token *lst, t_shell *shell, char *input);
 void			close_parent_heredoc(t_pipe_data *data, int heredoc_fd);
 void			setup_pipe_signals(void);
 void			restore_pipe_signals(void);
+
+// Signal handling for pipes
+void			ft_set_pipe_parent_signals(void);
 #endif

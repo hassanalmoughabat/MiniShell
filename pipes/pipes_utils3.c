@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/12 20:15:08 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/15 01:03:34 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void	setup_pipe_redirects(t_pipe_redirect_params *params)
 {
-	(void)params->is_first_with_heredoc;
+	// (void)params->is_first_with_heredoc;
 	if (params->heredoc_fd >= 0)
 	{
 		if (dup2(params->heredoc_fd, STDIN_FILENO) == -1)

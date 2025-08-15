@@ -6,18 +6,11 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 01:10:25 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/27 01:11:05 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/15 00:26:56 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minihell.h"
-
-int	get_exit_code(int status)
-{
-	if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
-	return (WEXITSTATUS(status));
-}
 
 char	*copy_without_quotes(char *str, int len)
 {

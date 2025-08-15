@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 19:39:13 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/13 12:05:04 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/14 17:47:52 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,9 @@ void	execute_command(t_heredoc_ctx *ctx, t_shell *shell)
 
 void	child_process(t_heredoc_ctx *ctx, t_shell *shell)
 {
-	ctx->read_fd = handle_dless(ctx->delimiter, shell, ctx->quote);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	ctx->read_fd = handle_dless(ctx->delimiter, shell, ctx->quote, 0);
 	if (ctx->read_fd < 0)
 	{
 		free(ctx->delimiter);
@@ -85,13 +87,19 @@ void	child_process(t_heredoc_ctx *ctx, t_shell *shell)
 void	handle_parent_process(pid_t pid, t_shell *shell)
 {
 	int	status;
+	int	sig;
 
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, 0);
 	ft_restore_main_signals();
 	if (WIFSIGNALED(status))
-		shell->env->exit_status = 128 + WTERMSIG(status);
+	{
+		sig = WTERMSIG(status);
+		shell->env->exit_status = 128 + sig;
+		if (sig == SIGINT)
+			write(STDOUT_FILENO, "\n", 1);
+	}
 	else
 		shell->env->exit_status = WEXITSTATUS(status);
 }

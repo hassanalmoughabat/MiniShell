@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 09:53:05 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/08/13 00:41:19 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/14 22:46:09 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	ft_heredoc_sigint_handler(int signum)
 	(void)signum;
 	g_signal.heredoc_sigint = true;
 	g_signal.sig_status = 130;
-	write(STDOUT_FILENO, "\n", 1);
 	rl_done = 1;
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -37,18 +36,9 @@ void	ft_sigint_handler(int num)
 
 void	ft_set_heredoc_signals(void)
 {
+	g_signal.heredoc_sigint = false;
 	signal(SIGINT, ft_heredoc_sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
-}
-
-void	ft_sigquit_handler(int num)
-{
-	(void)num;
-	if (g_signal.signint_child)
-	{
-		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-		g_signal.sig_status = 131;
-	}
 }
 
 void	ft_init_signals(void)

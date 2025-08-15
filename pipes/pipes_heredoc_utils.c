@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 02:43:42 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/14 22:33:50 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,12 @@ void	setup_output_redirect_child(int *pipefd, t_token *redirect_token,
 	if (out_fd == -1)
 	{
 		perror("minishell");
-		exit(1);
+		_exit(1);
 	}
 	dup2(out_fd, STDOUT_FILENO);
 	close(out_fd);
 	execve("/bin/cat", (char *[]){"cat", NULL}, ft_env);
-	exit(127);
+	_exit(127);
 }
 
 pid_t	create_output_child(int *pipefd, t_token *redirect_token,
@@ -82,6 +82,10 @@ pid_t	create_output_child(int *pipefd, t_token *redirect_token,
 	if (pid2 == -1)
 		return (-1);
 	if (pid2 == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		setup_output_redirect_child(pipefd, redirect_token, ft_env);
+	}
 	return (pid2);
 }

@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:00:00 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/12 19:13:30 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/15 17:23:56 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,38 @@ void	syntax_error_msg(t_token *curr)
 	return ;
 }
 
-int	check_redirect_syntax(t_shell *shell)
+int	check_triple_redirect_in_tokens(t_shell *shell)
 {
 	t_token	*curr;
 
+	curr = shell->tk;
+	while (curr)
+	{
+		if (!ft_strncmp(curr->cmd, ">>>>", 4)
+			|| !ft_strncmp(curr->cmd, "<<<<", 4)
+			|| !ft_strncmp(curr->cmd, ">>>", 3))
+		{
+			shell->env->exit_status = 2;
+			ft_putstr_fd("bash: syntax error near unexpected token `", 2);
+			if (curr->cmd[0] == '>')
+				ft_putendl_fd(">'", 2);
+			else
+				ft_putendl_fd("<'", 2);
+			return (2);
+		}
+		curr = curr->next;
+	}
+	return (0);
+}
+
+int	check_redirect_syntax(t_shell *shell)
+{
+	t_token	*curr;
+	int		triple_error;
+
+	triple_error = check_triple_redirect_in_tokens(shell);
+	if (triple_error)
+		return (triple_error);
 	curr = shell->tk;
 	while (curr)
 	{

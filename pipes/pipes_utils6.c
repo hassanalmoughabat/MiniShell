@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:00:05 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/13 00:02:14 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/15 17:31:01 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	execute_all_commands(t_pipe_data *data, t_shell *shell)
 		curr = next_pipe(start);
 		i++;
 	}
+	close_all_pipes(data->pipes, data->pipe_count);
 }
 
 void	execute_pipe_commands(t_pipe_data *data, t_shell *shell)

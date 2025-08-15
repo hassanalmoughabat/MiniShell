@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 00:20:15 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/12 19:16:30 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/14 23:19:22 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,18 @@ void	handle_path_command(t_shell *shell, char *cmd)
 	argv = build_argv_from_tokens(shell->tk);
 	if (!argv || !argv[0] || !argv[0][0])
 		return (exit_with_cleanup(shell, argv, cmd, ENU_GENEREAL_FAILURE));
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	g_signal.signint_child = true;
 	pid = fork();
 	if (pid == -1)
 		return (exit_with_cleanup(shell, argv, cmd, ENU_GENEREAL_FAILURE));
 	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		child_exec(shell, cmd, argv);
+	}
 	else
 		parent_wait_and_cleanup(shell, pid, argv);
 }

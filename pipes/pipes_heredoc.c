@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/08/09 02:23:05 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/14 18:04:21 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	process_single_heredoc(t_token *curr, t_heredoc_info *heredocs,
 		return (-1);
 	quote = has_quotes(delimiter);
 	remove_added_quotes(&delimiter);
-	heredocs[i].fd = handle_dless(delimiter, shell, quote);
+	heredocs[i].fd = handle_dless(delimiter, shell, quote, 1);
 	heredocs[i].position = curr;
 	free(delimiter);
 	if (heredocs[i].fd < 0)
@@ -108,9 +108,10 @@ pid_t	create_heredoc_child(t_heredoc_child_params *params, t_shell *shell)
 		return (-1);
 	if (pid1 == 0)
 	{
-		ft_set_heredoc_signals();
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		close(params->pipefd[0]);
-		heredoc_fd = handle_dless(params->delimiter, shell, params->quote);
+		heredoc_fd = handle_dless(params->delimiter, shell, params->quote, 0);
 		if (heredoc_fd < 0)
 		{
 			close(params->pipefd[1]);

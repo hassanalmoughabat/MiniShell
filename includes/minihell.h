@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/13 00:17:57 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/14 17:31:51 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,7 @@ int		ft_err_msg(t_error err);
 int		ft_error_message_quotes(char c);
 void	error_message_export(char **str);
 void	error_validity_export(char *input, t_token *tk);
-
+void	print_eof_warning(char *delimiter);
 // ----------------------expansion-------------------------------------
 int		ft_has_dollar(char *str);
 char	*ft_strjoin_char(char *str, char c);
@@ -304,13 +304,14 @@ char	*replace_variable(char *line, char *var_name, char *new_val);
 int		expand_variable(t_expand_data *data, char *var_name, t_env *env);
 int		init_heredoc_context(t_heredoc_ctx *ctx, t_token *curr,
 			t_shell *shell);
+int		process_heredoc_line(char *line, t_heredoc_data *data,
+			t_shell *shell);
 void	child_process(t_heredoc_ctx *ctx, t_shell *shell);
 void	handle_parent_process(pid_t pid, t_shell *shell);
 //-----------------------signaling---------------------------------------
 void	ft_init_signals(void);
 void	ft_set_child_signals(void);
 void	ft_sigint_handler(int num);
-void	ft_sigquit_handler(int num);
 void	ft_set_heredoc_signals(void);
 void	ft_restore_main_signals(void);
 void	ft_restore_parent_signals(void);
@@ -334,7 +335,8 @@ void	parent_wait_and_cleanup(t_shell *shell, pid_t pid, char **argv);
 
 // ----------------------Piping and Redirections-------------------------
 int		valid_pipe(t_shell *shell, char *input);
-int		handle_dless(char *delimiter, t_shell *shell, int quote);
+int		handle_dless(char *delimiter, t_shell *shell,
+			int quote, int setup_signals);
 int		handle_redirection(t_token *tk, t_shell *shell);
 
 //-----------------------Redirection_utils--------------------------------

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_segment.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh <njoudieh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/07/06 00:00:00 by claude           ###   ########.fr       */
+/*   Updated: 2025/08/15 00:37:06 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ t_token	*create_token_copy(t_token *src)
 {
 	t_token	*new_token;
 
+	if (!src)
+		return (NULL);
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return (NULL);

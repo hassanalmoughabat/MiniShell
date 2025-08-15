@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 02:43:10 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/12 20:16:39 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/15 01:02:22 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	handle_exit_status(t_shell *shell, int status)
 }
 
 int	handle_heredoc_pipe_redirect_part2(t_heredoc_pipe_params *params,
-		t_shell *shell)
+			t_shell *shell)
 {
 	pid_t	pid2;
 	int		status1;
@@ -46,9 +46,28 @@ int	handle_heredoc_pipe_redirect_part2(t_heredoc_pipe_params *params,
 	close(params->pipefd[0]);
 	close(params->pipefd[1]);
 	free(params->delimiter);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	waitpid(params->pid1, &status1, 0);
+	if (WIFSIGNALED(status1) && WTERMSIG(status1) == SIGINT)
+	{
+		kill(pid2, SIGKILL);
+		waitpid(pid2, &status2, 0);
+		shell->env->exit_status = 130;
+		ft_restore_main_signals();
+		return (1);
+	}
+	if (WIFEXITED(status1) && WEXITSTATUS(status1) == 130)
+	{
+		kill(pid2, SIGKILL);  // Kill output child immediately  
+		waitpid(pid2, &status2, 0);
+		shell->env->exit_status = 130;
+		ft_restore_main_signals();
+		return (1);
+	}
 	waitpid(pid2, &status2, 0);
 	handle_exit_status(shell, status2);
+	ft_restore_main_signals();
 	return (1);
 }
 

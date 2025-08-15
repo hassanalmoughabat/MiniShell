@@ -6,7 +6,7 @@
 /*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 19:50:37 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/08/12 20:10:29 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/14 19:11:15 by njoudieh42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int	process_heredoc_token(t_token *curr, t_shell *shell)
 
 	if (!init_heredoc_context(&ctx, curr, shell))
 		return (0);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
 	{
