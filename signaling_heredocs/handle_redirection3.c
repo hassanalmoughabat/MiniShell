@@ -79,6 +79,7 @@ int	handle_redirection(t_token *tk, t_shell *shell, char *input)
 	t_token	*last_out;
 	t_token	*cmd_tokens;
 
+	(void)input;
 	last_out = NULL;
 	if (check_redirect_syntax(shell))
 		return (2);

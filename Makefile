@@ -4,7 +4,7 @@ LIBFT_PATH	:= "includes/libft"
 PRINTF		:= libftprintf.a
 PRINTF_PATH	:= "includes/ft_printf"
 CC			:= cc
-CFLAGS		:= -Wall  -Wextra -g
+CFLAGS		:= -Wall  -Wextra -g -Werror
 
 BUILTINS	:=	builtins/builtins_utils.c \
 				builtins/builtins.c \
