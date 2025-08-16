@@ -104,7 +104,7 @@ int				has_heredoc(t_token *lst);
 void			close_all_pipes(int **fds, int count);
 t_token			*next_pipe(t_token *start);
 int				count_pipes(t_token *lst);
-int				create_pipes(int ***pipes, int pipe_count);
+int				create_pipes(int ***pipes, int pipe_count, t_gc *gc);
 int				valid_pipe(t_shell *shell, char *input);
 // From pipes_heredoc.c
 t_heredoc_info	*process_heredocs_before_pipes(t_token *lst,

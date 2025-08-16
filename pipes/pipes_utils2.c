@@ -71,7 +71,7 @@ void	execute_single_command(t_single_cmd_params *params)
 
 	heredoc_fd = setup_heredoc_for_command(params->data, params->start,
 			params->curr);
-	cmd_segment = extract_command_segment(params->start, params->curr);
+	cmd_segment = extract_command_segment(params->start, params->curr, &params->shell->gc);
 	if (!cmd_segment)
 		return ;
 	pid = fork();

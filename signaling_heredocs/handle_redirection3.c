@@ -65,15 +65,15 @@ int	process_redirs(t_shell *shell, t_token **last_out)
 void	exec_filtered_cmd(t_shell *shell, t_token *cmd_tokens)
 {
 	shell->tk = cmd_tokens;
-	remove_added_quotes(&cmd_tokens->cmd);
-	if (ft_is_builtin(cmd_tokens->cmd))
+	remove_added_quotes(&cmd_tokens->cmd, &shell->gc);
+	if (ft_is_builtin(cmd_tokens->cmd, shell))
 		handle_builtin(shell, cmd_tokens->cmd);
 	else
 		handle_path_command(shell, cmd_tokens->cmd);
 	free_token_list(cmd_tokens);
 }
 
-int	handle_redirection(t_token *tk, t_shell *shell)
+int	handle_redirection(t_token *tk, t_shell *shell, char *input)
 {
 	t_token	*curr;
 	t_token	*last_out;
@@ -93,7 +93,7 @@ int	handle_redirection(t_token *tk, t_shell *shell)
 			return (handle_input_redirect(curr, shell));
 		curr = curr->next;
 	}
-	cmd_tokens = filter_cmd_tokens(tk);
+	cmd_tokens = filter_cmd_tokens(tk, &shell->gc);
 	if (cmd_tokens && cmd_tokens->cmd)
 		exec_filtered_cmd(shell, cmd_tokens);
 	return (1);

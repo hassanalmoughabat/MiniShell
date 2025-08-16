@@ -39,7 +39,7 @@ void	heredoc_child_loop(int write_fd, char *delimiter, t_shell *shell, int quote
 			free(line);
 			break;
 		}
-		expanded_line = expand_variables(line, shell->env, quote);
+		expanded_line = expand_variables(line, shell->env, quote, &shell->gc);
 		if (!expanded_line)
 			expanded_line = ft_strdup(line);
 		size_t line_len = ft_strlen(expanded_line);
@@ -72,7 +72,18 @@ int	process_heredoc_line(char *line, t_heredoc_data *data,
 	expanded_line = expand_variables(line, shell->env, data->quote, &shell->gc);
 	if (!expanded_line)
 		expanded_line = ft_strdup_gc(&shell->gc, line);
-	result = write_line_to_pipe(data, expanded_line);
+	size_t line_len = ft_strlen(expanded_line);
+	if (data->total_written + line_len + 1 > MAX_HEREDOC_SIZE)
+	{
+		result = 0;
+	}
+	else
+	{
+		write(data->pipefd[1], expanded_line, line_len);
+		write(data->pipefd[1], "\n", 1);
+		data->total_written += line_len + 1;
+		result = 1;
+	}
 	if (!result)
 		return (0);
 	return (1);
@@ -81,7 +92,7 @@ int	process_heredoc_line(char *line, t_heredoc_data *data,
 
 
 
-int	handle_dless(char *delimiter, t_shell *shell, int quote, int setup_signals)
+int	handle_dless(char *delimiter, t_shell *shell, int quote)
 {
 	int		pipefd[2];
 	pid_t	pid;
@@ -123,8 +134,7 @@ int	handle_dless(char *delimiter, t_shell *shell, int quote, int setup_signals)
 		waitpid(pid, &status, 0);
 		
 		// Restore original signal handlers
-		if (setup_signals)
-			ft_restore_main_signals();
+		ft_restore_main_signals();
 		
 		// Check how child exited
 		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)

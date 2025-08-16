@@ -63,6 +63,7 @@ int	ft_read(char *input, t_shell *shell)
 		if (shell->tk)
 			shell_tk(shell, input);
 		add_history(input);
+		free(input);
 	}
 	return (shell->env->exit_status);
 }

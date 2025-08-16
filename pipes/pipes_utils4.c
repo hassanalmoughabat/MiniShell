@@ -44,14 +44,13 @@ void	handle_pipe(t_token *lst, t_shell *shell, char *input)
 			return ;
 	}
 	setup_pipe_data(&data, lst, shell);
-	if (create_pipes(&pipes, data.pipe_count) == -1)
+	if (create_pipes(&pipes, data.pipe_count, &shell->gc) == -1)
 	{
 		if (data.heredocs)
 		{
 			i = -1;
 			while (++i < data.hd_count)
 				close(data.heredocs[i].fd);
-			free(data.heredocs);
 		}
 		return ((void)(shell->env->exit_status = 1));
 	}

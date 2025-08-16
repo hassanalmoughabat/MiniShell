@@ -65,31 +65,21 @@ int	count_pipes(t_token *lst)
 	return (count);
 }
 
-int	create_pipes(int ***pipes, int pipe_count)
+int	create_pipes(int ***pipes, int pipe_count, t_gc *gc)
 {
 	int	i;
 
-	*pipes = malloc(sizeof(int *) * pipe_count);
+	*pipes = ft_malloc(gc, sizeof(int *) * pipe_count);
 	if (!*pipes)
 		return (-1);
 	i = -1;
 	while (++i < pipe_count)
 	{
-		(*pipes)[i] = malloc(sizeof(int) * 2);
+		(*pipes)[i] = ft_malloc(gc, sizeof(int) * 2);
 		if (!(*pipes)[i])
-		{
-			while (--i >= 0)
-				free((*pipes)[i]);
-			free(*pipes);
 			return (-1);
-		}
 		if (pipe((*pipes)[i]) == -1)
-		{
-			while (i >= 0)
-				free((*pipes)[i--]);
-			free(*pipes);
 			return (-1);
-		}
 	}
 	return (0);
 }

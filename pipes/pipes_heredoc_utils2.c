@@ -83,6 +83,5 @@ void	cleanup_heredocs_after_exec(t_pipe_data *data)
 				close(data->heredocs[i].fd);
 			i++;
 		}
-		free(data->heredocs);
 	}
 }

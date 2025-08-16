@@ -24,7 +24,6 @@ void	cleanup_heredocs(t_heredoc_info *heredocs, int count)
 			close(heredocs[i].fd);
 		i++;
 	}
-	free(heredocs);
 }
 
 int	process_single_heredoc(t_token *curr, t_heredoc_info *heredocs,
@@ -57,7 +56,7 @@ t_heredoc_info	*process_heredocs_before_pipes(t_token *lst,
 	*hd_count = count;
 	if (count == 0)
 		return (NULL);
-	heredocs = malloc(sizeof(t_heredoc_info) * count);
+	heredocs = ft_malloc(&shell->gc, sizeof(t_heredoc_info) * count);
 	if (!heredocs)
 		return (NULL);
 	curr = lst;
