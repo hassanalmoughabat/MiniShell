@@ -12,7 +12,8 @@
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2, struct s_garbage_collector *gc)
+char	*ft_strjoin(char const *s1,
+		char const *s2, struct s_garbage_collector *gc)
 {
 	char	*dest;
 	int		pref_len;

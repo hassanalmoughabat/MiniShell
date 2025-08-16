@@ -12,18 +12,17 @@
 
 #include "token.h"
 
-int	ft_append_operator(t_token **list, t_token_type operator,
-	char **input, char *value, t_gc *gc)
+int	ft_append_operator(t_append_params *params)
 {
 	t_token	*new_token;
 
-	new_token = create_token(value, operator, gc);
+	new_token = create_token(params->value, params->operator, params->gc);
 	if (!new_token)
 		return (0);
-	ft_add_token_last(list, new_token);
-	(*input)++;
-	if (operator == T_DLESS || operator == T_DGREAT)
-		(*input)++;
+	ft_add_token_last(params->list, new_token);
+	(*params->input)++;
+	if (params->operator == T_DLESS || params->operator == T_DGREAT)
+		(*params->input)++;
 	return (1);
 }
 
@@ -35,19 +34,36 @@ int	ft_check_special_char(char *str)
 	return (0);
 }
 
+static void	init_params(t_append_params *params, t_token **list,
+				char **input, t_gc *gc)
+{
+	params->list = list;
+	params->input = input;
+	params->gc = gc;
+}
+
 int	ft_handle_operators(char **input, t_token **list, t_gc *gc)
 {
+	t_append_params	params;
+
+	init_params(&params, list, input, gc);
 	if (**input == '>' && (*input)[1] != '>')
-		return (ft_append_operator(list, T_GREAT, input, ">", gc));
+		return (params.operator = T_GREAT, params.value = ">",
+			ft_append_operator(&params));
 	else if (**input == '<' && (*input)[1] != '<')
-		return (ft_append_operator(list, T_LESS, input, "<", gc));
+		return (params.operator = T_LESS, params.value = "<",
+			ft_append_operator(&params));
 	else if (**input == '>' && (*input)[1] == '>')
-		return (ft_append_operator(list, T_DGREAT, input, ">>", gc));
+		return (params.operator = T_DGREAT, params.value = ">>",
+			ft_append_operator(&params));
 	else if (**input == '<' && (*input)[1] == '<')
-		return (ft_append_operator(list, T_DLESS, input, "<<", gc));
+		return (params.operator = T_DLESS, params.value = "<<",
+			ft_append_operator(&params));
 	else if (!ft_strncmp(*input, "|", 1))
-		return (ft_append_operator(list, T_PIPE, input, "|", gc));
+		return (params.operator = T_PIPE, params.value = "|",
+			ft_append_operator(&params));
 	else if (!ft_strncmp(*input, "\n", 1))
-		return (ft_append_operator(list, T_NL, input, "new_line", gc));
+		return (params.operator = T_NL, params.value = "new_line",
+			ft_append_operator(&params));
 	return (0);
 }

@@ -13,30 +13,16 @@
 #include "../includes/minihell.h"
 #include "pipes.h"
 
-t_token	*remove_redirection_tokens(t_token *cmd_segment)
+static int	is_identifier_command(t_token *curr)
 {
-	t_token	*curr;
-	t_token	*next;
-
-	curr = cmd_segment;
-	while (curr)
-	{
-		if ((curr->type == T_GREAT || curr->type == T_DGREAT
-				|| curr->type == T_LESS) && curr->next)
-		{
-			next = curr->next->next;
-			if (curr->prev)
-				curr->prev->next = next;
-			else
-				cmd_segment = next;
-			if (next)
-				next->prev = curr->prev;
-			curr = next;
-			continue ;
-		}
-		curr = curr->next;
-	}
-	return (cmd_segment);
+	if (curr->type != T_IDENTIFIER)
+		return (0);
+	if (!curr->prev)
+		return (1);
+	if (curr->prev->type != T_GREAT && curr->prev->type != T_DGREAT
+		&& curr->prev->type != T_LESS && curr->prev->type != T_DLESS)
+		return (1);
+	return (0);
 }
 
 int	has_cmd_before_heredoc(t_token *tk)
@@ -48,38 +34,25 @@ int	has_cmd_before_heredoc(t_token *tk)
 	curr = tk;
 	found_heredoc = 0;
 	found_command = 0;
-
 	while (curr)
 	{
 		if (curr->type == T_PIPE)
-			break;
+			break ;
 		if (curr->type == T_DLESS)
 		{
 			found_heredoc = 1;
-			break;
+			break ;
 		}
-		if (curr->type == T_IDENTIFIER)
-		{
-			if (!curr->prev || (curr->prev->type != T_GREAT && 
-				curr->prev->type != T_DGREAT && curr->prev->type != T_LESS &&
-				curr->prev->type != T_DLESS))
-				found_command = 1;
-		}
+		if (is_identifier_command(curr))
+			found_command = 1;
 		curr = curr->next;
 	}
 	return (found_heredoc && found_command);
 }
 
-void	handle_redirections_and_execute(t_pipe_child_data *child_data,
-		t_shell *shell)
+static void	setup_redirections(t_pipe_child_data *child_data,
+			int has_redirection, int has_actual_command)
 {
-	int	has_redirection;
-	int	has_actual_command;
-
-	has_redirection = (contain_list(">>", child_data->cmd_segment)
-			|| contain_list(">", child_data->cmd_segment)
-			|| contain_list("<", child_data->cmd_segment));
-	has_actual_command = has_cmd_before_heredoc(child_data->cmd_segment);
 	if (has_redirection)
 	{
 		if (has_actual_command)
@@ -92,9 +65,10 @@ void	handle_redirections_and_execute(t_pipe_child_data *child_data,
 		child_data->cmd_segment = remove_redirection_tokens(
 				child_data->cmd_segment);
 	}
-	if (!child_data->cmd_segment || !child_data->cmd_segment->cmd)
-		exit(0);
-		// //////////////////fghjlfdk//////////////////
+}
+
+static void	execute_command(t_pipe_child_data *child_data, t_shell *shell)
+{
 	if (ft_pipe_builtin(child_data->cmd_segment))
 	{
 		shell->tk = child_data->cmd_segment;
@@ -105,44 +79,21 @@ void	handle_redirections_and_execute(t_pipe_child_data *child_data,
 	execute_external_cmd(child_data->cmd_segment, child_data->ft_env, shell);
 }
 
-void	setup_input_redirection(t_pipe_child_data *child_data)
+void	handle_redirections_and_execute(t_pipe_child_data *child_data,
+		t_shell *shell)
 {
-	t_token	*curr;
-	int		fd;
-	char	*filename;
+	int	has_redirection;
+	int	has_actual_command;
 
-	curr = child_data->cmd_segment;
-	while (curr)
+	has_redirection = (contain_list(">>", child_data->cmd_segment)
+			|| contain_list(">", child_data->cmd_segment)
+			|| contain_list("<", child_data->cmd_segment));
+	has_actual_command = has_cmd_before_heredoc(child_data->cmd_segment);
+	setup_redirections(child_data, has_redirection, has_actual_command);
+	if (!child_data->cmd_segment || !child_data->cmd_segment->cmd)
 	{
-		if (curr->type == T_LESS && curr->next)
-		{
-			filename = curr->next->cmd;
-			fd = open(filename, O_RDONLY);
-			if (fd >= 0)
-				dup2(fd, STDIN_FILENO);
-			return ;
-		}
-		curr = curr->next;
+		free_token_list(child_data->cmd_segment);
+		exit(0);
 	}
-}
-
-void	setup_output_redirection(t_pipe_child_data *child_data)
-{
-	t_token	*curr;
-
-	curr = child_data->cmd_segment;
-	while (curr)
-	{
-		if (curr->type == T_GREAT && curr->next)
-		{
-			handle_great_redirect(curr);
-			return ;
-		}
-		else if (curr->type == T_DGREAT && curr->next)
-		{
-			handle_dgreat_redirect(curr);
-			return ;
-		}
-		curr = curr->next;
-	}
+	execute_command(child_data, shell);
 }

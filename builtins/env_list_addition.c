@@ -54,19 +54,20 @@ void	ft_add_key_to_env(t_env **copy, char *key, t_gc *gc)
 	ft_push_to_env(copy, new_node);
 }
 
-void	update_value(t_env **env, char *key, char *value, int flag, t_gc *gc)
+void	update_value(t_update_params *params)
 {
 	char	*extract_key;	
 	t_env	*current;
 
-	current = *env;
+	current = *params->env;
 	while (current)
 	{
-		extract_key = get_var(current->line, gc);
-		if (!ft_strcmp(extract_key, key)
-			&& ft_strlen(key) == ft_strlen(extract_key))
+		extract_key = get_var(current->line, params->gc);
+		if (!ft_strcmp(extract_key, params->key)
+			&& ft_strlen(params->key) == ft_strlen(extract_key))
 		{
-			current->line = quotes_in_env(value, key, flag, NULL);
+			current->line = quotes_in_env(params->value, params->key,
+					params->flag, NULL);
 			return ;
 		}
 		current = current->next;
@@ -95,11 +96,24 @@ void	update_copy_add_env(t_shell *shell, t_env **copy)
 
 int	ft_update_env(t_env **copy, t_shell *shell)
 {
+	t_update_params	uparams1;
+	t_update_params	uparams2;
+
 	if (check_if_var_exist(copy, shell->key)
 		&& check_if_var_exist(&(shell->env), shell->key))
 	{
-		update_value(copy, shell->key, shell->value, 0, &shell->gc);
-		update_value(&(shell->env), shell->key, shell->value, 1, &shell->gc);
+		uparams1.env = copy;
+		uparams1.key = shell->key;
+		uparams1.value = shell->value;
+		uparams1.flag = 0;
+		uparams1.gc = &shell->gc;
+		update_value(&uparams1);
+		uparams2.env = &(shell->env);
+		uparams2.key = shell->key;
+		uparams2.value = shell->value;
+		uparams2.flag = 1;
+		uparams2.gc = &shell->gc;
+		update_value(&uparams2);
 	}
 	else if (check_if_var_exist(copy, shell->key)
 		&& !check_if_var_exist(&(shell->env), shell->key))

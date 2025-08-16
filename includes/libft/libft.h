@@ -17,7 +17,7 @@
 # include <stdlib.h>
 # include <limits.h>
 
-struct s_garbage_collector;
+struct	s_garbage_collector;
 
 typedef struct s_list
 {
@@ -25,14 +25,18 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 char		*ft_itoa(int n, struct s_garbage_collector *gc);
-char		*ft_strtrim(char const *s1, char const *set, struct s_garbage_collector *gc);
+char		*ft_strtrim(char const *s1, char const *set,
+				struct s_garbage_collector *gc);
 char		*ft_strrchr(const char *s, int c);
 char		*ft_strdup(const char *s);
 char		*ft_strchr(const char *s, int c);
-char		*ft_strmapi(char const *s, char (*f)(unsigned int, char), struct s_garbage_collector *gc);
+char		*ft_strmapi(char const *s, char (*f)(unsigned int, char),
+				struct s_garbage_collector *gc);
 char		*ft_strnstr(const char *big, const char *little, size_t len);
-char		*ft_strjoin(char const *s1, char const *s2, struct s_garbage_collector *gc);
-char		*ft_substr(char const *s, unsigned int start, size_t len, struct s_garbage_collector *gc);
+char		*ft_strjoin(char const *s1, char const *s2,
+				struct s_garbage_collector *gc);
+char		*ft_substr(char const *s, unsigned int start, size_t len,
+				struct s_garbage_collector *gc);
 char		**ft_split(char const *s, char c, struct s_garbage_collector *gc);
 void		ft_bzero(void *s, size_t n);
 void		*ft_calloc(size_t nmemb, size_t size);

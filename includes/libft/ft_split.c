@@ -59,13 +59,16 @@ int	word_len(char const *s, char c)
 	return (i);
 }
 
-char	**split(char **s_split, char const *s, char c, int count, struct s_garbage_collector *gc)
+char	**split(char **s_split,
+		char const *s, char c, struct s_garbage_collector *gc)
 {
 	int	i;
 	int	j;
+	int	count;
 
 	i = 0;
 	j = 0;
+	count = ft_count(s, c);
 	while (i < count)
 	{
 		while (s[j] == c && s[j] != '\0')
@@ -95,6 +98,6 @@ char	**ft_split(char const *s, char c, struct s_garbage_collector *gc)
 	s_split = (char **)ft_malloc(gc, (count + 1) * sizeof(char *));
 	if (!s_split)
 		return (NULL);
-	s_split = split(s_split, s, c, count, gc);
+	s_split = split(s_split, s, c, gc);
 	return (s_split);
 }

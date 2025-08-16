@@ -47,7 +47,6 @@ typedef struct s_garbage_collector
 	t_mem_node	*head;
 }	t_gc;
 
-
 typedef struct s_shell
 {
 	t_env		*env;
@@ -61,8 +60,6 @@ typedef struct s_shell
 	int			shell_level;
 	t_gc		gc;
 }	t_shell;
-
-
 
 typedef struct s_signal
 {
@@ -164,6 +161,41 @@ typedef struct s_pipe_child_data
 	int		is_first_with_heredoc;
 }	t_pipe_child_data;
 
+typedef struct s_value_params
+{
+	char	**value;
+	char	quote;
+	char	*input;
+	int		flag;
+	t_gc	*gc;
+}	t_value_params;
+
+typedef struct s_key_params
+{
+	char	*input;
+	char	**result;
+	char	*quote;
+	int		*flag;
+	t_gc	*gc;
+}	t_key_params;
+
+typedef struct s_update_params
+{
+	t_env	**env;
+	char	*key;
+	char	*value;
+	int		flag;
+	t_gc	*gc;
+}	t_update_params;
+
+typedef struct s_split_params
+{
+	char	**argv;
+	int		*i;
+	char	**split;
+	int		count;
+	t_gc	*gc;
+}	t_split_params;
 
 void	init_gc(t_gc *gc);
 void	*ft_malloc(t_gc *gc, size_t size);
@@ -175,10 +207,14 @@ int		is_quote_token(char *str);
 bool	contains_quote(const char *str);
 int		contain_char(char *str, char c);
 int		is_valid_filename(t_token *token);
+int		is_redirect_token(t_token *token);
+int		is_invalid_next_token(t_token *next);
+int		check_redirect_error(t_token *curr, t_shell *shell);
+void	syntax_error_msg(t_token *curr);
 
 // --------------value getter setter----------------------------
-void	set_value(char **value, char quote, char *input, int flag, t_gc *gc);
-void	set_key(char *input, char **result, char *quote, int *flag, t_gc *gc);
+void	set_value(t_value_params *params);
+void	set_key(t_key_params *params);
 char	*get_key(t_token *tk, t_shell *shell, char *quote, int *ind);
 char	*get_value(char *input, char quote, int flag, t_shell *shell);
 int		set_key_value(t_token *tk, char **key, char **value, t_shell *shell);
@@ -320,7 +356,8 @@ int		init_expand_data(t_expand_data *data);
 int		validate_delimiter(const char *delimiter);
 char	*expand_variables(char *line, t_env *env, int quote, t_gc *gc);
 char	*replace_variable(char *line, char *var_name, char *new_val);
-int		expand_variable(t_expand_data *data, char *var_name, t_env *env, t_gc *gc);
+int		expand_variable(t_expand_data *data, char *var_name, t_env *env,
+			t_gc *gc);
 int		init_heredoc_context(t_heredoc_ctx *ctx, t_token *curr,
 			t_shell *shell);
 void	child_process(t_heredoc_ctx *ctx, t_shell *shell);
@@ -348,12 +385,16 @@ int		handle_semicolon_error(t_shell *shell, t_token *curr);
 int		add_token_to_argv(char **argv, int *i, t_token *curr, t_gc *gc);
 void	validate_executable(char *cmd, char *path, t_shell *shell);
 int		fill_argv_from_tokens(char **argv, t_token *tk, int count, t_gc *gc);
-int		add_split_parts(char **argv, int *i, char **split, int count, t_gc *gc);
+int		add_split_parts(t_split_params *params);
 void	parent_wait_and_cleanup(t_shell *shell, pid_t pid, char **argv);
 
 // ----------------------Piping and Redirections-------------------------
 int		valid_pipe(t_shell *shell, char *input);
 int		handle_dless(char *delimiter, t_shell *shell, int quote);
+void	heredoc_child_loop(int write_fd, char *delimiter,
+			t_shell *shell, int quote);
+int		process_heredoc_line(char *line, t_heredoc_data *data,
+			t_shell *shell);
 int		handle_redirection(t_token *tk, t_shell *shell, char *input);
 int		has_cmd_before_heredoc(t_token *tk);
 void	close_parent_pipes(t_pipe_data *data, int current_cmd);

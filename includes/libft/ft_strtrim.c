@@ -23,7 +23,8 @@ int	is_char(char c, char const *set)
 	return (0);
 }
 
-char	*ft_strtrim(char const *s1, char const *set, struct s_garbage_collector *gc)
+char	*ft_strtrim(char const *s1,
+		char const *set, struct s_garbage_collector *gc)
 {
 	char	*trim_s1;
 	int		start;

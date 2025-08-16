@@ -12,7 +12,8 @@
 
 #include "libft.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len, struct s_garbage_collector *gc)
+char	*ft_substr(char const *s,
+		unsigned int start, size_t len, struct s_garbage_collector *gc)
 {
 	char	*dest;
 	size_t	i;

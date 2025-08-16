@@ -50,7 +50,7 @@ int	ft_read(char *input, t_shell *shell)
 		if (!input)
 		{
 			ft_putstr_fd("exit\n", 1);
-			break ;
+			exit(0);
 		}
 		if (g_signal.sig_status != 0)
 		{

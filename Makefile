@@ -58,11 +58,13 @@ SIGNALING	:=	signaling_heredocs/ft_signal.c \
 				signaling_heredocs/ft_heredoc5.c \
 				signaling_heredocs/ft_heredoc6.c \
 				signaling_heredocs/ft_heredoc7.c \
+				signaling_heredocs/ft_heredoc7_utils.c \
 				signaling_heredocs/ft_heredoc8.c \
 				signaling_heredocs/ft_heredoc9.c \
 				signaling_heredocs/handle_redirection1.c \
 				signaling_heredocs/handle_redirection2.c \
 				signaling_heredocs/handle_redirection3.c \
+				signaling_heredocs/handle_redirection_utils.c \
 				signaling_heredocs/handle_input_redirect.c \
 				signaling_heredocs/handle_input_redirect1.c
 
@@ -80,7 +82,11 @@ PIPES		:=	pipes/pipes_utils.c \
 				pipes/pipes_utils3.c \
 				pipes/pipes_utils4.c \
 				pipes/pipes_utils5.c \
-				pipes/pipes_utils6.c
+				pipes/pipes_utils6.c \
+				pipes/pipes_validation_utils.c \
+				pipes/pipes_segment_redirect_utils.c \
+				pipes/pipes_main_utils.c \
+				pipes/pipes_heredoc_util2_extra.c
 
 
 TOKENIZE	:= 	tokenize/ft_error_handler.c \

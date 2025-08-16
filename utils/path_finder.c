@@ -68,17 +68,17 @@ int	count_total_args(t_token *tk, t_gc *gc)
 	return (total);
 }
 
-int	add_split_parts(char **argv, int *i, char **split, int count, t_gc *gc)
+int	add_split_parts(t_split_params *params)
 {
 	int	j;
 
 	j = 0;
-	while (split[j] && *i < count)
+	while (params->split[j] && *params->i < params->count)
 	{
-		argv[*i] = ft_strdup_gc(gc, split[j]);
-		if (!argv[*i])
+		params->argv[*params->i] = ft_strdup_gc(params->gc, params->split[j]);
+		if (!params->argv[*params->i])
 			return (0);
-		(*i)++;
+		(*params->i)++;
 		j++;
 	}
 	return (1);

@@ -50,6 +50,14 @@ typedef struct s_child_setup_params
 	int			heredoc_fd;
 }				t_child_setup_params;
 
+typedef struct s_heredoc_setup_params
+{
+	char						**ft_env;
+	t_env						*env;
+	t_heredoc_pipe_params		*pipe_params;
+	t_gc						*gc;
+}				t_heredoc_setup_params;
+
 typedef struct s_single_cmd_params
 {
 	t_pipe_data	*data;
@@ -83,21 +91,31 @@ void			find_tokens(t_token *lst, t_token **heredoc_token,
 					t_token **pipe_token, t_token **redirect_token);
 pid_t			create_heredoc_child(t_heredoc_child_params *params,
 					t_shell *shell);
-int				setup_heredoc_pipe(t_token *lst, char **ft_env, t_env *env,
-					t_heredoc_pipe_params *pipe_params, t_gc *gc);
+int				setup_heredoc_pipe(t_token *lst,
+					t_heredoc_setup_params *setup_params);
 int				handle_heredoc_pipe_redirect(t_token *lst, t_shell *shell);
 void			setup_output_redirect_child(int *pipefd,
 					t_token *redirect_token, char **ft_env);
 pid_t			create_output_child(int *pipefd, t_token *redirect_token,
 					char **ft_env);
 void			cleanup_heredocs_after_exec(t_pipe_data *data);
+int				setup_heredoc_for_command(t_pipe_data *data, t_token *start,
+					t_token *curr);
+void			close_unused_heredocs(t_pipe_data *data, int heredoc_fd);
+void			setup_child_data(t_pipe_child_data *child_data,
+					t_pipe_data *data, t_child_setup_params *params);
 void			wait_for_children(t_pipe_data *data, t_shell *shell);
+void			set_exit_status(t_shell *shell, int final_status,
+					int got_final_status);
+void			cleanup_pipes(t_pipe_data *data);
+void			handle_signal_output(int sig, int *flag_quit);
 void			execute_single_command(t_single_cmd_params *params);
 void			setup_pipe_data(t_pipe_data *data, t_token *lst,
 					t_shell *shell);
 void			handle_great_redirect(t_token *curr);
 void			handle_dgreat_redirect(t_token *curr);
 void			setup_input_redirection(t_pipe_child_data *child_data);
+void			setup_output_redirection(t_pipe_child_data *child_data);
 t_token			*remove_redirection_tokens(t_token *cmd_segment);
 // From pipes_utils.c
 int				has_heredoc(t_token *lst);
@@ -106,6 +124,12 @@ t_token			*next_pipe(t_token *start);
 int				count_pipes(t_token *lst);
 int				create_pipes(int ***pipes, int pipe_count, t_gc *gc);
 int				valid_pipe(t_shell *shell, char *input);
+void			pipe_syntax_error(char *msg, t_shell *shell);
+int				skip_whitespace_and_check_pipe(char *input, int start);
+int				check_single_redirect_pipe(char *input, int *i, char redirect);
+int				check_double_redirect_pipe(char *input, int *i, char redirect);
+int				check_redirection_pipe_sequence(char *input);
+int				validate_pipe_token(t_token *tk, t_shell *shell);
 // From pipes_heredoc.c
 t_heredoc_info	*process_heredocs_before_pipes(t_token *lst,
 					t_shell *shell, int *hd_count);
@@ -119,7 +143,8 @@ int				handle_heredoc_pipe_redirect_part2(
 
 // From pipes_segment.c
 int				ft_pipe_builtin(t_token *tk);
-t_token			*extract_command_segment(t_token *start, t_token *end, t_gc *gc);
+t_token			*extract_command_segment(t_token *start,
+					t_token *end, t_gc *gc);
 void			setup_pipe_redirects(t_pipe_redirect_params *params);
 void			handle_pipe_child(t_pipe_child_data *child_data,
 					t_shell *shell);

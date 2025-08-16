@@ -14,8 +14,9 @@
 
 int	fill_argv_from_tokens(char **argv, t_token *tk, int count, t_gc *gc)
 {
-	char	**split;
-	int		i;
+	char			**split;
+	int				i;
+	t_split_params	sparams;
 
 	i = 0;
 	while (tk && i < count)
@@ -23,7 +24,12 @@ int	fill_argv_from_tokens(char **argv, t_token *tk, int count, t_gc *gc)
 		if (ft_strchr(tk->cmd, ' '))
 		{
 			split = ft_split(tk->cmd, ' ', gc);
-			if (split && !add_split_parts(argv, &i, split, count, gc))
+			sparams.argv = argv;
+			sparams.i = &i;
+			sparams.split = split;
+			sparams.count = count;
+			sparams.gc = gc;
+			if (split && !add_split_parts(&sparams))
 				return (0);
 		}
 		else if (!add_token_to_argv(argv, &i, tk, gc))

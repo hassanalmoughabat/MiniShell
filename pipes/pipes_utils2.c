@@ -40,7 +40,6 @@ void	close_parent_pipes(t_pipe_data *data, int current_cmd)
 	}
 }
 
-
 void	setup_child_process(t_single_cmd_params *params, t_token *cmd_segment,
 				int heredoc_fd)
 {
@@ -49,11 +48,11 @@ void	setup_child_process(t_single_cmd_params *params, t_token *cmd_segment,
 
 	ft_set_child_signals();
 	close_unused_heredocs(params->data, heredoc_fd);
-	 if (heredoc_fd < 0 && segment_has_heredoc(params->start, params->curr))
-    {
-        free_token_list(cmd_segment);
-        exit(130);
-    }
+	if (heredoc_fd < 0 && segment_has_heredoc(params->start, params->curr))
+	{
+		free_token_list(cmd_segment);
+		exit(130);
+	}
 	setup_params.cmd_segment = cmd_segment;
 	setup_params.i = params->i;
 	setup_params.heredoc_fd = heredoc_fd;
@@ -71,7 +70,8 @@ void	execute_single_command(t_single_cmd_params *params)
 
 	heredoc_fd = setup_heredoc_for_command(params->data, params->start,
 			params->curr);
-	cmd_segment = extract_command_segment(params->start, params->curr, &params->shell->gc);
+	cmd_segment = extract_command_segment(params->start, params->curr,
+			&params->shell->gc);
 	if (!cmd_segment)
 		return ;
 	pid = fork();

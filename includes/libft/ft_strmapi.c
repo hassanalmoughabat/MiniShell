@@ -12,7 +12,8 @@
 
 #include "libft.h"
 
-char	*ft_strmapi(char const *s, char (*f)(unsigned int, char), struct s_garbage_collector *gc)
+char	*ft_strmapi(char const *s,
+		char (*f)(unsigned int, char), struct s_garbage_collector *gc)
 {
 	char			*d;
 	unsigned int	i;

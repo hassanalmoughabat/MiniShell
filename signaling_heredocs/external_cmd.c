@@ -39,9 +39,13 @@ void	execute_external_cmd(t_token *cmd_tokens, char **ft_env, t_shell *shell)
 	signal(SIGQUIT, SIG_DFL);
 	path = get_path(args[0], shell->ft_env, &shell->gc);
 	if (!path)
+	{
 		handle_path_error(cmd_tokens, shell);
+	}
 	if (symbols(cmd_tokens->cmd))
+	{
 		check_executable(path, cmd_tokens, shell);
+	}
 	if (execve(path, args, shell->ft_env) == -1)
 	{
 		shell->env->exit_status = ft_err_msg((t_error){(cmd_tokens->cmd),

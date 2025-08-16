@@ -15,7 +15,7 @@
 char	*ft_get_cd_pwd(void)
 {
 	static char	cwd[PATH_MAX];
-	char	*pwd;
+	char		*pwd;
 
 	pwd = getcwd(cwd, PATH_MAX);
 	return (pwd);

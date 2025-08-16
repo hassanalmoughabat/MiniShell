@@ -13,8 +13,7 @@
 #include "../includes/minihell.h"
 #include "pipes.h"
 
-int	setup_heredoc_pipe(t_token *lst, char **ft_env, t_env *env,
-			t_heredoc_pipe_params *pipe_params, t_gc *gc)
+int	setup_heredoc_pipe(t_token *lst, t_heredoc_setup_params *setup_params)
 {
 	t_token					*heredoc_token;
 	t_token					*pipe_token;
@@ -25,13 +24,13 @@ int	setup_heredoc_pipe(t_token *lst, char **ft_env, t_env *env,
 	if (!heredoc_token || !pipe_token || !redirect_token
 		|| !redirect_token->next)
 		return (0);
-	delimiter = get_delimeter(lst, gc);
+	delimiter = get_delimeter(lst, setup_params->gc);
 	if (!delimiter)
 		return (0);
-	pipe_params->delimiter = delimiter;
-	pipe_params->redirect_token = redirect_token;
-	pipe_params->ft_env = ft_env;
-	pipe_params->env = env;
+	setup_params->pipe_params->delimiter = delimiter;
+	setup_params->pipe_params->redirect_token = redirect_token;
+	setup_params->pipe_params->ft_env = setup_params->ft_env;
+	setup_params->pipe_params->env = setup_params->env;
 	return (1);
 }
 
@@ -42,29 +41,39 @@ int	close_files(int fd1, int fd2)
 	return (0);
 }
 
+static void	setup_child_params(t_heredoc_child_params *child_params,
+			int *pipefd, t_heredoc_pipe_params *pipe_params,
+			t_shell *shell)
+{
+	child_params->pipefd = pipefd;
+	child_params->delimiter = pipe_params->delimiter;
+	child_params->env = shell->env;
+	child_params->ft_env = shell->ft_env;
+	child_params->quote = has_quotes(pipe_params->delimiter);
+}
+
 int	handle_heredoc_pipe_redirect(t_token *lst, t_shell *shell)
 {
 	int						pipefd[2];
 	pid_t					pid1;
 	t_heredoc_pipe_params	pipe_params;
 	t_heredoc_child_params	child_params;
+	t_heredoc_setup_params	setup_params;
 
-	if (!setup_heredoc_pipe(lst, shell->ft_env, shell->env, &pipe_params, &shell->gc))
+	setup_params.ft_env = shell->ft_env;
+	setup_params.env = shell->env;
+	setup_params.pipe_params = &pipe_params;
+	setup_params.gc = &shell->gc;
+	if (!setup_heredoc_pipe(lst, &setup_params))
 		return (0);
 	remove_added_quotes(&pipe_params.delimiter, &shell->gc);
 	if (pipe(pipefd) == -1)
 		return (0);
-	child_params.pipefd = pipefd;
-	child_params.delimiter = pipe_params.delimiter;
-	child_params.env = shell->env;
-	child_params.ft_env = shell->ft_env;
-	child_params.quote = has_quotes(pipe_params.delimiter);
+	setup_child_params(&child_params, pipefd, &pipe_params, shell);
 	pid1 = create_heredoc_child(&child_params, shell);
 	if (pid1 == -1)
-	{
-		close_files(pipefd[0], pipefd[1]);
-		return ((free(pipe_params.delimiter), 0));
-	}
+		return (close_files(pipefd[0], pipefd[1]),
+			(free(pipe_params.delimiter), 0));
 	pipe_params.pid1 = pid1;
 	return (pipe_params.pipefd = pipefd,
 		(handle_heredoc_pipe_redirect_part2(&pipe_params, shell)));

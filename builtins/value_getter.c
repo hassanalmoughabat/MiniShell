@@ -38,13 +38,19 @@ int	has_equal_in_quote(char *input, char *quote, t_gc *gc)
 
 char	*get_value(char *input, char quote, int flag, t_shell *shell)
 {
-	char	*value;
-	char	*result;
+	char			*value;
+	char			*result;
+	t_value_params	vparams;
 
 	value = ft_strdup_gc(&shell->gc, "");
 	if (!input)
 		return (NULL);
-	set_value(&value, quote, input, flag, &shell->gc);
+	vparams.value = &value;
+	vparams.quote = quote;
+	vparams.input = input;
+	vparams.flag = flag;
+	vparams.gc = &shell->gc;
+	set_value(&vparams);
 	if (!value)
 		return (NULL);
 	handle_value(value, &result, shell);
@@ -55,13 +61,19 @@ char	*get_value(char *input, char quote, int flag, t_shell *shell)
 
 char	*get_key(t_token *tk, t_shell *shell, char *quote, int *ind)
 {
-	char	*result;
-	char	*key;
+	char			*result;
+	char			*key;
+	t_key_params	kparams;
 
 	result = ft_strdup_gc(&shell->gc, "");
 	if (!shell->curr_cmd)
 		return (NULL);
-	set_key(shell->curr_cmd, &key, quote, ind, &shell->gc);
+	kparams.input = shell->curr_cmd;
+	kparams.result = &key;
+	kparams.quote = quote;
+	kparams.flag = ind;
+	kparams.gc = &shell->gc;
+	set_key(&kparams);
 	if (!check_valid_key(tk, key, shell->env, &shell->gc))
 		return (NULL);
 	handle_value(key, &result, shell);

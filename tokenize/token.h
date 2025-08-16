@@ -39,6 +39,16 @@ typedef struct s_token
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
+
+typedef struct s_append_params
+{
+	t_token			**list;
+	t_token_type	operator;
+	char			**input;
+	char			*value;
+	t_gc			*gc;
+}	t_append_params;
+
 int		ft_check_space(char c);
 int		ft_delimeter(char *str);
 int		ft_check_quotes(char c);
@@ -54,6 +64,5 @@ int		ft_handle_operators(char **input, t_token **list, t_gc *gc);
 t_token	*create_token(char *value, t_token_type operator, t_gc *gc);
 int		ft_handle_quotes(char **input, t_token **token_list, t_gc *gc);
 void	ft_add_token_last(t_token **t_list, t_token *new_token);
-int		ft_append_operator(t_token **list, t_token_type operator,
-			char **input, char *value, t_gc *gc);
+int		ft_append_operator(t_append_params *params);
 #endif

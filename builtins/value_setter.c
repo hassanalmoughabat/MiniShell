@@ -32,38 +32,40 @@ char	*handle_flag(char *equal_pos, char quote, t_gc *gc)
 	return (new_value);
 }
 
-void	set_value(char **value, char quote, char *input, int flag, t_gc *gc)
+void	set_value(t_value_params *params)
 {
 	char	*equal_pos;
 	char	*new_value;
 
-	equal_pos = ft_strchr(input, '=');
+	equal_pos = ft_strchr(params->input, '=');
 	equal_pos ++;
 	if (ft_check_space(*equal_pos))
-		*value = ft_strdup_gc(gc, "\"\"");
+		*params->value = ft_strdup_gc(params->gc, "\"\"");
 	else
 	{
-		if (flag)
-			new_value = handle_flag(equal_pos, quote, gc);
+		if (params->flag)
+			new_value = handle_flag(equal_pos, params->quote, params->gc);
 		else
-			new_value = ft_strdup_gc(gc, equal_pos);
-		*value = new_value;
+			new_value = ft_strdup_gc(params->gc, equal_pos);
+		*params->value = new_value;
 	}
 	return ;
 }
 
-void	set_key(char *input, char **result, char *quote, int *flag, t_gc *gc)
+void	set_key(t_key_params *params)
 {
 	char	*equal_ptr;
 	char	*temp;
 
-	equal_ptr = ft_strchr(input, '=');
-	*result = ft_substr(input, 0, equal_ptr - input, gc);
-	*flag = has_equal_in_quote(input, quote, gc);
-	if (*flag == 1)
+	equal_ptr = ft_strchr(params->input, '=');
+	*params->result = ft_substr(params->input, 0, equal_ptr - params->input,
+			params->gc);
+	*params->flag = has_equal_in_quote(params->input, params->quote,
+			params->gc);
+	if (*params->flag == 1)
 	{
-		temp = ft_strjoin_char(*result, *quote, gc);
-		*result = temp;
+		temp = ft_strjoin_char(*params->result, *params->quote, params->gc);
+		*params->result = temp;
 	}
 	return ;
 }
