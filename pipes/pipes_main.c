@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/06 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/08/09 02:56:55 by njoudieh42       ###   ########.fr       */
+/*   Created: 2025/07/06 00:00:00 by hal-moug          #+#    #+#             */
+/*   Updated: 2025/08/16 10:43:10 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	handle_signal_output(int sig, int *flag_quit)
 }
 
 // //////////////////////////////////// NEWWWWWWWW///////////////////
+
 void	wait_for_children(t_pipe_data *data, t_shell *shell)
 {
 	int		status;
@@ -77,6 +78,19 @@ void	wait_for_children(t_pipe_data *data, t_shell *shell)
 				handle_signal_output(WTERMSIG(status), &flag_quit);
 		}
 		waited_pid = wait(&status);
+	}
+	if (!got_final_status && data->last_child_pid > 0)
+	{
+		if (waitpid(data->last_child_pid, &status, WNOHANG) == data->last_child_pid)
+		{
+			final_status = status;
+			got_final_status = 1;
+		}
+		else if (waitpid(data->last_child_pid, &status, 0) == data->last_child_pid)
+		{
+			final_status = status;
+			got_final_status = 1;
+		}
 	}
 	set_exit_status(shell, final_status, got_final_status);
 	cleanup_pipes(data);

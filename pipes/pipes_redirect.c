@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_redirect.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 00:00:00 by njoudieh          #+#    #+#             */
-/*   Updated: 2025/07/23 11:34:46 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/16 10:18:52 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,14 @@ int	has_redirect_after_pipe(t_token *lst)
 
 int	check_special_heredoc_pipe(t_token *lst, t_shell *shell)
 {
+	int	result;
+
 	if (has_heredoc_before_pipe(lst) && has_redirect_after_pipe(lst))
-		return (handle_heredoc_pipe_redirect(lst, shell));
+	{
+		result = handle_heredoc_pipe_redirect(lst, shell);
+		if (shell->env->exit_status == 130)
+			return (2);
+		return (result);
+	}
 	return (0);
 }

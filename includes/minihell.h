@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihell.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 12:21:07 by hal-moug          #+#    #+#             */
-/*   Updated: 2025/08/09 02:39:24 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/16 10:29:39 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,6 +355,12 @@ void	parent_wait_and_cleanup(t_shell *shell, pid_t pid, char **argv);
 int		valid_pipe(t_shell *shell, char *input);
 int		handle_dless(char *delimiter, t_shell *shell, int quote);
 int		handle_redirection(t_token *tk, t_shell *shell, char *input);
+int		has_cmd_before_heredoc(t_token *tk);
+void	close_parent_pipes(t_pipe_data *data, int current_cmd);
+int		check_redirection_pipe_sequence(char *input);
+int		check_double_redirect_pipe(char *input, int *i, char redirect);
+int		check_single_redirect_pipe(char *input, int *i, char redirect);
+int		skip_whitespace_and_check_pipe(char *input, int start);
 
 //-----------------------Redirection_utils--------------------------------
 int		symbols(char *tk);
