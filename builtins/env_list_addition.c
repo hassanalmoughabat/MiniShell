@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_list_addition.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: njoudieh42 <njoudieh42>                    +#+  +:+       +#+        */
+/*   By: hal-moug <hal-moug@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 19:08:29 by njoudieh42        #+#    #+#             */
-/*   Updated: 2025/07/22 22:44:23 by njoudieh42       ###   ########.fr       */
+/*   Updated: 2025/08/16 17:10:15 by hal-moug         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	update_value(t_update_params *params)
 			&& ft_strlen(params->key) == ft_strlen(extract_key))
 		{
 			current->line = quotes_in_env(params->value, params->key,
-					params->flag, NULL);
+					params->flag, params->gc);
 			return ;
 		}
 		current = current->next;
