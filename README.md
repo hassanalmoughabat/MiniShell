@@ -64,6 +64,7 @@ You’ll see a prompt like:
 `minishell$ export NAME=42
 minishell$ echo $NAME
 42`
+
 📚 Learning Objectives
 Process creation and management (fork, execve, waitpid)
 
