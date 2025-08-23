@@ -40,30 +40,30 @@ The goal of **Minishell** is to understand how shells work by re-creating a simp
 ## ⚙️ Installation & Usage
 
 ### Clone the repo
-git clone https://github.com/hassanalmoughabat/MiniShell.git
+`git clone https://github.com/hassanalmoughabat/MiniShell.git`
 
 
-cd minishell
+`cd minishell`
 
-make
+`make`
 
 This produces the minishell executable.
 
-./minishell
+`./minishell`
 You’ll see a prompt like:
 
-minishell$ 
+`minishell$`
 📝 Example
 
-minishell$ echo Hello World
-Hello World
+`minishell$ echo Hello World`
+`Hello World`
 
-minishell$ ls -l | grep minishell
--rwxr-xr-x  1 user  staff  41872 Aug 23 14:22 minishell
+`minishell$ ls -l | grep minishell
+-rwxr-xr-x  1 user  staff  41872 Aug 23 14:22 minishell`
 
-minishell$ export NAME=42
+`minishell$ export NAME=42
 minishell$ echo $NAME
-42
+42`
 📚 Learning Objectives
 Process creation and management (fork, execve, waitpid)
 
@@ -82,9 +82,9 @@ Build system: Makefile
 
 Norm: 42 Norm
 
-👤 Authors
+`👤 Authors
 Hassan AL Mougahabat
-Najwa Joudieh
+Najwa Joudieh`
 
 
 
